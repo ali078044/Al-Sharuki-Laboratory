@@ -11,7 +11,7 @@ const GradeUI = {
   apply() {
     const g = this.g; document.body.dataset.grade = g;
     $$('#gradeSw button').forEach(b => b.classList.toggle('on', b.dataset.g === g));
-    const hide = g === 'g7'; $$('.nav button[data-v="examples"],.nav button[data-v="lab"]').forEach(b => b.classList.toggle('hidden', hide));
+    const hide = KID(g); $$('.nav button[data-v="examples"],.nav button[data-v="lab"]').forEach(b => b.classList.toggle('hidden', hide));
     const G = GRADES.find(x => x.id === g); const f = $('footer.credit'); if (f) f.innerHTML = `مختبر الفيزياء التفاعلي — ${G.name} — تم تصميمه للأستاذ <b>علي محمد الشاروكي</b>`;
   },
   mount() {
@@ -36,13 +36,13 @@ const expsOfGrade = g => EXPS.filter(e => gradeOf(e) === g);
 Home.render = function () {
   const g = GradeUI.g, G = GRADES.find(x => x.id === g); const list = expsOfGrade(g); const chs = gradeChs(g);
   const acts = list.filter(e => e.kind === 'نشاط').length; const laws = LAWS.filter(l => chs.some(c => c.id === l.cat) || (g === 'g12' && l.cat === 0)).length;
-  const kid = g === 'g7'; const starSum = list.reduce((s, e) => s + Stars.get(e.id), 0);
+  const kid = KID(g); const starSum = list.reduce((s, e) => s + Stars.get(e.id), 0);
   $('#view-home').innerHTML = `<div class="wrap">
     <div class="gpick">${GRADES.map(x => `<button class="gcard ${x.id === g ? 'on' : ''}" data-g="${x.id}"><span class="gemo">${x.emo}</span><b>${x.name}</b><small>${expsOfGrade(x.id).length} تجربة ونشاط</small></button>`).join('')}</div>
     <div class="hero ${kid ? 'kid' : ''}">
       <div>
         <div class="credit-badge">تم تصميمه للأستاذ علي محمد الشاروكي</div>
-        ${kid ? `<h2>مختبر العلوم <span>الممتع</span> 🔬<br>فيزياء الأول المتوسط</h2>
+        ${kid ? `<h2>مختبر العلوم <span>الممتع</span> 🔬<br>فيزياء ${G.name}</h2>
         <p>جرّب بنفسك كل أنشطة كتابك: اسحب، اسكب، سخّن، وزِن… وشاهد ما يحدث للجزيئات! أجب عن أسئلة «اختبر نفسك» واجمع النجوم ⭐</p>`
       : `<h2>مختبر الفيزياء <span>التفاعلي</span><br>للصف السادس العلمي</h2>
         <p>جميع أنشطة وتجارب كتاب الفيزياء بتسلسل الكتاب نفسه، بمحاكاة تعتمد على المعادلات الفيزيائية الحقيقية: قراءات أجهزة حية، جداول قراءات، رسوم بيانية، ومحرك دوائر يحل قانوني كيرشوف في كل لحظة.</p>`}
@@ -103,7 +103,7 @@ Object.assign(Catalog, {
       const part = gradeChs(g).filter(ch => q || !this.chap || ch.id === this.chap).map(ch => {
         const list = EXPS.filter(e => e.ch === ch.id && match(e)); if (!list.length) return '';
         return `<div class="cat-ch" style="--c:${ch.c}"><span class="dot"></span><h3>${ch.emo ? ch.emo + ' ' : ''}الفصل ${ch.num}: ${ch.name}</h3><small>${ch.en}</small></div>
-        <div class="exp-list">${list.map(e => `<div class="exp-item ${g === 'g7' ? 'kid' : ''}" style="--c:${ch.c}" onclick="App.go('exp','${e.id}')"><div class="exp-idx">${ch.num}-${e.idx}</div><div><h5>${e.title}</h5><p><span class="tag ${e.kind === 'نشاط' ? 'act' : e.kind === 'تطبيق' ? 'app' : ''}">${e.kind}</span>${e.sec ? 'بند ' + e.sec : ''}${e.page ? ' · ص ' + e.page : ''}${g === 'g7' ? ' ' + Stars.html(Stars.get(e.id)) : ''}</p><p>${e.desc}</p></div></div>`).join('')}</div>`;
+        <div class="exp-list">${list.map(e => `<div class="exp-item ${KID(g) ? 'kid' : ''}" style="--c:${ch.c}" onclick="App.go('exp','${e.id}')"><div class="exp-idx">${ch.num}-${e.idx}</div><div><h5>${e.title}</h5><p><span class="tag ${e.kind === 'نشاط' ? 'act' : e.kind === 'تطبيق' ? 'app' : ''}">${e.kind}</span>${e.sec ? 'بند ' + e.sec : ''}${e.page ? ' · ص ' + e.page : ''}${KID(g) ? ' ' + Stars.html(Stars.get(e.id)) : ''}</p><p>${e.desc}</p></div></div>`).join('')}</div>`;
       }).join('');
       if (part) html += (grades.length > 1 ? `<div class="grade-h">${G.emo} ${G.name}</div>` : '') + part;
     });

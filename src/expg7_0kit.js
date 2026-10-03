@@ -200,4 +200,5 @@ const K = {
   party(ctx, S, dt = 1 / 60) { if (!S._conf) return; K.raw(ctx, () => { S._conf.forEach(p => { p.t += dt; p.vy += 500 * dt; p.x += p.vx * dt; p.y += p.vy * dt; ctx.fillStyle = p.c; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.t * 8); ctx.fillRect(-4, -2, 8, 4); ctx.restore(); }); }); S._conf = S._conf.filter(p => p.t < 1.6); if (!S._conf.length) S._conf = null; }
 };
 /* register a grade-7 experiment (same schema as X, chapter ids 11..15) */
+function X8(def) { def.grade = 'g8'; if (!def.kind) def.kind = 'نشاط'; X(def); }
 function X7(def) { def.grade = 'g7'; if (!def.kind) def.kind = 'نشاط'; X(def); }

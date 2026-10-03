@@ -66,13 +66,16 @@ function wlColor(nm, a = 1) {
 function wlRGB(nm) { const m = wlColor(nm).match(/[\d.]+/g).map(Number); return m.slice(0, 3); }
 
 /* HiDPI canvas */
-function fitCanvas(cv) {
+function fitCanvas(cv, minW) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const r = cv.getBoundingClientRect();
-  const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
-  if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  const W = Math.max(1, Math.round(r.width)), H = Math.max(1, Math.round(r.height));
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  /* small screens (phones): draw the scene at a virtual width minW and scale it down, so layouts never collapse */
+  const k = minW && W < minW ? W / minW : 1; cv.__k = k;
+  const w = Math.round(W / k), h = Math.round(H / k);
   const ctx = cv.getContext('2d');
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.direction = 'ltr';
+  ctx.setTransform(dpr * k, 0, 0, dpr * k, 0, 0); ctx.direction = 'ltr';
   return { ctx, w, h };
 }
 

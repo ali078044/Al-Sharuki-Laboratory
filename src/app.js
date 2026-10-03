@@ -14,13 +14,21 @@ const CHAPTERS = [
   { id: 12, g: 'g7', num: 2, name: 'القوة', en: 'Force', c: '#f97316', hex: '#f97316', d: 'مفهوم القوة والوزن، تمثيل القوة بالرسم، قوى التماس والمجال، محصلة القوى.', emo: '💪' },
   { id: 13, g: 'g7', num: 3, name: 'الضغط', en: 'Pressure', c: '#8b5cf6', hex: '#8b5cf6', d: 'الضغط والمساحة، ضغط السائل والغاز، الضغط الجوي، مبدأ أرخميدس والطفو.', emo: '🎈' },
   { id: 14, g: 'g7', num: 4, name: 'الحرارة', en: 'Heat', c: '#ef4444', hex: '#ef4444', d: 'الحرارة ودرجة الحرارة، الاتزان الحراري، المحرار، التوصيل والحمل والإشعاع.', emo: '🔥' },
-  { id: 15, g: 'g7', num: 5, name: 'أثر الحرارة في المواد', en: 'Effects of Heat', c: '#10b981', hex: '#10b981', d: 'التمدد الحراري، شذوذ الماء، الانصهار والانجماد، التبخر والغليان والتكاثف.', emo: '♨️' }
+  { id: 15, g: 'g7', num: 5, name: 'أثر الحرارة في المواد', en: 'Effects of Heat', c: '#10b981', hex: '#10b981', d: 'التمدد الحراري، شذوذ الماء، الانصهار والانجماد، التبخر والغليان والتكاثف.', emo: '♨️' },
+  { id: 21, g: 'g8', num: 1, name: 'الحركة', en: 'Motion', c: '#0284c7', hex: '#0284c7', d: 'القياس، الحركة وأنواعها، المسافة والإزاحة، الانطلاق والسرعة والتعجيل.', emo: '🚗' },
+  { id: 22, g: 'g8', num: 2, name: 'قوانين الحركة', en: 'Laws of Motion', c: '#ea580c', hex: '#ea580c', d: 'قوانين نيوتن الثلاثة، القصور الذاتي، الفعل ورد الفعل، الجاذبية والسقوط الحر.', emo: '🍎' },
+  { id: 23, g: 'g8', num: 3, name: 'الشغل والقدرة والطاقة', en: 'Work, Power & Energy', c: '#16a34a', hex: '#16a34a', d: 'الشغل والقدرة، الطاقة الحركية والكامنة، تحولات الطاقة وحفظها.', emo: '⚡' },
+  { id: 24, g: 'g8', num: 4, name: 'الآلات البسيطة', en: 'Simple Machines', c: '#9333ea', hex: '#9333ea', d: 'العتلات، السطح المائل، البريمة، الإسفين، العجلة والمحور، البكرة.', emo: '⚙️' },
+  { id: 25, g: 'g8', num: 5, name: 'الحركة الموجية والصوت', en: 'Waves & Sound', c: '#0d9488', hex: '#0d9488', d: 'الموجات المستعرضة والطولية، خصائص الموجة، الصوت وانتقاله وخصائصه.', emo: '🔊' },
+  { id: 26, g: 'g8', num: 6, name: 'الضوء', en: 'Light', c: '#db2777', hex: '#db2777', d: 'الضوء وخصائصه، انعكاس الضوء والمرايا، انكسار الضوء والعدسات.', emo: '💡' }
 ];
 CHAPTERS.forEach(c => { c.g = c.g || 'g12'; c.num = c.num || c.id; });
 const GRADES = [
   { id: 'g12', name: 'السادس العلمي', short: 'السادس', d: 'فيزياء الصف السادس الإعدادي — الفرع العلمي', emo: '🎓' },
-  { id: 'g7', name: 'الأول المتوسط', short: 'الأول م', d: 'فيزياء الصف الأول المتوسط', emo: '🧪' }
+  { id: 'g7', name: 'الأول المتوسط', short: 'الأول م', d: 'فيزياء الصف الأول المتوسط', emo: '🧪' },
+  { id: 'g8', name: 'الثاني المتوسط', short: 'الثاني م', d: 'فيزياء الصف الثاني المتوسط', emo: '🚀' }
 ];
+const KID = g => g === 'g7' || g === 'g8';
 const chById = id => CHAPTERS.find(c => c.id === +id) || CHAPTERS[0];
 const gradeOf = E => chById(E.ch).g;
 const gradeChs = g => CHAPTERS.filter(c => c.g === g);
@@ -213,7 +221,7 @@ const Runner = {
   close() { Features.onClose(); Interact.close(); if (this.stage) { this.stage.destroy(); this.stage = null; } this.cur = null; this.S = null; this.cv = null; },
   bindPointer(E, S) {
     const cv = this.cv; let down = false;
-    const pos = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    const pos = e => { const r = cv.getBoundingClientRect(), k = cv.__k || 1; return [(e.clientX - r.left) / k, (e.clientY - r.top) / k]; };
     cv.addEventListener('pointerdown', e => { down = true; cv.setPointerCapture(e.pointerId); E.pointer(S, 'down', ...pos(e)); });
     cv.addEventListener('pointermove', e => { E.pointer(S, down ? 'drag' : 'move', ...pos(e)); });
     const up = e => { if (down) E.pointer(S, 'up', ...pos(e)); down = false; };
@@ -305,7 +313,7 @@ const Runner = {
       let fdt = S.run ? dt : 0; if (!S.run && S._step) { fdt = S._step; S._step = 0; S.C.running = true; this.stage.cv.__book = this.book; this.stage.frame(fdt, App.isDark() && !this.book); S.C.running = false; } else { this.stage.cv.__book = this.book; this.stage.frame(fdt, App.isDark() && !this.book); }
       if (S.C.warn) { this.toast(S.C.warn); }
     } else {
-      this.cv.__book = this.book; const { ctx, w, h } = fitCanvas(this.cv); S.W = w; S.H = h;
+      this.cv.__book = this.book; const { ctx, w, h } = fitCanvas(this.cv, window.innerWidth < 700 ? 760 : 0); S.W = w; S.H = h;
       if (S.run) { const d = dt * S.speed; S.t += d; E.update && E.update(S, d); }
       else if (S._step) { const d = S._step * S.speed; S._step = 0; S.t += d; E.update && E.update(S, d); }
       Interact._drawS = S; E.draw(ctx, w, h, S); Interact._drawS = null;

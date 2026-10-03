@@ -379,7 +379,7 @@ const Interact = {
 Runner.controls = function (E, S) { Interact.panel(E, S); };
 Runner.bindPointer = function (E, S) {
   const cv = this.cv; let down = false;
-  const pos = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const pos = e => { const r = cv.getBoundingClientRect(), k = cv.__k || 1; return [(e.clientX - r.left) / k, (e.clientY - r.top) / k]; };
   cv.addEventListener('pointerdown', e => { down = true; cv.setPointerCapture(e.pointerId); const [x, y] = pos(e); if (Interact.down(E, S, x, y)) { S._ia = 1; return; } S._ia = 0; E.pointer && E.pointer(S, 'down', x, y); });
   cv.addEventListener('pointermove', e => { const [x, y] = pos(e); if (down) { if (S._ia) { Interact.drag(E, S, x, y); return; } E.pointer && E.pointer(S, 'drag', x, y); } else { if (Interact.hover(E, S, x, y)) return; E.pointer && E.pointer(S, 'move', x, y); } });
   const up = e => { if (!down) return; down = false; const [x, y] = pos(e); if (S._ia) { Interact.up(E, S, x, y); S._ia = 0; return; } E.pointer && E.pointer(S, 'up', x, y); };

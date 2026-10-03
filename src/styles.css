@@ -569,9 +569,13 @@ body.present .fxp .ctl label,body.present .fxl{font-size:15px}
 .qz-end{text-align:center}.qz-end .stars i{font-size:34px}.qz-end p{font-weight:800}
 /* kid look inside experiments (grade 7) */
 body[data-view="exp"][data-exp-grade="g7"] .exp-head h2{font-size:21px}
+body[data-view="exp"][data-exp-grade="g8"] .exp-head h2{font-size:21px}
 body[data-exp-grade="g7"] .fxp .ctl{border-radius:16px}
+body[data-exp-grade="g8"] .fxp .ctl{border-radius:16px}
 body[data-exp-grade="g7"] .fxi{border-radius:12px}
+body[data-exp-grade="g8"] .fxi{border-radius:12px}
 body[data-exp-grade="g7"] .exp-head .tag{font-size:13px}
+body[data-exp-grade="g8"] .exp-head .tag{font-size:13px}
 
 /* ===================== devices, smart board, full stage, chart zoom ===================== */
 body.present .exp-grid{--wi:0px;--wd:300px;grid-template-columns:var(--wi) minmax(0,1fr) var(--wd);height:calc(100vh - 70px)!important}
@@ -599,3 +603,23 @@ body.touch input[type=range]{height:28px}
 body[data-dev="tablet"] .exp-grid{--wd:300px}
 body[data-dev="mobile"] .gsw .gt{display:none}
 body[data-dev="mobile"] .simctl{bottom:70px}
+
+/* ===================== phones & tablets: stage always visible ===================== */
+@media (max-width:920px){
+  #view-exp .stage-col .stage,.stage-col .stage{flex:none;order:-1;width:100%;height:min(80vh,calc(100vw * .9));min-height:300px}
+  #view-exp .stage-col{display:flex;flex-direction:column}
+  .exp-grid{min-height:0}
+}
+@media (max-width:920px) and (orientation:landscape){
+  #view-exp .stage-col .stage,.stage-col .stage{height:calc(100vh - 70px);min-height:260px}
+}
+@media (max-width:620px){
+  .simctl,.sc-reset{display:none!important}
+  body.touch .rb,.rb{width:32px;height:32px}
+  .rb svg{width:17px;height:17px}
+  .rail{gap:2px;padding:2px;bottom:4px!important;opacity:.92}
+  .rg{gap:0;padding:2px}
+  .stage .hud{top:6px;inset-inline-start:6px}
+  .stage .hud .pill{font-size:10px;padding:2px 7px}
+  .exp-head h2,.title-wrap h2{font-size:17px}
+}

@@ -254,7 +254,7 @@ function showSplash() {
   try { if (sessionStorage.getItem('lab-splash')) return; sessionStorage.setItem('lab-splash', '1'); } catch (e) { }
   const s = el('div', { class: 'splash' });
   s.innerHTML = `<div class="splash-in"><div class="splash-logo"><svg viewBox="0 0 64 64" width="88" height="88"><defs><linearGradient id="lg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#1f5eff"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><circle cx="32" cy="32" r="30" fill="url(#lg)"/><g fill="none" stroke="#fff" stroke-width="2.2"><ellipse cx="32" cy="32" rx="22" ry="8"/><ellipse cx="32" cy="32" rx="22" ry="8" transform="rotate(60 32 32)"/><ellipse cx="32" cy="32" rx="22" ry="8" transform="rotate(120 32 32)"/></g><circle cx="32" cy="32" r="4.5" fill="#fde047"/></svg></div>
-    <h1>مختبر الفيزياء التفاعلي</h1><p>للصف السادس العلمي</p><div class="splash-by">تم تصميمه للأستاذ<br><b>علي محمد الشاروكي</b></div><button class="btn primary">ادخل المختبر</button></div>`;
+    <h1>مختبر الفيزياء التفاعلي</h1><p>السادس العلمي · الأول المتوسط · الثاني المتوسط</p><div class="splash-by">تم تصميمه للأستاذ<br><b>علي محمد الشاروكي</b></div><button class="btn primary">ادخل المختبر</button></div>`;
   document.body.appendChild(s);
   const close = () => { s.classList.add('out'); setTimeout(() => s.remove(), 500); };
   $('button', s).onclick = close; s.onclick = e => { if (e.target === s) close(); }; setTimeout(close, 4200);
