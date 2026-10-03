@@ -103,7 +103,7 @@ const Q24 = {
       ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.fillRect(x + 4, top + 12, 3, L - 24);
       ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 1.1; ctx.beginPath(); const s0 = top + 14, s1 = top + 20 + e; for (let k = 0; k <= 16; k++) { const yy = s0 + (s1 - s0) * k / 16; ctx.lineTo(x + (k % 2 ? 4 : -4), yy); } ctx.stroke();
       ctx.fillStyle = '#111827'; ctx.font = '700 8px ui-monospace,monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.direction = 'ltr';
-      const st = [1, 2, 5, 10, 20, 25, 50, 100].find(q => q * pxN >= 12) || 100; for (let v = 0; v <= Fmax + 1e-6; v += st / 2) { const yy = top + 20 + v * pxN, maj = Math.abs(v / st - Math.round(v / st)) < 1e-6; ctx.strokeStyle = '#111827'; ctx.lineWidth = maj ? 1 : .6; ctx.beginPath(); ctx.moveTo(x - 10, yy); ctx.lineTo(x - (maj ? 4 : 7), yy); ctx.stroke(); if (maj && o.nums !== false) ctx.fillText(String(v), x - 13, yy); }
+      const st = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000].find(q => q * pxN >= 12) || 1000; for (let v = 0; v <= Fmax + 1e-6; v += st / 2) { const yy = top + 20 + v * pxN, maj = Math.abs(v / st - Math.round(v / st)) < 1e-6; ctx.strokeStyle = '#111827'; ctx.lineWidth = maj ? 1 : .6; ctx.beginPath(); ctx.moveTo(x - 10, yy); ctx.lineTo(x - (maj ? 4 : 7), yy); ctx.stroke(); if (maj && o.nums !== false) ctx.fillText(String(v), x - 13, yy); }
       ctx.fillStyle = '#dc2626'; ctx.fillRect(x - 10, top + 19 + e, 14, 2.5);
       ctx.strokeStyle = '#9ca3af'; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.moveTo(x, top + 22 + e); ctx.lineTo(x, bot + 8 + e); ctx.stroke();
       ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x + 4, bot + 13 + e, 5, -Math.PI / 2, Math.PI * .95); ctx.stroke();
@@ -406,6 +406,7 @@ const LV = (() => {
       D.tabs(S).forEach(b => C2.btn(ctx, b.x, b.y, b.w, b.h, b.lab, { col: b.on ? '#9333ea' : '#94a3b8', s: 13, on: b.on }));
       D.chips(S).forEach(b => C2.btn(ctx, b.x, b.y, b.w, b.h, b.lab, { col: b.on ? '#0f766e' : '#64748b', s: 11.5, on: b.on }));
       Q24.T(ctx, CN[e.cls] + ': ' + CD[e.cls], Q24.cx(w), 20, { s: 13.5, w: 900, c: '#fff', bg: '#9333ea' });
+      Q24.T(ctx, e.book ? '📖 من أمثلة الكتاب (ص ' + (e.k === 'tin' ? 46 : e.cls === 3 ? 48 : 47) + ')' : '➕ مثال إضافي من حياتنا', 170, 132, { s: 11.5, w: 900, c: '#fff', bg: e.book ? '#0f766e' : '#64748b' });
       // animation angle for diagrams
       let phi = 0; if (e.bars && p.mv) phi = .09 * Math.sin(S.ph * 2.2);
       const P = q => { const dx = q[0] - g.f[0], dy = q[1] - g.f[1]; const c = Math.cos(phi), s = Math.sin(phi); return X(g.f[0] + dx * c - dy * s, g.f[1] + dx * s + dy * c); };
@@ -471,94 +472,188 @@ const LV = (() => {
   M8.P[D.id] = D;
 })();
 /* =========================================================================================
-   3) أمثلة محلولة (ص 47–48) + مراجعة الفصل س6: قانون العتلات والفائدة الميكانيكية
+   3) مختبر العتلة الواحدة (ص 46–48، 55): حوّل النوع (الأول ⇄ الثاني ⇄ الثالث) بسحب المرتكز والقوة والمقاومة،
+      وطبّق أمثلة الكتاب (مثال 1، 2، 3، س6، شكل 1، التفكير الناقد س1) على الساق نفسها، واحسب المجهول خطوة بخطوة
    ========================================================================================= */
 (() => {
   const EX = {
-    m1: { n: 'مثال 1 (ص 47)', L: 50, f: 25, xl: 50, xe: 5, W: 20, txt: 'ساق طوله 50 cm يرتكز في منتصفه على مسند، عُلّق ثقل مقداره 20 N في طرفه. احسب القوة اللازمة لرفعه والتي تؤثر على بعد 20 cm من المرتكز، والفائدة الميكانيكية.' },
-    m2: { n: 'مثال 2 (ص 47)', L: 60, f: 0, xl: 20, xe: 60, W: 30, txt: 'ساق منتظمة طولها 60 cm ترتكز على أحد طرفيها، عُلّق على بعد 20 cm من المرتكز ثقل مقداره 30 N. ما مقدار القوة التي تؤثر في الطرف الآخر كي تتزن أفقياً؟ وما الفائدة الميكانيكية؟' },
-    m3: { n: 'مثال 3 (ص 48)', L: 100, f: 0, xl: 100, xe: 50, W: 15, txt: 'عتلة مترية مرتكزها في أحد طرفيها، عُلّق ثقل 15 N في طرفها الآخر. ما مقدار القوة المؤثرة في منتصف العتلة كي تتزن أفقياً؟ وما الفائدة الميكانيكية؟' },
-    q6: { n: 'س6 مراجعة الفصل (ص 55)', L: 80, f: 0, xl: 20, xe: 80, W: 60, txt: 'عتلة طولها 80 cm ترتكز على أحد طرفيها، عُلّق ثقل 60 N على بعد 20 cm من المرتكز. ما مقدار القوة اللازم تأثيرها في الطرف الآخر لكي تتزن العتلة أفقياً؟ وما الفائدة الميكانيكية؟' }
+    m1: { n: 'مثال 1', pg: 47, L: 50, f: 25, l: 50, e: 5, W: 20, txt: 'مثال 1 (ص 47): ساق طوله 50 cm يرتكز في منتصفه على مسند، عُلّق ثقل مقداره 20 N في طرفه. احسب مقدار القوة اللازمة لرفعه والتي تؤثر على بعد 20 cm من المرتكز، والفائدة الميكانيكية للعتلة.' },
+    m2: { n: 'مثال 2', pg: 47, L: 60, f: 0, l: 20, e: 60, W: 30, txt: 'مثال 2 (ص 47): ساق منتظمة طولها 60 cm ترتكز على أحد طرفيها، عُلّق على بعد 20 cm من المرتكز ثقل مقداره 30 N. ما مقدار القوة التي تؤثر في الطرف الآخر من العتلة كي تتزن أفقياً؟ وما الفائدة الميكانيكية؟' },
+    m3: { n: 'مثال 3', pg: 48, L: 100, f: 0, l: 100, e: 50, W: 15, txt: 'مثال 3 (ص 48): عتلة مترية مرتكزها في أحد طرفيها، عُلّق ثقل 15 N في طرفها الآخر. ما مقدار القوة المؤثرة في منتصف العتلة كي تتزن أفقياً؟ وما الفائدة الميكانيكية للعتلة؟' },
+    q6: { n: 'س6', pg: 55, L: 80, f: 0, l: 20, e: 80, W: 60, txt: 'س6 مراجعة الفصل (ص 55): عتلة طولها 80 cm ترتكز على أحد طرفيها، عُلّق فيها ثقل مقداره 60 N على بعد 20 cm من المرتكز. ما مقدار القوة اللازم تأثيرها في الطرف الآخر لكي تتزن العتلة أفقياً؟ وما الفائدة الميكانيكية منها؟' },
+    fa: { n: 'شكل 1: ربح قوة', sh: 'شكل1: قوة', pg: 47, L: 100, f: 25, l: 0, e: 100, W: 60, txt: 'شكل 1 (ص 47) — عتلة من النوع الأول: المرتكز أقرب إلى المقاومة، فذراع القوة أطول من ذراع المقاومة ⟸ ربح قوة.' },
+    fb: { n: 'شكل 1: ربح سرعة', sh: 'شكل1: سرعة', pg: 47, L: 100, f: 75, l: 0, e: 100, W: 20, txt: 'شكل 1 (ص 47) — عتلة من النوع الأول: المرتكز أقرب إلى القوة، فذراع القوة أقصر من ذراع المقاومة ⟸ ربح سرعة.' },
+    fc: { n: 'شكل 1: لا شيء', sh: 'شكل1: لا شيء', pg: 47, L: 100, f: 50, l: 0, e: 100, W: 20, txt: 'شكل 1 (ص 47) والتفكير الناقد س1 (ص 48): المرتكز على بعد متساوٍ من المقاومة والقوة ⟸ القوة = المقاومة ، ربح القوة = ربح السرعة = 1 (لا نحصل على شيء).' },
+    free: { n: 'جرّب بنفسك', pg: 46, L: 100, f: 40, l: 10, e: 90, W: 40, txt: 'ساق مترية حرّة: اسحب المرتكز والثقل والميزان النابضي إلى أي موضع، أو اكتب القيم، واختر المجهول الذي تريد حسابه.' }
   };
-  const D = { id: 'g8_lever_examples', ch: 24, sec: 'الدرس 1: العتلات', page: 47, kind: 'مثال',
-    title: 'أمثلة محلولة: قانون العتلات والفائدة الميكانيكية (مثال 1، 2، 3)',
-    desc: 'حلّ أمثلة الكتاب خطوة بخطوة على ساق حقيقية: الثقل (المقاومة) معلّق بخيط، والميزان النابضي يقيس القوة اللازمة لتتزن الساق أفقياً.',
-    tags: 'مثال محلول قانون العتلات فائدة ميكانيكية ساق مسند ميزان نابضي ربح قوة ربح سرعة 1m = 100cm',
-    tools: ['ساق (عتلة)', 'مسند', 'ثقل', 'ميزان نابضي'],
-    steps: ['اختر المثال من الأزرار في الأعلى (مثال 1، 2، 3 أو س6 من مراجعة الفصل).', 'اقرأ نص المثال ولاحظ مواضع المرتكز والثقل والقوة على الساق.', 'اضغط «الخطوة التالية ▶» لترى الحل: المعطيات (مع تحويل cm إلى m)، القانون، التعويض، القوة، ثم الفائدة الميكانيكية.', 'تحقق من الجواب بقراءة الميزان النابضي.', 'اسحب الثقل أو الميزان على الساق (أو غيّر الثقل) وشاهد كيف يتغير الحل ونوع العتلة.'],
-    concl: ['نطبّق قانون العتلات: F₁ × d₁ = F₂ × d₂ ، بعد تحويل الأطوال إلى المتر (1 m = 100 cm).', 'الفائدة الميكانيكية M.A = Load ÷ Force: إذا كانت أكبر من 1 نحصل على ربح قوة، وإذا كانت أصغر من 1 نحصل على ربح سرعة.', 'مثال 1: F = 25 N و M.A = 0.8 (ربح سرعة). مثال 2: F = 10 N و M.A = 3 (ربح قوة). مثال 3: F = 30 N و M.A = 0.5 (ربح سرعة).'],
-    laws: ['g8_lever', 'g8_ma'],
-    fact: ['نهمل وزن الساق في هذه الأمثلة (أو نعدّ الساق خفيفة جداً)، كما في الكتاب.', 'في مثال 3 العتلة من النوع الثالث: القوة (30 N) ضعف المقاومة (15 N)، لكن طرف العتلة يتحرك ضعف مسافة نقطة تأثير القوة.'],
-    controls: [SEL('ex', 'المثال', Object.keys(EX).map(k => [k, EX[k].n]), 'm1', (v, S) => D.load(S)),
-      R('W', 'المقاومة (الثقل)', 5, 100, 20, 1, 'N'),
-      BT('', [{ t: '▶ الخطوة التالية', on: S => D.next(S) }, { t: '↺ قيم الكتاب', on: S => D.load(S) }]),
-      TG('arms', 'ذراع القوة وذراع المقاومة', true, null, 'vector'), TG('vec', 'أسهم القوة والمقاومة', true, null, 'force'), TG('txt', 'نص المثال', true, null, 'labels')],
-    setup(S) { D.load(S); },
-    load(S) { const e = EX[S.p.ex] || EX.m1; S.xl = e.xl; S.xe = e.xe; S.step = 0; setParam(S, 'W', e.W, false); },
-    next(S) { S.step = (S.step || 0) >= 5 ? 0 : (S.step || 0) + 1; },
+  const CN = ['', 'النوع الأول', 'النوع الثاني', 'النوع الثالث'], MID = ['', 'المرتكز', 'المقاومة (الثقل)', 'القوة'];
+  const CC = ['', '#2563eb', '#ea580c', '#c026d3'];
+  const UNK = [['F', 'القوة F₁'], ['W', 'المقاومة F₂'], ['d1', 'ذراع القوة d₁'], ['d2', 'ذراع المقاومة d₂'], ['none', 'لا مجهول: جرّب التوازن']];
+  const nf = v => String(+(+v).toFixed(3));
+  const D = { id: 'g8_lever_lab', ch: 24, sec: 'الدرس 1: العتلات', page: 47, kind: 'مثال',
+    title: 'مختبر العتلة: حوّل النوع وطبّق أمثلة الكتاب على الساق نفسها',
+    desc: 'ساق واحدة حقيقية: اسحب المرتكز والثقل (المقاومة) والميزان النابضي (القوة) إلى أي موضع، فيتعرّف المختبر فوراً على نوع العتلة (ما الذي في الوسط؟) ويحسب الذراعين والفائدة الميكانيكية وهل نربح قوة أم سرعة. ثم حمّل أمثلة الكتاب على الساق نفسها وحلّها خطوة بخطوة، أو احسب أي مجهول (F₁ أو F₂ أو d₁ أو d₂).',
+    tags: 'مختبر العتلة تحويل النوع الأول الثاني الثالث مرتكز مقاومة قوة ذراع مثال 1 مثال 2 مثال 3 س6 شكل 1 فائدة ميكانيكية ربح قوة ربح سرعة مجهول',
+    tools: ['ساق مترية (عتلة)', 'مسند (مرتكز)', 'أثقال', 'ميزان نابضي'],
+    steps: ['اختر مثالاً من الأزرار العلوية (مثال 1، 2، 3، س6، شكل 1…) فتنتقل قيم الكتاب إلى الساق تلقائياً، ويظهر نص المثال.', 'اضغط «▶ الخطوة التالية» لترى الحل كما في الكتاب: المعطيات (cm ⟸ m)، القانون، التعويض، الناتج، الفائدة الميكانيكية، ونوع الربح.', 'اسحب المرتكز ▲ أو الثقل أو الميزان النابضي على الساق: يتغير نوع العتلة فوراً حسب ما يقع في الوسط.', 'اضغط «حوّل إلى النوع الأول/الثاني/الثالث» لترى القطع تنتقل إلى مواضعها الجديدة.', 'غيّر المقاومة F₂ أو القوة F₁ أو الذراعين من لوحة التحكم، واختر «المجهول» الذي تريد حسابه.', 'اختر «لا مجهول: جرّب التوازن» واسحب اليد إلى الأعلى أو الأسفل: هل تتزن الساق؟', 'فعّل «حرّك العتلة» وقارن المسافة التي تقطعها القوة بالمسافة التي تقطعها المقاومة (ربح قوة أم ربح سرعة؟).'],
+    concl: ['نوع العتلة يحدده ما يقع في الوسط: المرتكز ⟸ النوع الأول، المقاومة ⟸ النوع الثاني، القوة ⟸ النوع الثالث.', 'قانون العتلات: F₁ × d₁ = F₂ × d₂ (القوة × ذراعها = المقاومة × ذراعها)، ونحوّل الأطوال إلى المتر: 1 m = 100 cm.', 'الفائدة الميكانيكية M.A = Load ÷ Force = ذراع القوة ÷ ذراع المقاومة: أكبر من 1 ⟸ ربح قوة، أصغر من 1 ⟸ ربح سرعة، تساوي 1 ⟸ لا ربح.', 'مثال 1: F = 25 N و M.A = 0.8 (ربح سرعة) · مثال 2: F = 10 N و M.A = 3 (ربح قوة) · مثال 3: F = 30 N و M.A = 0.5 (ربح سرعة) · س6: F = 15 N و M.A = 4.', 'لا يمكن الحصول على ربح قوة وربح سرعة في آن واحد: الطرف ذو الذراع الأطول يتحرك مسافة أكبر.'],
+    laws: ['g8_lever', 'g8_ma', 'g8_gain'],
+    fact: ['نهمل وزن الساق في الأمثلة كما في الكتاب (أو نعلّقها من منتصفها).', 'العتلة من النوع الأول وحدها يمكن أن تعطي ربح قوة أو ربح سرعة أو لا شيء، حسب موضع المرتكز.'],
+    controls: [SEL('ex', 'مثال الكتاب', Object.keys(EX).map(k => [k, EX[k].n + ' (ص ' + EX[k].pg + ')']), 'm1', (v, S) => D.load(S, v)),
+      SEL('unk', 'المجهول (احسبه)', UNK, 'F', (v, S) => { S.step = Math.min(S.step || 0, 5); }),
+      R('W', 'المقاومة F₂ (الثقل)', 1, 200, 20, 1, 'N'), R('F', 'القوة F₁ (قراءة الميزان)', 1, 200, 25, .5, 'N'),
+      R('d1', 'ذراع القوة d₁', 1, 100, 20, 1, 'cm', (v, S) => D.setArm(S, 'e', v)), R('d2', 'ذراع المقاومة d₂', 1, 100, 25, 1, 'cm', (v, S) => D.setArm(S, 'l', v)),
+      BT('حوّل نوع العتلة', [{ t: '① الأول', on: S => D.conv(S, 1) }, { t: '② الثاني', on: S => D.conv(S, 2) }, { t: '③ الثالث', on: S => D.conv(S, 3) }]),
+      BT('', [{ t: '▶ الخطوة التالية', on: S => D.next(S) }, { t: '↺ قيم الكتاب', on: S => D.load(S, S.p.ex) }]),
+      TG('arms', 'ذراع القوة وذراع المقاومة', true, null, 'vector'), TG('vec', 'أسهم القوة والمقاومة', true, null, 'force'), TG('txt', 'نص المثال', true, null, 'labels'), TG('sol', 'الحل خطوة بخطوة', true, null, 'schematic'), TG('mv', 'حرّك العتلة (المسافة والسرعة)', false, null, 'velocity')],
+    setup(S) { S.th = 0; S.ph = 0; S.mvA = 0; D.load(S, S.p.ex || 'm1'); },
+    load(S, k) { const e = EX[k] || EX.m1; S.L = e.L; S.xf = e.f; S.xl = e.l; S.xe = e.e; S.tg = null; S.step = 0; S.th = 0; setParam(S, 'unk', 'F', false); setParam(S, 'W', e.W, false); D.syncArms(S); },
     ex(S) { return EX[S.p.ex] || EX.m1; },
-    calc(S) { const e = D.ex(S); const dL = Math.abs(S.xl - e.f), dE = Math.abs(S.xe - e.f); const F = S.p.W * dL / Math.max(dE, .01); const same = Math.sign(S.xl - e.f) === Math.sign(S.xe - e.f);
-      const cls = !same ? 1 : dL < dE ? 2 : 3; return { dL, dE, F, MA: S.p.W / F, cls, up: same }; },
-    geo(S) { const w = S.W, h = S.H, e = D.ex(S); const x0 = 110, x1 = w - 100, k = (x1 - x0) / e.L; const ry = h * .45; return { w, h, x0, x1, k, ry, by: h * .86, X: c => x0 + c * k }; },
+    next(S) { S.step = (S.step || 0) >= 5 ? 0 : (S.step || 0) + 1; },
+    syncArms(S) { setParam(S, 'd1', Math.round(Math.abs(S.xe - S.xf)), false); setParam(S, 'd2', Math.round(Math.abs(S.xl - S.xf)), false); },
+    /* move effort ('e') or load ('l') so that its arm equals v (keeping its side of the fulcrum) */
+    setArm(S, w, v) { if (S.tg) return; const key = w === 'e' ? 'xe' : 'xl'; let s = Math.sign(S[key] - S.xf) || 1; let x = S.xf + s * v; if (x < 0 || x > S.L) { s = -s; x = S.xf + s * v; }
+      if (x < 0 || x > S.L) { C2.msg(S, 'الذراع ' + v + ' cm أطول من الساق في هذا الموضع', 2.2); D.syncArms(S); return; }
+      S[key] = clamp(x, 0, S.L); if (S.p.unk === (w === 'e' ? 'd1' : 'd2')) setParam(S, 'unk', 'F', false); D.unclash(S, key); },
+    unclash(S, key) { const o = ['xf', 'xl', 'xe'].filter(q => q !== key); o.forEach(q => { if (Math.abs(S[q] - S[key]) < 2) S[key] = clamp(S[key] + (S[key] >= S[q] ? 2 : -2), 0, S.L); }); },
+    conv(S, c) { const L = S.L, r = v => Math.round(v * L); const T = c === 1 ? { xl: r(.05), xf: r(.35), xe: r(.95) } : c === 2 ? { xf: r(.05), xl: r(.35), xe: r(.95) } : { xf: r(.05), xe: r(.35), xl: r(.95) };
+      S.tg = T; S.tgT = 0; if (S.p.unk === 'd1' || S.p.unk === 'd2' || S.p.unk === 'none') setParam(S, 'unk', 'F', false); S.p.ex = S.p.ex; C2.msg(S, 'تتحرك القطع… لتصبح ' + MID[c] + ' في الوسط ⟸ ' + CN[c], 2.4); },
+    cls(S) { const A = [['f', S.xf], ['l', S.xl], ['e', S.xe]].sort((a, b) => a[1] - b[1]); return { f: 1, l: 2, e: 3 }[A[1][0]]; },
+    up(S) { return Math.sign(S.xl - S.xf) === Math.sign(S.xe - S.xf); },
+    /* solve for the unknown; returns all four values + flags */
+    calc(S) { const p = S.p; let d1 = Math.abs(S.xe - S.xf), d2 = Math.abs(S.xl - S.xf), F = p.F, W = p.W, ok = true;
+      if (p.unk === 'F') F = W * d2 / Math.max(d1, .01);
+      else if (p.unk === 'W') W = F * d1 / Math.max(d2, .01);
+      else if (p.unk === 'd1') { d1 = W * d2 / F; }
+      else if (p.unk === 'd2') { d2 = F * d1 / W; }
+      const MA = d1 / Math.max(d2, .01); return { d1, d2, F, W, MA, ok, bal: p.unk !== 'none' || Math.abs(F * d1 - W * d2) <= .02 * Math.max(F * d1, W * d2), tq: W * d2 - F * d1 }; },
+    update(S, dt) {
+      dt = Math.min(dt, .05); S.ph += dt;
+      if (S.tg) { S.tgT += dt; const k = Math.min(1, dt * 5); ['xf', 'xl', 'xe'].forEach(q => { S[q] += (S.tg[q] - S[q]) * k; }); if (S.tgT > 1.2) { ['xf', 'xl', 'xe'].forEach(q => S[q] = S.tg[q]); S.tg = null; K.cheer(S, S.W * .5, S.H * .4); } D.syncArms(S); }
+      const p = S.p; let c = D.calc(S);
+      if (!S.tg && (p.unk === 'd1' || p.unk === 'd2')) { const key = p.unk === 'd1' ? 'xe' : 'xl', d = p.unk === 'd1' ? c.d1 : c.d2; const s = Math.sign(S[key] - S.xf) || 1; const x = S.xf + s * d;
+        if (x >= 0 && x <= S.L) { S[key] += (x - S[key]) * Math.min(1, dt * 8); S.out = 0; } else S.out = 1; D.syncArms(S); }
+      else S.out = 0;
+      if (!S.tg && p.unk === 'F') setParam(S, 'F', +c.F.toFixed(1), false); if (!S.tg && p.unk === 'W') setParam(S, 'W', Math.round(c.W), false);
+      // tilt: only when nothing is solved for (free try)
+      c = D.calc(S); let tT = 0; if (p.unk === 'none' && !c.bal) { const sgL = Math.sign(S.xl - S.xf); tT = .11 * Math.sign(c.tq) * sgL; }
+      S.th += (tT - S.th) * Math.min(1, dt * 4);
+      S.mvA = p.mv && c.bal ? .085 * Math.sin(S.ph * 1.8) : S.mvA * Math.max(0, 1 - dt * 6);
+      const was = S.balOk; S.balOk = p.unk === 'none' && c.bal; if (S.balOk && !was) { C2.msg(S, 'الساق متزنة أفقياً ✓\nF₁ × d₁ = F₂ × d₂', 2.4); K.cheer(S, S.W * .5, S.H * .45); }
+    },
+    geo(S) { const w = S.W, h = S.H, narrow = w < 640; const x0 = 120, x1 = w - 96; const k = (x1 - x0) / S.L; const by = h * .95, Lsb = clamp(h * .1, 66, 84); const cardB = S._cardB || 330;
+      const ry = clamp(cardB + Lsb + 26 + 30 + 72, h * .4, by - Lsb - 126); return { w, h, x0, x1, k, ry, by, narrow, Lsb, X: c => x0 + c * k }; },
+    P(S, g, x) { const a = S.th + S.mvA, dx = (x - S.xf) * g.k; return [g.X(S.xf) + dx * Math.cos(a), g.ry + dx * Math.sin(a)]; },
+    chips(S) { const w = S.W, ks = Object.keys(EX), n = ks.length, narrow = w < 640; const per = w < 760 ? 4 : n; const bw = Math.min(118, (w - 90) / per - 6);
+      return ks.map((k, i) => { const r = Math.floor(i / per), j = i % per, m = Math.min(per, n - r * per); return { x: Q24.cx(w) + ((m - 1) / 2 - j) * (bw + 6), y: 40 + r * 36, w: bw, h: 30, k, lab: EX[k].sh || EX[k].n, on: S.p.ex === k }; }); },
+    cbtns(S) { const w = S.W, rows = w < 760 ? 2 : 1, y0 = 40 + rows * 36 + 8, bw = Math.min(190, (w - 100) / 3 - 8); return [1, 2, 3].map((c, i) => ({ x: Q24.cx(w) + (1 - i) * (bw + 8), y: y0, w: bw, h: 32, c, lab: 'حوّل إلى ' + CN[c] })); },
+    nbtn(S, g) { const b = S._solB || [g.w - 400, 200]; return { x: b[0] + 70, y: b[1] + 15, w: 124, h: 26 }; },
     draw(ctx, w, h, S) {
-      const p = S.p, e = D.ex(S), g = D.geo(S), c = D.calc(S), F = c.F; K.bg(ctx, w, h, { benchY: g.by });
-      D.tabs(S).forEach(b => C2.btn(ctx, b.x, b.y, b.w, b.h, b.lab, { col: b.on ? '#9333ea' : '#94a3b8', s: 12.5, on: b.on }));
-      if (p.txt !== false) { const lines = D.wrap(ctx, e.txt, Math.min(w - 110, 640)); K.raw(ctx, () => { ctx.fillStyle = 'rgba(255,255,255,.93)'; rr(ctx, Q24.cx(w) - Math.min(w - 110, 660) / 2, 70, Math.min(w - 110, 660), lines.length * 20 + 14, 10); ctx.fill(); ctx.strokeStyle = '#c4b5fd'; ctx.lineWidth = 1.5; ctx.stroke(); }); lines.forEach((l, i) => Q24.T(ctx, l, Q24.cx(w), 87 + i * 20, { s: 13, w: 700, c: '#3b0764' })); }
-      // support
-      const fx = g.X(e.f);
-      if (e.f > 0 && e.f < e.L) { K.raw(ctx, () => { const gr = ctx.createLinearGradient(fx - 30, 0, fx + 30, 0); gr.addColorStop(0, '#57534e'); gr.addColorStop(.5, '#a8a29e'); gr.addColorStop(1, '#44403c'); ctx.fillStyle = gr; ctx.beginPath(); ctx.moveTo(fx, g.ry + 8); ctx.lineTo(fx - 34, g.by); ctx.lineTo(fx + 34, g.by); ctx.closePath(); ctx.fill(); }); }
-      else { K.raw(ctx, () => { const px = fx - (e.f === 0 ? 14 : -14); const gr = ctx.createLinearGradient(px - 12, 0, px + 12, 0); gr.addColorStop(0, '#78716c'); gr.addColorStop(.5, '#d6d3d1'); gr.addColorStop(1, '#57534e'); ctx.fillStyle = gr; ctx.fillRect(px - 10, g.ry - 50, 20, g.by - g.ry + 50); ctx.fillStyle = '#44403c'; ctx.fillRect(px - 40, g.by - 10, 80, 12); ctx.fillStyle = '#94a3b8'; rr(ctx, Math.min(px, fx) - 6, g.ry - 10, Math.abs(fx - px) + 12, 20, 4); ctx.fill(); }); }
-      // rod (wood)
-      Q24.wood(ctx, g.X(0) - 4, g.ry - 7, e.L * g.k + 8, 14, { r: 4 });
-      K.raw(ctx, () => { ctx.fillStyle = '#422006'; ctx.font = '700 9px ui-monospace,monospace'; ctx.textAlign = 'center'; ctx.direction = 'ltr'; const st = e.L <= 60 ? 5 : 10; for (let q = 0; q <= e.L; q += st) { const x = g.X(q); ctx.fillRect(x - .5, g.ry - 7, 1, 5); if (q % (st * 2) === 0) ctx.fillText(q, x, g.ry + 4.5); } });
-      K.raw(ctx, () => { ctx.fillStyle = '#e5e7eb'; ctx.strokeStyle = '#111827'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(fx, g.ry, 6, 0, TAU); ctx.fill(); ctx.stroke(); });
-      // load
-      const lx = g.X(S.xl); K.raw(ctx, () => { ctx.strokeStyle = '#475569'; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.arc(lx, g.ry + 9, 5, Math.PI, TAU * .99); ctx.stroke(); ctx.strokeStyle = '#e7e5e4'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(lx, g.ry + 9); ctx.lineTo(lx, g.ry + 50); ctx.stroke(); });
-      const bh = clamp(18 + p.W * .5, 22, 56); Q24.block(ctx, lx, g.ry + 46, bh * 1.05, bh, p.W + ' N');
-      // effort through a spring balance
-      const Fm = F <= 10 ? 10 : F <= 20 ? 20 : F <= 50 ? 50 : 100, L = clamp(h * .12, 80, 104), pxN = (L - 44) / Fm; const ex = g.X(S.xe);
-      if (c.up) { const top = g.ry - 8 - (L + 26 + Math.min(F, Fm * 1.05) * pxN); Q24.sb(ctx, ex, top, L, F, Fm, { rx: 44 }); C2.hand(ctx, ex + 3, top - 6, 1, 1, { rot: Math.PI / 2, sleeve: '#0ea5e9' }); }
-      else { Q24.sb(ctx, ex, g.ry + 10, L, F, Fm, { rx: -44 }); const ht = g.ry + 10 + L + 26 + Math.min(F, Fm * 1.05) * pxN; C2.hand(ctx, ex + 4, ht + 4, 1, 1, { rot: -Math.PI / 2, sleeve: '#0ea5e9' }); }
-      if (p.arms !== false) { const side = (x2, o) => (c.up ? 1 : -1) * (x2 > fx ? o : -o); Q24.dim(ctx, fx, g.ry, ex, g.ry, 'ذراع القوة d₁ = ' + fmt(c.dE, 3) + ' cm', '#dc2626', side(ex, 30)); Q24.dim(ctx, fx, g.ry, lx, g.ry, 'ذراع المقاومة d₂ = ' + fmt(c.dL, 3) + ' cm', '#15803d', side(lx, c.up ? 62 : 62)); }
-      if (p.vec !== false) { Q24.F(ctx, lx + 34, g.ry + 4, 0, 52, '', '#15803d', 4); Q24.T(ctx, 'F₂ = ' + p.W + ' N', lx + 34, g.ry + 74, { s: 12, w: 900, c: '#fff', bg: '#15803d' });
-        if (c.up) Q24.F(ctx, ex - 30, g.ry - 6, 0, -52, '', '#dc2626', 4); else Q24.F(ctx, ex + 30, g.ry + 6, 0, 52, '', '#dc2626', 4); Q24.T(ctx, 'F₁ = ?', ex + (c.up ? -30 : 30) + (c.up ? -28 : 28), c.up ? g.ry - 40 : g.ry + 40, { s: 12, w: 900, c: '#fff', bg: '#dc2626' }); }
-      Q24.T(ctx, 'المرتكز', fx, g.ry + (e.f > 0 && e.f < e.L ? 58 : -64), { s: 11.5, w: 900, c: '#fff', bg: '#111827' });
-      D.solution(ctx, S, g, c);
-      const nb = D.nbtn(S); C2.btn(ctx, nb.x, nb.y, nb.w, nb.h, (S.step || 0) >= 5 ? '↺ من جديد' : '▶ الخطوة التالية', { col: '#16a34a', s: 13 });
+      const p = S.p, g = D.geo(S), c = D.calc(S), cl = D.cls(S), up = D.up(S); K.bg(ctx, w, h, { benchY: g.by });
+      D.chips(S).forEach(b => C2.btn(ctx, b.x, b.y, b.w, b.h, b.lab, { col: b.on ? '#9333ea' : '#94a3b8', s: 11.5, on: b.on }));
+      D.cbtns(S).forEach(b => C2.btn(ctx, b.x, b.y, b.w, b.h, b.lab, { col: CC[b.c], s: 12, on: cl === b.c }));
+      let ty = D.cbtns(S)[0].y + 26;
+      if (p.txt !== false) { const wd = Math.min(w - 100, 700); const lines = D.wrap(ctx, EX[p.ex] ? D.ex(S).txt : '', wd); K.raw(ctx, () => { ctx.fillStyle = 'rgba(255,255,255,.93)'; rr(ctx, Q24.cx(w) - wd / 2, ty, wd, lines.length * 19 + 10, 10); ctx.fill(); ctx.strokeStyle = '#c4b5fd'; ctx.lineWidth = 1.5; ctx.stroke(); });
+        lines.forEach((l, i) => Q24.T(ctx, l, Q24.cx(w), ty + 15 + i * 19, { s: 12.5, w: 700, c: '#3b0764' })); ty += lines.length * 19 + 16; }
+      // class banner + cards
+      const cardY = ty + 4; const sw = g.narrow ? w - 100 : Math.min(300, w * .36);
+      const mid = cl === 1 ? 'المرتكز' : cl === 2 ? 'المقاومة' : 'القوة';
+      Q24.lines(ctx, [{ t: 'في الوسط: ' + mid + ' ⟸ ' + CN[cl], c: CC[cl], w: 900, s: 13.5 }, { t: 'd₁ = ' + nf(c.d1) + ' cm   ،   d₂ = ' + nf(c.d2) + ' cm', c: '#1e293b', mono: 1 },
+        { t: 'M.A = d₁ ÷ d₂ = ' + nf(c.MA), c: '#1e293b', mono: 1 }, { t: c.MA > 1.001 ? 'ربح قوة (القوة أصغر من المقاومة)' : c.MA < .999 ? 'ربح سرعة (القوة أكبر من المقاومة)' : 'لا ربح قوة ولا ربح سرعة', c: c.MA > 1.001 ? '#0f766e' : c.MA < .999 ? '#b45309' : '#64748b', w: 900 }],
+        g.narrow ? Q24.cx(w) + sw / 2 : 76 + sw, cardY, sw, { title: 'نوع العتلة', bd: CC[cl], lh: 20 });
+      if (p.sol !== false && !g.narrow) D.solution(ctx, S, c, w - 14, cardY, Math.min(400, w - sw - 120));
+      S._cardB = cardY + (g.narrow ? 112 : (p.sol !== false ? 26 + 6 * 20 + 6 : 112));
+      // ---------- apparatus ----------
+      const fx = g.X(S.xf), a = S.th + S.mvA;
+      // stand (pillar + steel knife edge)
+      K.raw(ctx, () => { ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(fx, g.by + 4, 46, 7, 0, 0, TAU); ctx.fill(); });
+      Q24.wood(ctx, fx - 9, g.ry + 22, 18, g.by - g.ry - 26, { c1: '#c08a52', c2: '#7c4a1e' }); Q24.wood(ctx, fx - 40, g.by - 12, 80, 12, { c1: '#a0612c', c2: '#5c3510' });
+      K.raw(ctx, () => { const gr = ctx.createLinearGradient(fx - 16, 0, fx + 16, 0); gr.addColorStop(0, '#475569'); gr.addColorStop(.5, '#e2e8f0'); gr.addColorStop(1, '#334155'); ctx.fillStyle = gr; ctx.beginPath(); ctx.moveTo(fx, g.ry + 7); ctx.lineTo(fx - 16, g.ry + 26); ctx.lineTo(fx + 16, g.ry + 26); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1; ctx.stroke(); });
+      if (cl === 1) K.raw(ctx, () => { ctx.strokeStyle = CC[1]; ctx.lineWidth = 3; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.arc(fx, g.ry + 14, 24, 0, TAU); ctx.stroke(); ctx.setLineDash([]); });
+      // bar (metre stick)
+      K.raw(ctx, () => { ctx.save(); ctx.translate(fx, g.ry); ctx.rotate(a); const xa = -S.xf * g.k, len = S.L * g.k;
+        ctx.save(); ctx.shadowColor = CC[cl]; ctx.shadowBlur = 10; Q24.wood(ctx, xa - 4, -7, len + 8, 14, { r: 4 }); ctx.restore();
+        ctx.fillStyle = '#422006'; ctx.font = '700 9px ui-monospace,monospace'; ctx.textAlign = 'center'; ctx.direction = 'ltr'; const st = S.L <= 60 ? 5 : 10;
+        for (let q = 0; q <= S.L; q += 1) { const x = xa + q * g.k; if (q % st === 0) { ctx.fillRect(x - .6, -7, 1.2, 6); if (q % (st * 2) === 0 || S.L <= 60) ctx.fillText(q, x, 5.5); } else if (g.k > 5) ctx.fillRect(x - .3, -7, .6, 3); }
+        ctx.restore(); });
+      K.raw(ctx, () => { ctx.fillStyle = '#fde047'; ctx.strokeStyle = '#111827'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(fx, g.ry, 5.5, 0, TAU); ctx.fill(); ctx.stroke(); });
+      // load: string + iron weight
+      const PL = D.P(S, g, S.xl), bh = clamp(18 + c.W * .22, 22, 62);
+      K.raw(ctx, () => { ctx.strokeStyle = '#475569'; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.arc(PL[0], PL[1] + 8, 5, Math.PI, TAU * .99); ctx.stroke(); ctx.strokeStyle = '#a8a29e'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(PL[0], PL[1] + 8); ctx.lineTo(PL[0], PL[1] + 40); ctx.stroke(); });
+      Q24.block(ctx, PL[0], PL[1] + 36, Math.max(46, bh * 1.2), bh, nf(Math.round(c.W * 10) / 10) + ' N', { c1: '#1f2937', c2: '#6b7280', c3: '#111827' });
+      if (cl === 2) K.raw(ctx, () => { ctx.strokeStyle = CC[2]; ctx.lineWidth = 3; ctx.setLineDash([4, 3]); rr(ctx, PL[0] - bh * .7, PL[1] + 40, bh * 1.4, bh + 22, 8); ctx.stroke(); ctx.setLineDash([]); });
+      // effort: spring balance + hand
+      const PE = D.P(S, g, S.xe), Fm = [10, 20, 50, 100, 200, 500, 1000].find(q => q >= c.F) || 1000, Lsb = g.Lsb, pxN = (Lsb - 44) / Fm, ext = Math.min(c.F, Fm * 1.05) * pxN;
+      let handY;
+      if (up) { const top = PE[1] - 8 - (Lsb + 26 + ext); Q24.sb(ctx, PE[0], top, Lsb, c.F, Fm, { rx: PE[0] >= fx ? 48 : -48 }); C2.hand(ctx, PE[0] + 3, top - 6, 1, 1, { rot: Math.PI / 2, sleeve: '#0ea5e9' }); handY = top - 30; }
+      else { Q24.sb(ctx, PE[0], PE[1] + 10, Lsb, c.F, Fm, { rx: PE[0] >= fx ? 48 : -48 }); const ht = PE[1] + 10 + Lsb + 26 + ext; C2.hand(ctx, PE[0] + 4, ht + 4, 1, 1, { rot: -Math.PI / 2, sleeve: '#0ea5e9' }); handY = ht + 30; }
+      if (cl === 3) K.raw(ctx, () => { ctx.strokeStyle = CC[3]; ctx.lineWidth = 3; ctx.setLineDash([4, 3]); const y0 = up ? PE[1] - Lsb - 60 - ext : PE[1]; rr(ctx, PE[0] - 22, y0, 44, Lsb + 60 + ext, 10); ctx.stroke(); ctx.setLineDash([]); });
+      // arms
+      if (p.arms !== false) { const dm = (x2, side, lab, col) => { const P2 = D.P(S, g, x2); Q24.dim(ctx, fx, g.ry, P2[0], P2[1], lab, col, side * (P2[0] >= fx ? 1 : -1)); };
+        dm(S.xe, up ? 30 : -30, 'd₁ = ' + nf(c.d1) + ' cm', '#dc2626'); dm(S.xl, up ? (Math.sign(S.xl - S.xf) === Math.sign(S.xe - S.xf) ? 58 : 30) : 30, 'd₂ = ' + nf(c.d2) + ' cm', '#15803d'); }
+      if (p.vec !== false) { const kF = 70 / Math.max(c.F, c.W, 1), lF = clamp(c.F * kF, 18, 70), lW = clamp(c.W * kF, 18, 70); const ox = PE[0] >= fx ? 26 : -26;
+        if (up) Q24.F(ctx, PE[0] - ox, PE[1] - 4, 0, -lF, '', '#dc2626', 4); else Q24.F(ctx, PE[0] - ox, PE[1] + 4, 0, lF, '', '#dc2626', 4);
+        Q24.T(ctx, 'القوة F₁ = ' + nf(Math.round(c.F * 100) / 100) + ' N', PE[0] - ox * 2.6, up ? PE[1] - lF - 16 : PE[1] + lF + 22, { s: 12, w: 900, c: '#fff', bg: '#dc2626' });
+        const ol = PL[0] > w - 170 ? -30 : PL[0] >= fx ? 30 : -30; Q24.F(ctx, PL[0] + ol, PL[1] + 4, 0, lW, '', '#15803d', 4); Q24.T(ctx, 'المقاومة F₂ = ' + nf(Math.round(c.W * 10) / 10) + ' N', PL[0] + ol * 2.4, PL[1] + lW + 18, { s: 12, w: 900, c: '#fff', bg: '#15803d' }); }
+      Q24.T(ctx, 'المرتكز', fx, g.ry + 40, { s: 11.5, w: 900, c: '#fff', bg: cl === 1 ? CC[1] : '#111827' });
+      // motion: arcs travelled by effort and load
+      if (p.mv && c.bal) { [[S.xe, '#dc2626', 'مسافة القوة'], [S.xl, '#15803d', 'مسافة المقاومة']].forEach(([x, col, lab], i) => { const r = Math.abs(x - S.xf) * g.k, a0 = x >= S.xf ? 0 : Math.PI;
+        K.raw(ctx, () => { ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.arc(fx, g.ry, r, a0 - .085, a0 + .085); ctx.stroke(); ctx.setLineDash([]); });
+        Q24.T(ctx, lab + ' ∝ ' + nf(Math.abs(x - S.xf)), fx + Math.cos(a0) * r, g.ry - 24 - i * 0 - (i ? 0 : 18), { s: 11, w: 900, c: col, bg: 'rgba(255,255,255,.9)' }); }); }
+      if (p.unk === 'none') Q24.T(ctx, c.bal ? 'متزنة أفقياً ✓  F₁×d₁ = F₂×d₂' : (c.tq * Math.sign(S.xl - S.xf) > 0 ? 'تدور نحو الثقل: F₂×d₂ > F₁×d₁' : 'تدور نحو الميزان: F₁×d₁ > F₂×d₂'), Q24.cx(w), g.ry - 120, { s: 13, w: 900, c: '#fff', bg: c.bal ? '#15803d' : '#b45309' });
+      if (S.out) Q24.T(ctx, '⚠ الذراع المحسوب (' + nf(p.unk === 'd1' ? c.d1 : c.d2) + ' cm) أطول من الساق — غيّر القيم', Q24.cx(w), g.ry - 96, { s: 12.5, w: 900, c: '#fff', bg: '#dc2626' });
+      if (p.sol !== false && g.narrow) D.solution(ctx, S, c, w - 14, g.by - 8, w - 90, true);
+      if (p.sol !== false) { const nb = D.nbtn(S, g); C2.btn(ctx, nb.x, nb.y, nb.w, nb.h, (S.step || 0) >= 5 ? '↺ من جديد' : '▶ الخطوة التالية', { col: '#16a34a', s: 12 }); }
+      C2.drawMsg(ctx, S, Q24.cx(w), g.ry - 150);
       K.party(ctx, S);
     },
-    wrap(ctx, s, wd) { ctx.font = '700 13px Tajawal,sans-serif'; const words = s.split(' '), out = []; let cur = ''; words.forEach(wo => { const t = cur ? cur + ' ' + wo : wo; if (ctx.measureText(t).width > wd - 24 && cur) { out.push(cur); cur = wo; } else cur = t; }); if (cur) out.push(cur); return out; },
-    solution(ctx, S, g, c) {
-      const p = S.p, st = S.step || 0, m = v => +(v / 100).toFixed(3); const L = [];
-      const Fs = (+c.F.toFixed(3)), MAs = +c.MA.toFixed(3);
-      L.push({ t: 'المعطيات: F₂ = ' + p.W + ' N ، d₂ = ' + fmt(c.dL, 3) + ' cm = ' + m(c.dL) + ' m ، d₁ = ' + fmt(c.dE, 3) + ' cm = ' + m(c.dE) + ' m', c: '#1e293b' });
-      if (st >= 1) L.push({ t: 'القانون: F₁ × d₁ = F₂ × d₂', c: '#7c3aed', w: 900 });
-      if (st >= 2) L.push({ t: 'التعويض: F₁ × ' + m(c.dE) + ' = ' + p.W + ' × ' + m(c.dL), c: '#1e293b', mono: 1 });
-      if (st >= 3) L.push({ t: 'F₁ = ' + Fs + ' N', c: '#dc2626', w: 900, mono: 1 });
-      if (st >= 4) L.push({ t: 'M.A = Load ÷ Force = ' + p.W + ' ÷ ' + Fs + ' = ' + MAs, c: '#1e293b', mono: 1 });
-      if (st >= 5) L.push({ t: (c.MA > 1.001 ? 'نحصل على ربح قوة' : c.MA < .999 ? 'نحصل على ربح سرعة' : 'لا نحصل على ربح') + ' — عتلة من النوع ' + ['', 'الأول', 'الثاني', 'الثالث'][c.cls], c: c.MA > 1.001 ? '#0f766e' : '#b45309', w: 900 });
-      const wd = Math.min(g.w - 120, 540); Q24.lines(ctx, L, g.w - 14, g.by - 8 - (L.length * 21 + 34), wd, { title: 'الحل خطوة بخطوة (' + st + '/5)', bd: '#16a34a' });
-      if (st === 5 && !S._ch) { S._ch = 1; K.cheer(S, Q24.cx(g.w), g.by - 120); } if (st < 5) S._ch = 0;
+    wrap(ctx, s, wd) { ctx.font = '700 12.5px Tajawal,sans-serif'; const words = s.split(' '), out = []; let cur = ''; words.forEach(wo => { const t = cur ? cur + ' ' + wo : wo; if (ctx.measureText(t).width > wd - 24 && cur) { out.push(cur); cur = wo; } else cur = t; }); if (cur) out.push(cur); return out; },
+    solLines(S, c) {
+      const p = S.p, st = S.step || 0, m = v => nf(v / 100), L = [], u = p.unk;
+      const giv = { F: 'F₂ = ' + nf(c.W) + ' N ، d₁ = ' + m(c.d1) + ' m ، d₂ = ' + m(c.d2) + ' m', W: 'F₁ = ' + nf(c.F) + ' N ، d₁ = ' + m(c.d1) + ' m ، d₂ = ' + m(c.d2) + ' m',
+        d1: 'F₁ = ' + nf(c.F) + ' N ، F₂ = ' + nf(c.W) + ' N ، d₂ = ' + m(c.d2) + ' m', d2: 'F₁ = ' + nf(c.F) + ' N ، F₂ = ' + nf(c.W) + ' N ، d₁ = ' + m(c.d1) + ' m', none: 'F₁ = ' + nf(c.F) + ' N ، F₂ = ' + nf(c.W) + ' N ، d₁ = ' + m(c.d1) + ' m ، d₂ = ' + m(c.d2) + ' m' }[u];
+      L.push({ t: 'المعطيات: ' + giv, c: '#1e293b', s: 12 });
+      if (st >= 1) L.push({ t: '1 m = 100 cm   ،   F₁ × d₁ = F₂ × d₂', c: '#7c3aed', w: 900, mono: 1 });
+      if (st >= 2) L.push({ t: { F: 'F₁ × ' + m(c.d1) + ' = ' + nf(c.W) + ' × ' + m(c.d2), W: nf(c.F) + ' × ' + m(c.d1) + ' = F₂ × ' + m(c.d2), d1: nf(c.F) + ' × d₁ = ' + nf(c.W) + ' × ' + m(c.d2), d2: nf(c.F) + ' × ' + m(c.d1) + ' = ' + nf(c.W) + ' × d₂', none: nf(c.F) + ' × ' + m(c.d1) + ' = ' + nf(+(c.F * c.d1 / 100).toFixed(3)) + '  ،  ' + nf(c.W) + ' × ' + m(c.d2) + ' = ' + nf(+(c.W * c.d2 / 100).toFixed(3)) }[u], c: '#1e293b', mono: 1 });
+      if (st >= 3) L.push({ t: { F: 'F₁ = ' + nf(c.F) + ' N', W: 'F₂ = ' + nf(c.W) + ' N', d1: 'd₁ = ' + m(c.d1) + ' m = ' + nf(c.d1) + ' cm', d2: 'd₂ = ' + m(c.d2) + ' m = ' + nf(c.d2) + ' cm', none: c.bal ? 'متساويان ⟸ الساق متزنة' : 'غير متساويين ⟸ الساق تدور' }[u], c: '#dc2626', w: 900, mono: 1 });
+      if (st >= 4) L.push(u === 'none' && !c.bal ? { t: 'للاتزان نحتاج F₁ = ' + nf(c.W * c.d2 / c.d1) + ' N  ،  M.A = ' + nf(c.MA), c: '#1e293b', mono: 1 } : { t: 'M.A = Load ÷ Force = ' + nf(c.W) + ' ÷ ' + nf(c.F) + ' = ' + nf(c.W / c.F), c: '#1e293b', mono: 1 });
+      if (st >= 5) L.push({ t: (c.MA > 1.001 ? 'نحصل على ربح قوة' : c.MA < .999 ? 'نحصل على ربح سرعة' : 'لا نحصل على ربح') + ' — عتلة من ' + CN[D.cls(S)], c: c.MA > 1.001 ? '#0f766e' : '#b45309', w: 900 });
+      return L;
     },
-    tabs(S) { const w = S.W, ks = Object.keys(EX), n = ks.length, bw = Math.min(160, (w - 90) / n - 6); return ks.map((k, i) => ({ x: Q24.cx(w) + ((n - 1) / 2 - i) * (bw + 6), y: 44, w: bw, h: 34, k, lab: EX[k].n.replace(/ \(.*\)/, ''), on: S.p.ex === k })); },
-    nbtn(S) { return { x: S.W - 100, y: S.H * .86 + 36, w: 150, h: 36 }; },
+    solution(ctx, S, c, x, y, wd, fromBottom) { const L = D.solLines(S, c); while (L.length < 6) L.push({ t: '' }); const hh = 26 + L.length * 20 + 6, yy = fromBottom ? y - hh : y; S._solB = [x - wd, yy]; Q24.lines(ctx, L, x, yy, wd, { title: 'الحل (' + (S.step || 0) + '/5) · المجهول: ' + ({ F: 'F₁', W: 'F₂', d1: 'd₁', d2: 'd₂', none: '—' })[S.p.unk], bd: '#16a34a', lh: 20 });
+      if ((S.step || 0) === 5 && !S._ch) { S._ch = 1; K.cheer(S, x - wd / 2, y + 40); } if ((S.step || 0) < 5) S._ch = 0; },
     drags(S) {
-      if (!S.W) return []; const g = D.geo(S), e = D.ex(S), c = D.calc(S), out = [];
-      D.tabs(S).forEach(b => out.push(Q24.btn(S, 't_' + b.k, b, '', S => setParam(S, 'ex', b.k), { tip: EX[b.k].n })));
-      out.push(Q24.btn(S, 'next', D.nbtn(S), '', S => D.next(S), { tip: 'اعرض الخطوة التالية من الحل', idle: 'الحل ▶', hint: true }));
-      const snap = x => clamp(Math.round((x - g.x0) / g.k / (e.L <= 60 ? 1 : 2)) * (e.L <= 60 ? 1 : 2), 0, e.L);
-      out.push({ id: 'load', x: g.X(S.xl), y: g.ry + 60, w: 60, h: 80, axis: 'x', keep: true, tip: 'اسحب الثقل على الساق', hint: false, drag: (S, d) => { let v = snap(d.x); if (Math.abs(v - e.f) < 2) v = e.f + (v >= e.f ? 2 : -2); S.xl = clamp(v, 0, e.L); S.step = Math.min(S.step || 0, 5); } });
-      const ey = c.up ? g.ry - 90 : g.ry + 90; out.push({ id: 'eff', x: g.X(S.xe), y: ey, w: 60, h: 110, axis: 'x', keep: true, tip: 'اسحب الميزان النابضي (نقطة تأثير القوة) على الساق', idle: 'حرّك القوة ✋', drag: (S, d) => { let v = snap(d.x); if (Math.abs(v - e.f) < 2) v = e.f + (v >= e.f ? 2 : -2); S.xe = clamp(v, 0, e.L); } });
+      if (!S.W) return []; const g = D.geo(S), c = D.calc(S), up = D.up(S), out = [];
+      D.chips(S).forEach(b => out.push(Q24.btn(S, 'ex_' + b.k, b, '', S => setParam(S, 'ex', b.k), { tip: EX[b.k].txt.slice(0, 60) + '…' })));
+      D.cbtns(S).forEach(b => out.push(Q24.btn(S, 'cv' + b.c, b, '', S => D.conv(S, b.c), { tip: 'انقل القطع لتصبح ' + MID[b.c] + ' في الوسط' })));
+      if (S.p.sol !== false) out.push(Q24.btn(S, 'next', D.nbtn(S, g), '', S => D.next(S), { tip: 'اعرض الخطوة التالية من الحل' }));
+      const snap = x => clamp(Math.round((x - g.x0) / g.k), 0, S.L);
+      const mv = (key, unkK) => (S, d) => { S.tg = null; S[key] = snap(d.x); D.unclash(S, key); if (S.p.unk === unkK) setParam(S, 'unk', 'F', false); D.syncArms(S); };
+      const fx = g.X(S.xf);
+      out.push({ id: 'ful', x: fx, y: g.ry + 40, w: 60, h: 64, axis: 'x', keep: true, tip: 'اسحب المرتكز (المسند) على طول الساق', idle: 'حرّك المرتكز ✋', drag: mv('xf', '') });
+      const PL = D.P(S, g, S.xl), bh = clamp(18 + c.W * .22, 22, 62);
+      out.push({ id: 'load', x: PL[0], y: PL[1] + 40 + bh / 2, w: 66, h: bh + 50, axis: 'x', keep: true, tip: 'اسحب الثقل (المقاومة) إلى موضع آخر', hint: false, drag: mv('xl', 'd2') });
+      const PE = D.P(S, g, S.xe), Lsb = g.Lsb;
+      out.push({ id: 'eff', x: PE[0], y: up ? PE[1] - Lsb / 2 - 30 : PE[1] + Lsb / 2 + 30, w: 56, h: Lsb + 40, axis: 'x', keep: true, tip: 'اسحب الميزان النابضي (نقطة تأثير القوة)', hint: false, drag: mv('xe', 'd1') });
+      // hand: pull harder / softer (sets F₁, the bar then tilts unless balanced)
+      const Fm = [10, 20, 50, 100, 200, 500, 1000].find(q => q >= c.F) || 1000, ext = Math.min(c.F, Fm * 1.05) * (Lsb - 44) / Fm;
+      const hy = up ? PE[1] - 8 - (Lsb + 26 + ext) - 30 : PE[1] + 10 + Lsb + 26 + ext + 30;
+      out.push({ id: 'hand', x: PE[0], y: hy, w: 60, h: 50, axis: 'y', keep: true, tip: 'اسحب اليد لتغيير القوة F₁ (قراءة الميزان)', hint: false,
+        down: S => { S.F0 = S.p.F; if (S.p.unk === 'F' || S.p.unk === 'none') setParam(S, 'unk', 'none', false); },
+        drag: (S, d) => { const k = up ? -(d.y - d.sy) : (d.y - d.sy); setParam(S, 'F', clamp(S.F0 + k * Fm / 120, 1, 200)); },
+        wheel: (S, k) => { if (S.p.unk === 'F') setParam(S, 'unk', 'none', false); setParam(S, 'F', S.p.F + k * .5); } });
       return out;
     },
-    readings(S) { const c = D.calc(S); return [rd('المقاومة F₂', S.p.W + ' N'), rd('ذراع المقاومة d₂', fmt(c.dL, 3) + ' cm'), rd('ذراع القوة d₁', fmt(c.dE, 3) + ' cm'), rd('القوة F₁', fmt(c.F, 4) + ' N'), rd('الفائدة الميكانيكية', fmt(c.MA, 3)), rd('نوع العتلة', ['', 'الأول', 'الثاني', 'الثالث'][c.cls])]; },
-    record(S) { const c = D.calc(S); return { ex: D.ex(S).n.replace(/ \(.*\)/, ''), W: S.p.W, dL: +c.dL.toFixed(1), dE: +c.dE.toFixed(1), F: +c.F.toFixed(2), MA: +c.MA.toFixed(2), r: c.MA > 1.001 ? 'ربح قوة' : c.MA < .999 ? 'ربح سرعة' : '—' }; },
-    cols: [['ex', 'المثال'], ['W', 'F₂ (N)'], ['dL', 'd₂ (cm)'], ['dE', 'd₁ (cm)'], ['F', 'F₁ (N)'], ['MA', 'M.A'], ['r', 'النتيجة']],
-    explain(S) { const c = D.calc(S); return 'من قانون العتلات: <b>F₁ = F₂ × d₂ ÷ d₁ = ' + S.p.W + ' × ' + fmt(c.dL, 3) + ' ÷ ' + fmt(c.dE, 3) + ' = ' + fmt(c.F, 4) + ' N</b>. الفائدة الميكانيكية <b>' + fmt(c.MA, 3) + '</b> ⟸ ' + (c.MA > 1.001 ? 'ربح قوة (ذراع القوة أطول).' : c.MA < .999 ? 'ربح سرعة (ذراع القوة أقصر).' : 'لا ربح.'); },
+    readings(S) { const c = D.calc(S), cl = D.cls(S); return [rd('نوع العتلة', CN[cl] + ' (' + MID[cl] + ' في الوسط)', 1), rd('المقاومة F₂', nf(c.W) + ' N'), rd('ذراع المقاومة d₂', nf(c.d2) + ' cm'), rd('القوة F₁', nf(c.F) + ' N'), rd('ذراع القوة d₁', nf(c.d1) + ' cm'), rd('الفائدة الميكانيكية', nf(c.MA)), rd('النتيجة', c.MA > 1.001 ? 'ربح قوة' : c.MA < .999 ? 'ربح سرعة' : 'لا ربح', 1)]; },
+    record(S) { const c = D.calc(S), cl = D.cls(S); return { ex: D.ex(S).n, c: CN[cl], W: nf(c.W), d2: nf(c.d2), F: nf(c.F), d1: nf(c.d1), MA: nf(c.MA), r: c.MA > 1.001 ? 'ربح قوة' : c.MA < .999 ? 'ربح سرعة' : 'لا ربح' }; },
+    cols: [['ex', 'المثال'], ['c', 'النوع'], ['W', 'F₂ (N)'], ['d2', 'd₂ (cm)'], ['F', 'F₁ (N)'], ['d1', 'd₁ (cm)'], ['MA', 'M.A'], ['r', 'النتيجة']],
+    explain(S) { const c = D.calc(S), cl = D.cls(S);
+      return '<b>ما الذي في الوسط؟</b> ' + MID[cl] + ' ⟸ عتلة من <b>' + CN[cl] + '</b>. ' + (cl === 1 ? 'في النوع الأول قد نربح قوة أو سرعة أو لا شيء حسب موضع المرتكز.' : cl === 2 ? 'في النوع الثاني ذراع القوة أطول دائماً ⟸ ربح قوة فقط.' : 'في النوع الثالث ذراع القوة أقصر دائماً ⟸ ربح سرعة فقط.') +
+        '<br>من قانون العتلات: <b>F₁ × d₁ = F₂ × d₂</b> ⟸ ' + nf(c.F) + ' × ' + nf(c.d1) + ' ' + (c.bal ? '=' : '≠') + ' ' + nf(c.W) + ' × ' + nf(c.d2) + ' (N·cm). الفائدة الميكانيكية <b>' + nf(c.MA) + '</b> ⟸ ' + (c.MA > 1.001 ? 'ربح قوة: نرفع ثقلاً كبيراً بقوة صغيرة، لكن يدك تتحرك مسافة أكبر.' : c.MA < .999 ? 'ربح سرعة: نحتاج قوة أكبر، لكن طرف المقاومة يتحرك مسافة أكبر وبسرعة أكبر.' : 'القوة تساوي المقاومة.'); },
     quiz: [
       { q: 'عتلة طولها 80 cm ترتكز على أحد طرفيها، عُلّق فيها ثقل 60 N على بعد 20 cm من المرتكز. القوة اللازمة في الطرف الآخر لتتزن أفقياً:', o: ['15 N', '240 N', '30 N'], a: 0, why: 'س6: F × 0.8 = 60 × 0.2 ⟸ F = 15 N ، والفائدة الميكانيكية = 60 ÷ 15 = 4.' },
-      { q: 'ما وحدة قياس الفائدة الميكانيكية؟', o: ['N', 'N·m', 'ليس لها وحدة'], a: 2, why: 'مراجعة الفصل س3: لأنها نسبة بين قوتين (المقاومة ÷ القوة) فتختصر الوحدات.' },
-      { q: 'ماذا نعني إن الفائدة الميكانيكية أصغر من 1؟', o: ['ربح قوة', 'ربح سرعة', 'لا ربح'], a: 1, why: 'مراجعة الدرس س5: القوة أكبر من المقاومة، فنحصل على ربح سرعة.' }
+      { q: 'نقلنا المرتكز من طرف الساق إلى ما بين الثقل والقوة. أصبحت العتلة من:', o: ['النوع الأول', 'النوع الثاني', 'النوع الثالث'], a: 0, why: 'المرتكز صار في الوسط ⟸ النوع الأول.' },
+      { q: 'ما نوع العتلة التي تكون القوة المؤثرة فيها دائماً أكبر من المقاومة؟', o: ['النوع الأول', 'النوع الثاني', 'النوع الثالث'], a: 2, why: 'مراجعة الدرس س4: القوة في الوسط فذراعها أقصر دائماً ⟸ القوة أكبر من المقاومة (ربح سرعة).' }
     ]
   };
   M8.P[D.id] = D;
@@ -575,7 +670,7 @@ const LV = (() => {
     desc: 'أحضر عتلات من حياتك اليومية: كسارة الجوز، مقص، كابسة ورق، مفتاح قناني زجاجية، ملقط، قالعة مسامير، مقراض الأظافر. صنّفها حسب أنواعها في جدول، وبيّن أيّها نحصل منها على ربح قوة وأيّها على ربح سرعة.',
     tags: 'نشاط أنواع العتلات تصنيف جدول كسارة الجوز مقص كابسة ورق مفتاح قناني ملقط قالعة مسامير مقراض الأظافر ربح قوة ربح سرعة',
     tools: ['كسارة الجوز', 'مقص', 'كابسة ورق', 'مفتاح قناني زجاجية', 'ملقط', 'قالعة مسامير', 'مقراض الأظافر'],
-    steps: ['انظر إلى كل أداة: أين المرتكز (النقطة الصفراء)؟ أين تؤثر القوة (السهم الأحمر)؟ وأين المقاومة (السهم الأخضر)؟', 'اسحب كل أداة وأفلتها في عمود نوعها في الجدول (الأول، الثاني، الثالث).', 'إذا أخطأت تعود الأداة إلى مكانها مع تلميح — حاول مرة أخرى.', 'بعد التصنيف يظهر في الجدول هل نحصل منها على ربح قوة أم ربح سرعة.', 'سجّل الجدول (📋) وأجب: أي العتلات تحصل منها على ربح قوة وأيها على ربح سرعة؟'],
+    steps: ['① (الكتاب) أحضر الآن من نوع العتلات مثل كسارة الجوز، مقص، كابسة ورق، مفتاح قناني زجاجية، ملقط، قالعة مسامير، مقراض الأظافر.', '② (الكتاب) صنّف هذه العتلات حسب أنواعها وسجّلها في جدول.', '③ (الكتاب) أيّ العتلات تحصل منها على ربح قوة وأيّها على ربح سرعة؟', 'في المختبر: انظر إلى كل أداة: أين المرتكز (النقطة الصفراء)؟ أين تؤثر القوة (السهم الأحمر)؟ وأين المقاومة (السهم الأخضر)؟', 'اسحب كل أداة وأفلتها في عمود نوعها في الجدول (الأول، الثاني، الثالث).', 'إذا أخطأت تعود الأداة إلى مكانها مع تلميح — حاول مرة أخرى.', 'بعد التصنيف يظهر في الجدول هل نحصل منها على ربح قوة أم ربح سرعة.', 'سجّل الجدول (📋) وأجب: أي العتلات تحصل منها على ربح قوة وأيها على ربح سرعة؟'],
     concl: ['النوع الأول (المرتكز في الوسط): المقص، قالعة المسامير.', 'النوع الثاني (المقاومة في الوسط): كسارة الجوز، مفتاح القناني، مقراض الأظافر — ربح قوة.', 'النوع الثالث (القوة في الوسط): كابسة الورق، الملقط — ربح سرعة.'],
     laws: ['g8_gain', 'g8_ma'],
     fact: ['في مقراض الأظافر عتلتان: المقبض الذي نضغطه عتلة من النوع الثاني، وفكّا القطع يعملان كعتلة من النوع الثالث.', 'المقص الذي له مقابض طويلة وشفرات قصيرة (مقص قص المعادن) يعطي ربح قوة كبيراً، أما مقص الشعر ذو الشفرات الطويلة فيعطي ربح سرعة.'],
@@ -643,7 +738,7 @@ const LV = (() => {
    5) الدرس 2 (ص 49): السطح المائل — الفائدة الميكانيكية M.A = L/h ، مثال 1
    ========================================================================================= */
 (() => {
-  const SC = { worker: { n: 'العامل والمنحدر (صورة الكتاب)', W: 500, L: 4, h: 1, Lr: [2, 5.5], hr: [.4, 1.4] }, lab: { n: 'قياس بالميزان النابضي', W: 5, L: 1, h: .25, Lr: [1, 1], hr: [.05, .8] }, ex1: { n: 'مثال 1: منحدر 20 m', W: 1000, L: 20, h: 2, Lr: [5, 25], hr: [1, 5] } };
+  const SC = { worker: { n: 'العامل والمنحدر (صورة الكتاب)', W: 500, L: 4, h: 1, Lr: [2, 5.5], hr: [.4, 1.4] }, lab: { n: 'قياس بالميزان النابضي', W: 5, L: 1, h: .25, Lr: [1, 1], hr: [.05, .8] }, ex1: { n: 'مثال 1: منحدر 20 m', W: 1000, L: 20, h: 2, Lr: [5, 25], hr: [1, 5] }, q5: { n: 'س5 (2) ص 55: سطح 20 m وارتفاعه 4 m', W: 1000, L: 20, h: 4, Lr: [5, 25], hr: [1, 5] } };
   const D = { id: 'g8_incline', ch: 24, sec: 'الدرس 2: السطح المائل', page: 49, kind: 'نشاط',
     title: 'السطح المائل: القوة اللازمة والفائدة الميكانيكية (مثال 1)',
     desc: 'رفع الجسم رأسياً يحتاج قوة تساوي وزنه، أما سحبه على سطح مائل فيحتاج قوة أصغر من وزنه (المقاومة). الفائدة الميكانيكية للسطح المائل M.A = L ÷ h تزداد كلما ازدادت نسبة طول السطح إلى ارتفاعه.',
@@ -1016,6 +1111,7 @@ const LV = (() => {
     const D = { id: 'g8_pul_' + K0, ch: 24, page: I.page, desc: I.desc, tags: 'بكرة ثابتة متحركة حبل أخدود رافعة أثقال ميزان نابضي فائدة ميكانيكية', tools: ['بكرة', 'حبل', 'ثقل', 'ميزان نابضي', 'حامل'],
       steps: I.steps, concl: I.concl, laws: ['g8_pul', 'g8_ma'],
       controls: [R('m', 'كتلة الثقل m', 1, 200, K0 === 'movable' ? 20 : 10, 1, 'kg'), SEL('g', 'تعجيل الجاذبية g', [['9.8', '9.8 N/kg'], ['10', '10 N/kg']], '9.8'),
+        ...(K0 === 'movable' ? [BT('أسئلة مراجعة الفصل (ص 55)', [{ t: 'س4: 200 kg', on: S => { setParam(S, 'g', '10'); setParam(S, 'm', 200); S.pull = 0; } }, { t: 'س5 (1): 400 N', on: S => { setParam(S, 'g', '10'); setParam(S, 'm', 40); S.pull = 0; } }])] : []),
         ...(K0 === 'system' ? [SEL('sys', 'النظام', [['two', 'الكتاب: ثابتة + متحركة'], ['four', 'رافعة الأثقال (4 حبال)']], 'two', (v, S) => { S.pull = 0; })] : []),
         BT('', [{ t: K0 === 'movable' ? '⬆ اسحب' : '⬇ اسحب', on: S => { S.auto = 1; } }, { t: '↺ أنزل الثقل', on: S => { S.pull = 0; S.auto = 0; } }]),
         TG('vec', 'أسهم القوة والمقاومة', true, null, 'force'), TG('sup', 'ترقيم الحبال الحاملة', true, null, 'labels'), TG('dist', 'المسافات (الحبل والثقل)', true, null, 'vector'), TG('real', 'احتكاك البكرات (واقعي)', false, null, 'heat')],
@@ -1025,7 +1121,8 @@ const LV = (() => {
       W(S) { return S.p.m * +S.p.g; },
       F(S) { const n = D.n(S); return D.W(S) / n / (S.p.real ? Math.pow(.93, D.np(S)) : 1); },
       geo(S) { const w = S.W, h = S.H, r = clamp(h * .05, 24, 38), y0 = 78, cx = 70 + (w - 70) * .36; const pxcm = r / 6; const max = h * .26; return { w, h, r, y0, cx, pxcm, max }; },
-      update(S, dt) { if (S.auto) { const g = D.geo(S); S.pull = Math.min(g.max * D.n(S), S.pull + dt * 120); if (S.pull >= g.max * D.n(S)) S.auto = 0; } },
+      pmax(S) { const g = D.geo(S); return K0 === 'movable' ? Math.max(20, Math.min(g.max * D.n(S), S.H * .3 - 106)) : g.max * D.n(S); },
+      update(S, dt) { if (S.auto) { const m = D.pmax(S); S.pull = Math.min(m, S.pull + dt * 120); if (S.pull >= m) S.auto = 0; } },
       draw(ctx, w, h, S) {
         const g = D.geo(S), p = S.p, n = D.n(S), W = D.W(S), F = D.F(S), r = g.r, lift = S.pull / n; K.bg(ctx, w, h, { benchY: h * .9 });
         Q24.ceiling(ctx, 70, w - 10, g.y0 - 8);
@@ -1073,7 +1170,7 @@ const LV = (() => {
       },
       arc(cx, cy, r, a0, a1, ccw) { const P = [], N = 12; for (let k = 0; k <= N; k++) { const a = ccw ? a0 - (a0 - a1 + (a1 > a0 ? TAU : 0)) * k / N : a0 + (a1 - a0) * k / N; P.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]); } return P; },
       handPos(S) { const g = D.geo(S), h = S.H, r = g.r; if (K0 === 'movable') return [g.cx + r, h * .3 - S.pull]; if (K0 === 'fixed') return [g.cx - r, h * .34 + S.pull + 96 + 30]; if (S.p.sys === 'four') return [g.cx - r * .8 * 3.5 - r * .8, h * .34 + S.pull + 96 + 30]; return [g.cx - r * 2.5, h * .34 + S.pull + 96 + 30]; },
-      drags(S) { if (!S.W) return []; const g = D.geo(S), [x, y] = D.handPos(S), up = K0 === 'movable', mx = g.max * D.n(S);
+      drags(S) { if (!S.W) return []; const g = D.geo(S), [x, y] = D.handPos(S), up = K0 === 'movable', mx = D.pmax(S);
         return [{ id: 'hand', x, y: y + (up ? -20 : 20), w: 70, h: 90, axis: 'y', keep: true, tip: up ? 'اسحب إلى الأعلى لترفع الثقل' : 'اسحب إلى الأسفل لترفع الثقل', idle: up ? 'اسحب للأعلى ✋' : 'اسحب للأسفل ✋',
           down: S => { S.auto = 0; S.p0 = S.pull; }, drag: (S, d) => { S.pull = clamp(S.p0 + (up ? -1 : 1) * (d.y - d.sy), 0, mx); } }]; },
       readings(S) { const g = D.geo(S), n = D.n(S); return [rd('وزن الثقل W', fmt(D.W(S), 4) + ' N'), rd('القوة F (الميزان)', fmt(D.F(S), 4) + ' N'), rd('عدد الحبال الحاملة', n), rd('الفائدة الميكانيكية W/F', fmt(D.W(S) / D.F(S), 3)), rd('المسافة التي سُحب بها الحبل', fmt(S.pull / g.pxcm, 3) + ' cm'), rd('ارتفاع الثقل', fmt(S.pull / n / g.pxcm, 3) + ' cm')]; },
@@ -1211,11 +1308,376 @@ const LV = (() => {
   };
   M8.P[D.id] = D;
 })();
+/* =========================================================================================
+   11) ورشة الآلات (ص 46–53): اختر الآلة فيتغير المشهد — عتلات الأنواع الثلاثة، السطح المائل والأسفين والبريمة،
+       العجلة والمحور، البكرات، والآلات المركبة. شغّل الآلة بالسحب، وغيّر القيم، وشاهد M.A وربح القوة أو السرعة.
+   ========================================================================================= */
+(() => {
+  const met = LV.met, nf = v => String(+(+v).toFixed(2));
+  const GRP = [['l1', 'عتلات ①'], ['l2', 'عتلات ②'], ['l3', 'عتلات ③'], ['inc', 'سطح مائل وأشباهه'], ['wa', 'عجلة ومحور'], ['pul', 'بكرات'], ['cmp', 'آلات مركبة']];
+  const CN = ['', 'عتلة من النوع الأول (المرتكز في الوسط)', 'عتلة من النوع الثاني (المقاومة في الوسط)', 'عتلة من النوع الثالث (القوة في الوسط)'];
+  const skinC = '#f2c29b';
+  const ground = (ctx, x0, x1, y, o = {}) => K.raw(ctx, () => { const g = ctx.createLinearGradient(0, y, 0, y + 30); g.addColorStop(0, o.c1 || '#84cc16'); g.addColorStop(1, o.c2 || '#4d7c0f'); ctx.fillStyle = g; ctx.fillRect(x0, y, x1 - x0, 30); ctx.fillStyle = 'rgba(255,255,255,.15)'; for (let x = x0 + 6; x < x1; x += 14) ctx.fillRect(x, y + 3, 6, 2); });
+  const shadow = (ctx, x, y, rx) => K.raw(ctx, () => { ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(x, y, rx, rx * .12, 0, 0, TAU); ctx.fill(); });
+  const rock = (ctx, x, y, r) => K.raw(ctx, () => { const g = ctx.createRadialGradient(x - r * .3, y - r * .4, r * .1, x, y, r); g.addColorStop(0, '#d6d3d1'); g.addColorStop(1, '#57534e'); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x - r, y); ctx.quadraticCurveTo(x - r * 1.05, y - r * .9, x - r * .2, y - r * 1.05); ctx.quadraticCurveTo(x + r * .9, y - r * 1.1, x + r, y); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#44403c'; ctx.lineWidth = 1; ctx.stroke(); });
+  const disc = (ctx, x, y, r, c1, c2, c3) => K.raw(ctx, () => { const g = ctx.createRadialGradient(x - r * .3, y - r * .3, r * .1, x, y, r); g.addColorStop(0, c1); g.addColorStop(.75, c2); g.addColorStop(1, c3); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.strokeStyle = 'rgba(15,23,42,.5)'; ctx.lineWidth = 1.2; ctx.stroke(); });
+  const gear = (ctx, x, y, r, n, ang, col) => K.raw(ctx, () => { ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.beginPath(); const td = Math.min(8, r * .14); for (let k = 0; k < n; k++) { const a = k / n * TAU, da = TAU / n; ctx.lineTo(Math.cos(a) * (r - td), Math.sin(a) * (r - td)); ctx.lineTo(Math.cos(a + da * .15) * (r + td * .4), Math.sin(a + da * .15) * (r + td * .4)); ctx.lineTo(Math.cos(a + da * .5) * (r + td * .4), Math.sin(a + da * .5) * (r + td * .4)); ctx.lineTo(Math.cos(a + da * .65) * (r - td), Math.sin(a + da * .65) * (r - td)); } ctx.closePath();
+    const g = ctx.createRadialGradient(-r * .3, -r * .3, r * .1, 0, 0, r); g.addColorStop(0, '#f1f5f9'); g.addColorStop(1, col || '#64748b'); ctx.fillStyle = g; ctx.fill(); ctx.strokeStyle = '#334155'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = 'rgba(15,23,42,.25)'; for (let k = 0; k < 5; k++) { const a = k / 5 * TAU; ctx.beginPath(); ctx.arc(Math.cos(a) * r * .5, Math.sin(a) * r * .5, r * .14, 0, TAU); ctx.fill(); } ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(0, 0, r * .12, 0, TAU); ctx.fill(); ctx.restore(); });
+  const tag = (ctx, s, x, y, bg, o = {}) => Q24.T(ctx, s, x, y, Object.assign({ s: 11.5, w: 900, c: '#fff', bg }, o));
+  const hand = (ctx, x, y, rot, s = 1, sl = '#0ea5e9') => C2.hand(ctx, x, y, 1, s, { rot, sleeve: sl });
+
+  /* ---------------- generic lever machine ---------------- */
+  const LEV = (o) => Object.assign({ lever: 1, amax: .22, a0: 0, oy: .55, eDir: o.cls === 1 ? 1 : -1, lDir: 1, sgn: o.cls === 1 ? 1 : -1,
+    calc(v) { const F = v.W * v.d2 / v.d1, MA = v.d1 / v.d2; return { F, W: v.W, MA, eq: ['F × d₁ = W × d₂', 'F = ' + nf(v.W) + ' × ' + nf(v.d2) + ' ÷ ' + nf(v.d1) + ' = ' + nf(F) + ' N', 'M.A = d₁ ÷ d₂ = ' + nf(v.d1) + ' ÷ ' + nf(v.d2) + ' = ' + nf(MA)] }; },
+    dist(S, v, M) { const da = M.pair ? (M.o0 - M.o1) / 2 * S.q : M.amax * S.q; return [v.d1 * da, v.d2 * da]; }
+  }, o);
+  const M = {
+    /* ===== class 1 ===== */
+    seesaw: LEV({ g: 'l1', n: 'الأرجوحة (السيسو)', cls: 1, P: [['W', 'وزن الطفل (المقاومة)', 'N', 150, 450, 300, 10], ['d1', 'ذراع القوة d₁', 'cm', 40, 180, 150, 5], ['d2', 'ذراع المقاومة d₂', 'cm', 40, 180, 100, 5]], box: [-195, 195, -150, 50], amax: .2, oy: .62,
+      bg(ctx, O, u, B) { ground(ctx, B.x0, B.x1, O[1] + 46 * u); shadow(ctx, O[0], O[1] + 46 * u, 50 * u); K.raw(ctx, () => { ctx.fillStyle = met(ctx, O[0] - 25 * u, 0, O[0] + 25 * u, 0, '#fca5a5', '#991b1b'); ctx.beginPath(); ctx.moveTo(O[0] - 6 * u, O[1]); ctx.lineTo(O[0] + 6 * u, O[1]); ctx.lineTo(O[0] + 26 * u, O[1] + 46 * u); ctx.lineTo(O[0] - 26 * u, O[1] + 46 * u); ctx.closePath(); ctx.fill(); }); },
+      skin(ctx, u, v, S) { Q24.wood(ctx, -192 * u, -4 * u, 384 * u, 8 * u, { c1: '#facc15', c2: '#ca8a04', r: 3 }); ctx.fillStyle = '#475569'; [-1, 1].forEach(s => { rr(ctx, s * 178 * u - 3 * u, -22 * u, 6 * u, 18 * u, 2); ctx.fill(); });
+        const x = -v.d2 * u; Q24.person(ctx, { H: 120 * u, f: 1, hip: [x, -12 * u], neck: [x + 2 * u, -50 * u], hands: [[x + 18 * u, -20 * u], [x + 16 * u, -22 * u]], feet: [[x + 26 * u, 6 * u], [x + 30 * u, 8 * u]], shirt: '#f43f5e', pants: '#1d4ed8', hair: '#111827' }); },
+      eHand(ctx, P, u) { hand(ctx, P[0], P[1] - 2, Math.PI / 2, Math.min(1.4, u * 1.1), '#16a34a'); },
+      how: 'المرتكز (القاعدة المثلثة) في الوسط بين الطفل (المقاومة) ويدك (القوة). اضغط بيدك إلى الأسفل: يرتفع الطفل. أبعد يدك عن المرتكز تحتج إلى قوة أقل.', life: 'في ساحات الألعاب. يجلس الطفل الأثقل أقرب إلى المرتكز لتتزن الأرجوحة.' }),
+    scissors: LEV({ g: 'l1', n: 'المقص', cls: 1, pair: 1, o0: .5, o1: .04, P: [['W', 'مقاومة الكرتون', 'N', 5, 60, 20, 1], ['d1', 'ذراع القوة d₁', 'cm', 5, 10, 8, .5], ['d2', 'ذراع المقاومة d₂', 'cm', 2, 11, 6, .5]], box: [-13, 12, -6, 6], oy: .5, eDir: 1, lDir: 1,
+      half(ctx, u, v, up) { ctx.fillStyle = met(ctx, 0, -u, 0, u); ctx.beginPath(); ctx.moveTo(0, -.5 * u); ctx.lineTo(-12.5 * u, -.1 * u); ctx.lineTo(-12.5 * u, .15 * u); ctx.lineTo(0, .6 * u); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#334155'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.strokeStyle = up ? '#ea580c' : '#f97316'; ctx.lineCap = 'round'; ctx.lineWidth = .9 * u; ctx.beginPath(); ctx.moveTo(1, 0); ctx.lineTo(6 * u, 0); ctx.stroke(); ctx.lineWidth = .7 * u; ctx.beginPath(); ctx.ellipse(8.4 * u, .9 * u, 2.4 * u, 1.4 * u, 0, 0, TAU); ctx.stroke(); ctx.lineCap = 'butt'; },
+      fore(ctx, O, u, v) { K.raw(ctx, () => { const x = O[0] - v.d2 * u; ctx.fillStyle = '#d6b88a'; ctx.strokeStyle = '#92400e'; rr(ctx, x - .25 * u, O[1] - 5.5 * u, .5 * u, 11 * u, 1); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#94a3b8'; ctx.beginPath(); ctx.arc(O[0], O[1], .5 * u, 0, TAU); ctx.fill(); }); },
+      how: 'المرتكز هو المسمار الذي يربط الشفرتين، في الوسط بين أصابعك (القوة) والكرتون (المقاومة). قصّ الكرتون قرب المسمار (d₂ صغير) يصبح أسهل.', life: 'مقص الصفيح ذو المقابض الطويلة والشفرات القصيرة يعطي ربح قوة كبيراً، ومقص الشعر ذو الشفرات الطويلة يعطي ربح سرعة.' }),
+    pliers: LEV({ g: 'l1', n: 'الكمّاشة (الزردية)', cls: 1, pair: 1, o0: .32, o1: .06, P: [['W', 'مقاومة السلك', 'N', 20, 300, 120, 5], ['d1', 'ذراع القوة d₁', 'cm', 8, 15, 13, .5], ['d2', 'ذراع المقاومة d₂', 'cm', 1, 4, 2, .5]], box: [-7, 17, -5, 5], oy: .5, eDir: 1, lDir: 1,
+      half(ctx, u, v, up) { ctx.fillStyle = met(ctx, 0, -u, 0, u, '#e2e8f0', '#475569'); ctx.beginPath(); ctx.moveTo(1.4 * u, -.9 * u); ctx.lineTo(-4.8 * u, -.3 * u); ctx.lineTo(-5.2 * u, .4 * u); ctx.lineTo(1.4 * u, .9 * u); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#334155'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.fillStyle = up ? '#dc2626' : '#b91c1c'; rr(ctx, 2 * u, -.7 * u, 14.5 * u, 1.4 * u, .7 * u); ctx.fill(); },
+      fore(ctx, O, u, v) { K.raw(ctx, () => { const x = O[0] - v.d2 * u; ctx.strokeStyle = '#b45309'; ctx.lineWidth = .5 * u; ctx.beginPath(); ctx.moveTo(x, O[1] - 6 * u); ctx.lineTo(x, O[1] + 6 * u); ctx.stroke(); ctx.fillStyle = '#64748b'; ctx.beginPath(); ctx.arc(O[0], O[1], .6 * u, 0, TAU); ctx.fill(); }); },
+      how: 'المفصل (المرتكز) قريب جداً من الفكين (المقاومة) وبعيد عن المقبضين (القوة)، فذراع القوة أطول بكثير ⟸ ربح قوة كبير لقطع الأسلاك.', life: 'يستعملها الكهربائي لقطع الأسلاك وثنيها.' }),
+    crowbar: LEV({ g: 'l1', n: 'عتلة لرفع صخرة', cls: 1, P: [['W', 'وزن الصخرة', 'N', 200, 2000, 1000, 50], ['d1', 'ذراع القوة d₁', 'cm', 40, 150, 120, 5], ['d2', 'ذراع المقاومة d₂', 'cm', 10, 50, 20, 5]], box: [-70, 160, -110, 40], amax: .16, a0: -.12, oy: .62,
+      bg(ctx, O, u, B) { ground(ctx, B.x0, B.x1, O[1] + 14 * u, { c1: '#a8a29e', c2: '#57534e' }); K.raw(ctx, () => { ctx.fillStyle = met(ctx, O[0] - 9 * u, 0, O[0] + 9 * u, 0, '#d6d3d1', '#57534e'); ctx.beginPath(); ctx.moveTo(O[0], O[1] + 1); ctx.lineTo(O[0] + 10 * u, O[1] + 14 * u); ctx.lineTo(O[0] - 10 * u, O[1] + 14 * u); ctx.closePath(); ctx.fill(); }); },
+      skin(ctx, u, v, S) { ctx.strokeStyle = '#1f2937'; ctx.lineWidth = 3.2 * u; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-55 * u, 0); ctx.lineTo(152 * u, 0); ctx.stroke(); ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-55 * u, -u); ctx.lineTo(150 * u, -u); ctx.stroke(); ctx.lineCap = 'butt';
+        const x = -v.d2 * u, r = (16 + v.W / 100) * u; ctx.save(); ctx.translate(x, -1.5 * u); rock(ctx, 0, 0, r); ctx.restore(); },
+      eHand(ctx, P, u) { hand(ctx, P[0], P[1] - 2, Math.PI / 2, Math.min(1.4, u * 3), '#ea580c'); },
+      how: 'نضع حجراً صغيراً (المرتكز) قريباً من الصخرة. الصخرة (المقاومة) في طرف واليد (القوة) في الطرف الآخر: المرتكز في الوسط.', life: 'يستعمل العمال العتلة الحديدية لرفع الصخور والأحمال الثقيلة.' }),
+    hammer: LEV({ g: 'l1', n: 'قالعة المسامير (المطرقة)', cls: 1, P: [['W', 'مقاومة المسمار', 'N', 200, 2000, 900, 50], ['d1', 'ذراع القوة d₁', 'cm', 15, 32, 28, 1], ['d2', 'ذراع المقاومة d₂', 'cm', 2, 6, 4, .5]], box: [-12, 26, -34, 8], amax: .3, a0: -1.0, oy: .7,
+      bg(ctx, O, u, B) { Q24.wood(ctx, B.x0 + 10, O[1], B.x1 - B.x0 - 20, 8 * u, { c1: '#d6a26a', c2: '#92400e' }); },
+      skin(ctx, u, v, S) { ctx.strokeStyle = '#92400e'; ctx.lineWidth = 2.2 * u; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(1 * u, 0); ctx.lineTo(32 * u, 0); ctx.stroke(); ctx.strokeStyle = '#111827'; ctx.lineWidth = 2.6 * u; ctx.beginPath(); ctx.moveTo(20 * u, 0); ctx.lineTo(32 * u, 0); ctx.stroke(); ctx.lineCap = 'butt';
+        ctx.fillStyle = met(ctx, 0, -3 * u, 0, 3 * u); ctx.beginPath(); ctx.moveTo(4 * u, -2.6 * u); ctx.lineTo(-1 * u, -2.6 * u); ctx.quadraticCurveTo(-3 * u, -1 * u, -v.d2 * u - 1 * u, 1.4 * u); ctx.lineTo(-v.d2 * u + .2 * u, 2.2 * u); ctx.quadraticCurveTo(-1 * u, .6 * u, 0, 1.6 * u); ctx.lineTo(4 * u, 2.6 * u); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#334155'; ctx.lineWidth = 1; ctx.stroke(); },
+      fore(ctx, O, u, v, S, M, X) { const P = X(-v.d2, 1.8); K.raw(ctx, () => { ctx.fillStyle = '#9ca3af'; ctx.fillRect(P[0] - .25 * u, P[1], .5 * u, O[1] - P[1] + 3 * u); }); },
+      eHand(ctx, P, u) { hand(ctx, P[0], P[1], .3, Math.min(1.4, u * 1.2), '#0ea5e9'); },
+      how: 'رأس المطرقة المنحني يرتكز على الخشب (المرتكز)، والمسمار (المقاومة) في الشق القريب، ويدك (القوة) في نهاية المقبض البعيدة.', life: 'يقلع النجار المسامير المغروسة بقوة صغيرة.' }),
+    /* ===== class 2 ===== */
+    barrow: LEV({ g: 'l2', n: 'عربة اليد', cls: 2, P: [['W', 'وزن التراب (المقاومة)', 'N', 200, 1200, 600, 50], ['d1', 'ذراع القوة d₁', 'cm', 110, 150, 140, 5], ['d2', 'ذراع المقاومة d₂', 'cm', 30, 90, 50, 5]], box: [-30, 220, -190, 25], amax: .16, a0: -.12, oy: .8,
+      bg(ctx, O, u, B) { ground(ctx, B.x0, B.x1, O[1] + 20 * u, { c1: '#a3a3a3', c2: '#525252' }); },
+      skin(ctx, u, v, S) { const tr = [[18, -8], [95, -8], [104, -40], [2, -40]]; ctx.fillStyle = met(ctx, 0, -40 * u, 0, -8 * u, '#4ade80', '#166534'); ctx.beginPath(); tr.forEach((p, i) => i ? ctx.lineTo(p[0] * u, p[1] * u) : ctx.moveTo(p[0] * u, p[1] * u)); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#14532d'; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.fillStyle = '#78350f'; ctx.beginPath(); ctx.moveTo(6 * u, -38 * u); ctx.quadraticCurveTo(52 * u, -40 * u - v.W / 30 * u, 100 * u, -38 * u); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = '#7c2d12'; ctx.lineWidth = 2.6 * u; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(152 * u, -2 * u); ctx.stroke(); ctx.lineCap = 'butt'; ctx.strokeStyle = '#475569'; ctx.lineWidth = 1.6 * u; ctx.beginPath(); ctx.moveTo(85 * u, -8 * u); ctx.lineTo(88 * u, 18 * u); ctx.stroke(); },
+      fore(ctx, O, u) { K.raw(ctx, () => { ctx.fillStyle = '#111827'; ctx.beginPath(); ctx.arc(O[0], O[1], 20 * u, 0, TAU); ctx.fill(); ctx.fillStyle = '#9ca3af'; ctx.beginPath(); ctx.arc(O[0], O[1], 12 * u, 0, TAU); ctx.fill(); ctx.fillStyle = '#334155'; ctx.beginPath(); ctx.arc(O[0], O[1], 3 * u, 0, TAU); ctx.fill(); }); },
+      eHand(ctx, P, u, O) { const gy = O[1] + 20 * u, H = 175 * u; Q24.person(ctx, { H, f: -1, hip: [P[0] + 40 * u, gy - 92 * u], neck: [P[0] + 34 * u, gy - 150 * u], hands: [[P[0] + 3, P[1]], P], feet: [[P[0] + 28 * u, gy], [P[0] + 58 * u, gy]], shirt: '#0ea5e9' }); },
+      how: 'محور العجلة هو المرتكز في طرف، والتراب (المقاومة) في الوسط، ويداك (القوة) في الطرف الآخر ترفعان إلى الأعلى ⟸ ربح قوة دائماً.', life: 'ينقل بها العمال الرمل والطابوق بقوة أصغر من وزنها.' }),
+    nut: LEV({ g: 'l2', n: 'كسارة البندق (الجوز)', cls: 2, pair: 1, o0: .3, o1: .12, P: [['W', 'مقاومة قشرة الجوزة', 'N', 50, 400, 200, 10], ['d1', 'ذراع القوة d₁', 'cm', 10, 18, 16, .5], ['d2', 'ذراع المقاومة d₂', 'cm', 2.5, 7, 4, .5]], box: [-3, 20, -6, 6], oy: .5, eDir: 1, lDir: -1,
+      half(ctx, u, v, up) { ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = .8 * u; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(19 * u, 0); ctx.stroke(); ctx.strokeStyle = '#475569'; ctx.lineWidth = 1; ctx.stroke(); ctx.strokeStyle = up ? '#b91c1c' : '#991b1b'; ctx.lineWidth = 1.2 * u; ctx.beginPath(); ctx.moveTo(10 * u, 0); ctx.lineTo(19 * u, 0); ctx.stroke(); ctx.lineCap = 'butt'; },
+      fore(ctx, O, u, v, S, M) { const op = M.o0 * (1 - S.q) + M.o1 * S.q, r = Math.max(.9, v.d2 * Math.tan(op / 2)) * u; const nc = [O[0] + v.d2 * u, O[1]];
+        K.raw(ctx, () => { const g = ctx.createRadialGradient(nc[0] - r * .3, nc[1] - r * .3, r * .1, nc[0], nc[1], r); g.addColorStop(0, '#d6a26a'); g.addColorStop(1, '#78350f'); ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(nc[0], nc[1], r * 1.05, r, 0, 0, TAU); ctx.fill(); if (S.q > .95) { ctx.strokeStyle = '#451a03'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(nc[0] - r, nc[1] - r * .2); ctx.lineTo(nc[0] - r * .2, nc[1] + r * .3); ctx.lineTo(nc[0] + r * .4, nc[1] - r * .4); ctx.lineTo(nc[0] + r, nc[1] + r * .1); ctx.stroke(); }
+          ctx.fillStyle = '#475569'; ctx.beginPath(); ctx.arc(O[0], O[1], .7 * u, 0, TAU); ctx.fill(); }); },
+      how: 'المفصل (المرتكز) في طرف، والجوزة (المقاومة) قريبة منه في الوسط، ويدك (القوة) في نهاية الذراعين ⟸ ربح قوة يكسر القشرة الصلبة.', life: 'تُستعمل لكسر الجوز والبندق في البيت.' }),
+    opener: LEV({ g: 'l2', n: 'مفتاح القناني (الفتّاحة)', cls: 2, P: [['W', 'مقاومة الغطاء', 'N', 20, 120, 60, 5], ['d1', 'ذراع القوة d₁', 'cm', 6, 14, 12, .5], ['d2', 'ذراع المقاومة d₂', 'cm', 1.5, 3.5, 2.5, .5]], box: [-6, 16, -9, 14], amax: .32, oy: .38,
+      bg(ctx, O, u, B, v, S) { const lift = v.d2 * Math.sin(S.q * .32) * u; K.raw(ctx, () => { const x0 = O[0] - 4 * u + v.d2 * u * .5; const g = ctx.createLinearGradient(x0 - 4 * u, 0, x0 + 4 * u, 0); g.addColorStop(0, '#14532d'); g.addColorStop(.4, '#4ade80'); g.addColorStop(1, '#14532d'); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x0 - 1.4 * u, O[1] + 1.4 * u); ctx.lineTo(x0 + 1.4 * u, O[1] + 1.4 * u); ctx.lineTo(x0 + 1.5 * u, O[1] + 5 * u); ctx.quadraticCurveTo(x0 + 3.6 * u, O[1] + 7 * u, x0 + 3.8 * u, O[1] + 14 * u); ctx.lineTo(x0 - 3.8 * u, O[1] + 14 * u); ctx.quadraticCurveTo(x0 - 3.6 * u, O[1] + 7 * u, x0 - 1.5 * u, O[1] + 5 * u); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#facc15'; ctx.strokeStyle = '#a16207'; ctx.save(); ctx.translate(x0 + 1.8 * u, O[1] + .9 * u); ctx.rotate(-S.q * .3); rr(ctx, -3.6 * u, -.6 * u, 3.6 * u, 1 * u, 2); ctx.fill(); ctx.stroke(); ctx.restore(); }); },
+      skin(ctx, u, v) { ctx.fillStyle = met(ctx, 0, -u, 0, u); rr(ctx, -.6 * u, -.5 * u, 15 * u, 1 * u, .4 * u); ctx.fill(); ctx.strokeStyle = '#334155'; ctx.lineWidth = 1; ctx.stroke(); ctx.fillStyle = '#9ca3af'; ctx.fillRect((v.d2 - .3) * u, .4 * u, .6 * u, .9 * u); ctx.fillStyle = '#7c2d12'; rr(ctx, 8 * u, -.9 * u, 6.8 * u, 1.8 * u, .6 * u); ctx.fill(); },
+      eHand(ctx, P, u) { hand(ctx, P[0], P[1] + 2, -Math.PI / 2, Math.min(1.3, u * .2), '#0ea5e9'); },
+      how: 'طرف الفتّاحة يرتكز على أعلى الغطاء (المرتكز)، وحافة الغطاء (المقاومة) قريبة منه، ويدك ترفع المقبض (القوة) ⟸ المقاومة في الوسط.', life: 'نفتح بها قناني المشروبات الغازية بسهولة.' }),
+    /* ===== class 3 ===== */
+    tweezers: LEV({ g: 'l3', n: 'الملقط', cls: 3, pair: 1, o0: .34, o1: .1, P: [['W', 'قبضة الجسم (المقاومة)', 'N', 1, 10, 3, .5], ['d1', 'ذراع القوة d₁', 'cm', 4, 10, 7, .5], ['d2', 'ذراع المقاومة d₂', 'cm', 14, 20, 18, .5]], box: [-2, 21, -5, 5], oy: .5, eDir: 1, lDir: -1,
+      half(ctx, u, v, up) { ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = .7 * u; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(20 * u, 0); ctx.stroke(); ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1; ctx.stroke(); ctx.strokeStyle = 'rgba(100,116,139,.6)'; ctx.lineWidth = .3 * u; for (let k = 0; k < 6; k++) { ctx.beginPath(); ctx.moveTo((5 + k * .7) * u, -.3 * u); ctx.lineTo((5 + k * .7) * u, .3 * u); ctx.stroke(); } ctx.lineCap = 'butt'; },
+      fore(ctx, O, u, v, S, M) { const op = M.o0 * (1 - S.q) + M.o1 * S.q, r = Math.max(.6, v.d2 * Math.tan(op / 2)) * u * .95; K.raw(ctx, () => { ctx.fillStyle = 'rgba(186,230,253,.9)'; ctx.strokeStyle = '#0284c7'; rr(ctx, O[0] + v.d2 * u - r, O[1] - r, 2 * r, 2 * r, 3); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#64748b'; ctx.beginPath(); ctx.arc(O[0], O[1], .8 * u, 0, TAU); ctx.fill(); }); },
+      how: 'المفصل (المرتكز) في طرف، وأصابعك (القوة) في الوسط، والجسم المُمسَك (المقاومة) عند الطرف الآخر ⟸ القوة في الوسط: ربح سرعة ودقة في الإمساك.', life: 'ملقط مكعبات الثلج والسكر، وملقط الخبز.' }),
+    stapler: LEV({ g: 'l3', n: 'الكابسة الورقية', cls: 3, P: [['W', 'مقاومة الورق', 'N', 5, 60, 30, 1], ['d1', 'ذراع القوة d₁', 'cm', 3, 12, 8, .5], ['d2', 'ذراع المقاومة d₂', 'cm', 14, 16, 15.5, .5]], box: [-3, 19, -8, 4], amax: .12, a0: -.12, sgn: 1, eDir: 1, lDir: -1, oy: .6,
+      bg(ctx, O, u, B) { K.raw(ctx, () => { ctx.fillStyle = '#1f2937'; rr(ctx, O[0] - 1.6 * u, O[1] + 1.2 * u, 18.6 * u, 1.4 * u, .5 * u); ctx.fill(); ctx.fillStyle = '#f8fafc'; ctx.strokeStyle = '#94a3b8'; ctx.fillRect(O[0] + 10 * u, O[1] + .6 * u, 9 * u, .6 * u); ctx.strokeRect(O[0] + 10 * u, O[1] + .6 * u, 9 * u, .6 * u); ctx.fillStyle = '#334155'; rr(ctx, O[0] - 1.2 * u, O[1] - .6 * u, 2.4 * u, 2 * u, 3); ctx.fill(); }); },
+      skin(ctx, u) { const g = ctx.createLinearGradient(0, -1.4 * u, 0, .4 * u); g.addColorStop(0, '#f87171'); g.addColorStop(1, '#991b1b'); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-1 * u, .4 * u); ctx.quadraticCurveTo(-1.6 * u, -1.3 * u, 1 * u, -1.4 * u); ctx.lineTo(16 * u, -1.2 * u); ctx.quadraticCurveTo(17 * u, -1 * u, 16.3 * u, .5 * u); ctx.lineTo(-1 * u, .5 * u); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#7f1d1d'; ctx.lineWidth = 1; ctx.stroke(); ctx.fillStyle = '#cbd5e1'; ctx.beginPath(); ctx.arc(0, 0, .4 * u, 0, TAU); ctx.fill(); },
+      eHand(ctx, P, u) { LV.finger(ctx, P[0], P[1] - 3, [0, 1], u * .7); },
+      how: 'المفصل الخلفي (المرتكز) في طرف، والدبوس (المقاومة) في المقدمة، وإصبعك (القوة) في الوسط ⟸ النوع الثالث (مراجعة الدرس س1).', life: 'نثبّت بها أوراق الواجبات معاً.' }),
+    broom: LEV({ g: 'l3', n: 'المكنسة', cls: 3, P: [['W', 'مقاومة الغبار والأرض', 'N', 2, 20, 6, 1], ['d1', 'ذراع القوة d₁', 'cm', 30, 70, 50, 5], ['d2', 'ذراع المقاومة d₂', 'cm', 110, 130, 125, 5]], box: [-30, 120, -20, 115], amax: .22, a0: .85, oy: .2,
+      bg(ctx, O, u, B) { ground(ctx, B.x0, B.x1, O[1] + 103 * u, { c1: '#e7e5e4', c2: '#a8a29e' }); },
+      skin(ctx, u) { ctx.strokeStyle = '#b45309'; ctx.lineWidth = 2.4 * u; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-6 * u, 0); ctx.lineTo(118 * u, 0); ctx.stroke(); ctx.lineCap = 'butt'; ctx.fillStyle = '#fde047'; ctx.strokeStyle = '#a16207'; ctx.beginPath(); ctx.moveTo(112 * u, -4 * u); ctx.lineTo(134 * u, -14 * u); ctx.lineTo(136 * u, 12 * u); ctx.lineTo(112 * u, 4 * u); ctx.closePath(); ctx.fill(); ctx.stroke(); },
+      oHand(ctx, O, u) { hand(ctx, O[0] - 2, O[1], -Math.PI / 2 + .85, Math.min(1.4, u * .45), '#7c3aed'); },
+      eHand(ctx, P, u, O, phi) { hand(ctx, P[0], P[1], phi - Math.PI / 2, Math.min(1.4, u * .45), '#7c3aed'); },
+      how: 'اليد العليا ثابتة تقريباً (المرتكز)، واليد السفلى تدفع (القوة) في الوسط، والفرشاة (المقاومة) في الطرف ⟸ ربح سرعة: الفرشاة تتحرك مسافة كبيرة بحركة صغيرة من يدك.', life: 'كنس أرض الصف والبيت، وكذلك مجرفة الثلج والمضرب.' }),
+    rod: LEV({ g: 'l3', n: 'صنّارة صيد السمك', cls: 3, P: [['W', 'وزن السمكة', 'N', 2, 30, 10, 1], ['d1', 'ذراع القوة d₁', 'cm', 30, 70, 50, 5], ['d2', 'ذراع المقاومة d₂', 'cm', 170, 200, 200, 5]], box: [-20, 200, -150, 80], amax: .25, a0: -.45, oy: .72,
+      bg(ctx, O, u, B) { K.raw(ctx, () => { const g = ctx.createLinearGradient(0, O[1] + 20 * u, 0, B.y1); g.addColorStop(0, '#38bdf8'); g.addColorStop(1, '#0c4a6e'); ctx.fillStyle = g; ctx.fillRect(O[0] + 60 * u, O[1] + 20 * u, B.x1 - O[0] - 60 * u, B.y1 - O[1] - 20 * u); }); Q24.wood(ctx, B.x0, O[1] + 12 * u, O[0] + 60 * u - B.x0, 10 * u); },
+      skin(ctx, u, v) { const g = ctx.createLinearGradient(0, 0, 200 * u, 0); g.addColorStop(0, '#1e293b'); g.addColorStop(1, '#94a3b8'); ctx.strokeStyle = g; ctx.lineCap = 'round'; ctx.lineWidth = 2.6 * u; ctx.beginPath(); ctx.moveTo(-10 * u, 0); ctx.lineTo(60 * u, 0); ctx.stroke(); ctx.lineWidth = 1.2 * u; ctx.beginPath(); ctx.moveTo(60 * u, 0); ctx.lineTo(202 * u, 0); ctx.stroke(); ctx.lineCap = 'butt'; ctx.fillStyle = '#334155'; ctx.beginPath(); ctx.arc(8 * u, 3 * u, 3 * u, 0, TAU); ctx.fill(); },
+      fore(ctx, O, u, v, S, M, X) { const T = X(v.d2, 0); K.raw(ctx, () => { ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(T[0], T[1]); ctx.lineTo(T[0], T[1] + 40 * u); ctx.stroke(); ctx.save(); ctx.translate(T[0], T[1] + 40 * u + 16 + v.W / 2); ctx.rotate(Math.PI / 2); const s = 12 + v.W / 2; const g = ctx.createLinearGradient(0, -s / 2, 0, s / 2); g.addColorStop(0, '#94a3b8'); g.addColorStop(1, '#e2e8f0'); ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(0, 0, s, s * .38, 0, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.moveTo(s * .9, 0); ctx.lineTo(s * 1.4, -s * .35); ctx.lineTo(s * 1.4, s * .35); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#111827'; ctx.beginPath(); ctx.arc(-s * .6, -s * .08, s * .07, 0, TAU); ctx.fill(); ctx.restore(); }); },
+      oHand(ctx, O, u) { hand(ctx, O[0] + 2, O[1] + 4, -.45 - Math.PI / 2, Math.min(1.3, u * .5), '#16a34a'); },
+      eHand(ctx, P, u, O, phi) { hand(ctx, P[0], P[1], phi - Math.PI / 2, Math.min(1.3, u * .5), '#16a34a'); },
+      how: 'نهاية الصنارة عند الخصر (المرتكز)، واليد الأمامية ترفع (القوة) في الوسط، والسمكة (المقاومة) في الطرف البعيد ⟸ ربح سرعة: طرف الصنارة يقطع مسافة كبيرة بسرعة.', life: 'حركة صغيرة من اليد تقذف الخيط بعيداً وترفع السمكة بسرعة.' }),
+    arm: LEV({ g: 'l3', n: 'ذراع الإنسان (الساعد)', cls: 3, P: [['W', 'وزن الكرة في اليد', 'N', 5, 50, 20, 1], ['d1', 'ذراع القوة d₁ (العضلة)', 'cm', 3, 6, 4, .5], ['d2', 'ذراع المقاومة d₂', 'cm', 30, 36, 33, 1]], box: [-12, 42, -40, 10], amax: .5, oy: .7,
+      bg(ctx, O, u, B, v, S, M, X) { const sh = [O[0] - 3 * u, O[1] - 32 * u]; K.raw(ctx, () => { ctx.lineCap = 'round'; ctx.strokeStyle = '#0ea5e9'; ctx.lineWidth = 9 * u; ctx.beginPath(); ctx.moveTo(sh[0], sh[1] - 6 * u); ctx.lineTo(sh[0], sh[1] + 6 * u); ctx.stroke(); ctx.strokeStyle = skinC; ctx.lineWidth = 6.5 * u; ctx.beginPath(); ctx.moveTo(sh[0], sh[1] + 6 * u); ctx.lineTo(O[0], O[1]); ctx.stroke();
+        const bp = X(v.d1, -1.4); ctx.fillStyle = 'rgba(220,38,38,.6)'; ctx.beginPath(); ctx.moveTo(sh[0] + 1 * u, sh[1] + 4 * u); ctx.quadraticCurveTo(sh[0] + 8 * u, (sh[1] + bp[1]) / 2, bp[0], bp[1]); ctx.quadraticCurveTo(sh[0] + 2 * u, (sh[1] + bp[1]) / 2, sh[0] - 1 * u, sh[1] + 4 * u); ctx.fill(); ctx.lineCap = 'butt'; }); tag(ctx, 'العضلة', sh[0] + 12 * u, sh[1] + 12 * u, '#b91c1c'); },
+      skin(ctx, u, v) { ctx.strokeStyle = skinC; ctx.lineCap = 'round'; ctx.lineWidth = 5 * u; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(32 * u, 0); ctx.stroke(); ctx.lineCap = 'butt'; K.ball(ctx, v.d2 * u + 1.5 * u, -4.3 * u, (2.6 + v.W / 25) * u, '#f97316'); ctx.fillStyle = skinC; ctx.beginPath(); ctx.ellipse(v.d2 * u, -1 * u, 3 * u, 2 * u, 0, 0, TAU); ctx.fill(); },
+      fore(ctx, O, u) { K.raw(ctx, () => { ctx.fillStyle = '#e5e7eb'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(O[0], O[1], 1.6 * u, 0, TAU); ctx.fill(); ctx.stroke(); }); },
+      how: 'المرفق هو المرتكز، والعضلة تسحب الساعد (القوة) قريباً من المرفق، والكرة في اليد (المقاومة) بعيدة ⟸ القوة في الوسط: العضلة تبذل قوة كبيرة لكن اليد تتحرك بسرعة.', life: 'عندما ترفع حقيبتك أو تقذف كرة تعمل ذراعك كعتلة من النوع الثالث.' })
+  };
+  /* ---------------- inclined plane & relatives ---------------- */
+  Object.assign(M, {
+    ramp: { g: 'inc', n: 'السطح المائل (المنحدر)', type: 'سطح مائل', P: [['W', 'وزن الصندوق (المقاومة)', 'N', 100, 1000, 500, 50], ['L', 'طول السطح المائل L', 'm', 2, 20, 5, .5], ['h', 'الارتفاع h', 'm', .5, 4, 1, .1]],
+      calc(v) { const h = Math.min(v.h, v.L * .9), MA = v.L / h, F = v.W / MA; return { F, W: v.W, MA, eq: ['M.A = Load ÷ Force = L ÷ h', 'M.A = ' + nf(v.L) + ' ÷ ' + nf(h) + ' = ' + nf(MA), 'F = W ÷ M.A = ' + nf(v.W) + ' ÷ ' + nf(MA) + ' = ' + nf(F) + ' N'] }; },
+      geo(B, v) { const h = Math.min(v.h, v.L * .9), base = Math.sqrt(v.L * v.L - h * h); const k = Math.min((B.x1 - B.x0 - 120) / base, (B.y1 - B.y0 - 70) / Math.max(h, base * .25)); const x0 = B.x0 + 30, yb = B.y1 - 24; return { h, base, k, A: [x0, yb], T: [x0 + base * k, yb - h * k], yb }; },
+      draw(ctx, B, S, v, c) { const G2 = M.ramp.geo(B, v), A = G2.A, T = G2.T; ground(ctx, B.x0, B.x1, G2.yb, { c1: '#a3a3a3', c2: '#525252' });
+        K.raw(ctx, () => { ctx.fillStyle = met(ctx, 0, T[1], 0, A[1], '#bae6fd', '#0369a1'); ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(T[0], T[1]); ctx.lineTo(T[0], A[1]); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#0c4a6e'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.fillStyle = '#94a3b8'; ctx.fillRect(T[0], T[1], B.x1 - T[0] - 6, A[1] - T[1]); });
+        const s = S.q, ang = Math.atan2(A[1] - T[1], T[0] - A[0]), bx = lerp(A[0], T[0], .08 + .8 * s), by = lerp(A[1], T[1], .08 + .8 * s), bs = clamp(22 + v.W / 30, 26, 52);
+        K.raw(ctx, () => { ctx.save(); ctx.translate(bx, by); ctx.rotate(-ang); Q24.wood(ctx, -bs / 2, -bs, bs, bs, { c1: '#d6a26a', c2: '#92400e' }); ctx.strokeStyle = '#78350f'; ctx.beginPath(); ctx.moveTo(-bs / 2, -bs); ctx.lineTo(bs / 2, 0); ctx.stroke(); ctx.restore(); });
+        const hx = bx - Math.cos(ang) * bs * .6 - Math.sin(ang) * bs * .5, hy = by + Math.sin(ang) * bs * .6 - Math.cos(ang) * bs * .5; const H = clamp(bs * 3.4, 90, 150);
+        Q24.person(ctx, { H, f: 1, hip: [hx - H * .3, hy + H * .02], neck: [hx - H * .14, hy - H * .3], hands: [[hx, hy - 3], [hx + 2, hy]], feet: [[hx - H * .55, hy + H * .45 + Math.sin(ang) * H * .2], [hx - H * .35, hy + H * .43 + Math.sin(ang) * H * .1]], shirt: '#f59e0b' });
+        if (S.p.arms !== false) { Q24.dim(ctx, A[0], A[1], T[0], T[1], 'L = ' + nf(v.L) + ' m', '#7c3aed', 30); Q24.dim(ctx, T[0], A[1], T[0], T[1], 'h = ' + nf(G2.h) + ' m', '#0f766e', -26); }
+        const ux = Math.cos(ang), uy = -Math.sin(ang); Q24.F(ctx, bx + ux * bs * .7, by + uy * bs * .7 - bs * .5, ux * 46, uy * 46, '', '#dc2626', 4); tag(ctx, 'القوة F = ' + nf(c.F) + ' N', bx + ux * 80, by + uy * 80 - bs, '#dc2626');
+        Q24.F(ctx, bx, by - bs / 2, 0, clamp(c.W / 10, 30, 80), '', '#15803d', 4); tag(ctx, 'W = ' + nf(c.W) + ' N', bx + 50, by + 30, '#15803d'); },
+      op(B, S, v) { const G2 = M.ramp.geo(B, v); const s = S.q, bx = lerp(G2.A[0], G2.T[0], .08 + .8 * s), by = lerp(G2.A[1], G2.T[1], .08 + .8 * s); return { x: bx, y: by - 20, r: 40, dir: Math.atan2(G2.T[1] - G2.A[1], G2.T[0] - G2.A[0]), scale: Math.hypot(G2.T[0] - G2.A[0], G2.T[1] - G2.A[1]) * .8 }; },
+      dist(S, v) { const h = Math.min(v.h, v.L * .9); return [S.q * .8 * v.L * 100, S.q * .8 * h * 100]; },
+      how: 'بدل رفع الصندوق رأسياً بقوة تساوي وزنه، ندفعه على سطح مائل طويل بقوة أصغر. كلما زادت نسبة الطول إلى الارتفاع (L ÷ h) قلّت القوة.', life: 'منحدرات الكراسي المتحركة، ولوح تحميل البضائع في الشاحنات، والطرق الجبلية المتعرجة.' },
+    wedge: { g: 'inc', n: 'الأسفين (الوتد) والمطرقة — شكل 3', type: 'أسفين: سطحان مائلان متقابلان', P: [['F', 'قوة الطرق (القوة)', 'N', 50, 500, 200, 10], ['l', 'طول الأسفين', 'cm', 4, 20, 12, 1], ['t', 'سمك الأسفين', 'cm', 1, 6, 3, .5]], wk: 'wedge',
+      calc(v) { const MA = v.l / v.t, W = v.F * MA; return { F: v.F, W, MA, eq: ['M.A ≈ طول الأسفين ÷ سمكه', 'M.A = ' + nf(v.l) + ' ÷ ' + nf(v.t) + ' = ' + nf(MA), 'قوة الشق = ' + nf(v.F) + ' × ' + nf(MA) + ' = ' + nf(W) + ' N'] }; },
+      draw(ctx, B, S, v, c, me) { const cx = (B.x0 + B.x1) / 2, top = B.y0 + 130, k = Math.min(8, (B.y1 - top - 20) / 26), dep = S.q * v.l * .8, gap = dep * v.t / v.l;
+        const logT = top + 6 * k, logB = B.y1 - 10; K.raw(ctx, () => { [-1, 1].forEach(sg => { ctx.save(); ctx.translate(cx + sg * gap * k / 2, 0); const g = ctx.createLinearGradient(-120, 0, 120, 0); g.addColorStop(0, '#a16207'); g.addColorStop(.5, '#e7b56c'); g.addColorStop(1, '#a16207'); ctx.fillStyle = g; ctx.beginPath(); if (sg < 0) { ctx.moveTo(0, logT); ctx.lineTo(-110, logT); ctx.lineTo(-110, logB); ctx.lineTo(0, logB); } else { ctx.moveTo(0, logT); ctx.lineTo(110, logT); ctx.lineTo(110, logB); ctx.lineTo(0, logB); } ctx.closePath(); ctx.fill(); ctx.strokeStyle = 'rgba(120,53,15,.5)'; for (let y = logT + 12; y < logB; y += 14) { ctx.beginPath(); ctx.moveTo(sg * 4, y); ctx.lineTo(sg * 106, y + 3); ctx.stroke(); } ctx.restore(); }); });
+        const tipY = logT + dep * k, L = v.l * k, T2 = Math.max(3, v.t * k / 2);
+        if (me.wk === 'axe') K.raw(ctx, () => { ctx.fillStyle = '#92400e'; rr(ctx, cx - 4, tipY - L - 150, 8, 150, 3); ctx.fill(); });
+        K.raw(ctx, () => { ctx.fillStyle = met(ctx, cx - T2, 0, cx + T2, 0, '#f1f5f9', '#475569'); ctx.beginPath(); ctx.moveTo(cx, tipY); ctx.lineTo(cx - T2, tipY - L); ctx.lineTo(cx + T2, tipY - L); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1; ctx.stroke(); if (me.wk === 'knife') { ctx.fillStyle = '#111827'; rr(ctx, cx - T2 - 2, tipY - L - 60, T2 * 2 + 4, 60, 4); ctx.fill(); } });
+        if (me.wk === 'wedge') K.raw(ctx, () => { const hy = tipY - L - 18 - (1 - S.q) * 20 * Math.abs(Math.sin(S.t * 3)); ctx.save(); ctx.translate(cx, hy); ctx.rotate(-.5); ctx.fillStyle = '#92400e'; rr(ctx, 0, -4, 110, 8, 3); ctx.fill(); ctx.fillStyle = met(ctx, -14, -12, -14, 12); rr(ctx, -14, -14, 28, 28, 3); ctx.fill(); ctx.restore(); });
+        Q24.F(ctx, cx + T2 + 30, tipY - L - 40, 0, 46, '', '#dc2626', 4); tag(ctx, 'القوة F = ' + nf(c.F) + ' N', cx + T2 + 100, tipY - L - 24, '#dc2626');
+        Q24.F(ctx, cx - T2 - 4, tipY - L * .45, -44, 0, '', '#15803d', 4); Q24.F(ctx, cx + T2 + 4, tipY - L * .45, 44, 0, '', '#15803d', 4); tag(ctx, 'قوة الشق ' + nf(c.W) + ' N', cx - 120, tipY - L * .45 - 18, '#15803d');
+        Q24.dim(ctx, cx + T2 + 6, tipY - L, cx + T2 + 6, tipY, 'الطول ' + nf(v.l) + ' cm', '#7c3aed', -40); Q24.dim(ctx, cx - T2, tipY - L - 4, cx + T2, tipY - L - 4, 'السمك ' + nf(v.t), '#0f766e', -16); },
+      op(B, S, v) { const cx = (B.x0 + B.x1) / 2, top = B.y0 + 130, k = Math.min(8, (B.y1 - top - 20) / 26); const tipY = top + 6 * k + S.q * v.l * .8 * k; return { x: cx, y: tipY - v.l * k / 2, r: 40, dir: Math.PI / 2, scale: v.l * .8 * k }; },
+      dist(S, v) { return [S.q * v.l * .8, S.q * v.l * .8 * v.t / v.l]; },
+      how: 'الأسفين سطحان مائلان متقابلان: الطرق إلى الأسفل يتحول إلى قوتين كبيرتين على الجانبين تشقّان الخشب. كلما كان أرقّ وأطول (طوله ÷ سمكه أكبر) احتجنا قوة أقل.', life: 'شق جذوع الأشجار، ورأس المسمار المدبب يجعل دخوله في الخشب أسهل (ص 50).' }
+  });
+  M.axe = Object.assign({}, M.wedge, { n: 'الفأس', wk: 'axe', how: 'نصل الفأس أسفين: سطحان مائلان متقابلان. الضربة الهابطة تتحول إلى قوتين جانبيتين كبيرتين تفلقان الخشب.', life: 'الحطّاب يشق الحطب بالفأس، والفؤوس الحادة الرقيقة تقطع أفضل (ص 50).' });
+  M.knife = Object.assign({}, M.wedge, { n: 'السكين', wk: 'knife', P: [['F', 'ضغط اليد (القوة)', 'N', 5, 100, 30, 1], ['l', 'عرض النصل', 'cm', 1, 4, 2.5, .5], ['t', 'سمك حافة النصل', 'cm', .05, 1, .2, .05]], how: 'حافة السكين أسفين رقيق جداً: سمكه صغير مقارنة بعرضه فتصبح الفائدة الميكانيكية كبيرة، لذلك تقطع السكين الحادة أفضل كلما كانت حافتها أرقّ (ص 50).', life: 'نشحذ السكين لنجعل حافتها أرقّ فتقطع بقوة أقل.' });
+  Object.assign(M, {
+    screw: { g: 'inc', n: 'البريمة (البرغي) والمفك', type: 'بريمة: سطح مائل ملفوف حول أسطوانة', P: [['W', 'مقاومة الخشب', 'N', 100, 2000, 800, 50], ['R', 'نصف قطر مقبض المفك', 'cm', .8, 3, 1.6, .1], ['p', 'درجة البريمة (المسافة بين لفتين)', 'cm', .1, .6, .25, .05]], rot: 1,
+      calc(v) { const MA = 2 * Math.PI * v.R / v.p, F = v.W / MA; return { F, W: v.W, MA, eq: ['في لفة واحدة: تقطع اليد 2πR ويتقدم البرغي درجة واحدة p', 'M.A = 2πR ÷ p = ' + nf(2 * Math.PI * v.R) + ' ÷ ' + nf(v.p) + ' = ' + nf(MA), 'F = ' + nf(v.W) + ' ÷ ' + nf(MA) + ' = ' + nf(F) + ' N'] }; },
+      draw(ctx, B, S, v, c) { const cx = (B.x0 + B.x1) / 2, k = 9, adv = (S.rot / TAU) * v.p * k * 4; const wy = B.y1 - 70; Q24.wood(ctx, cx - 170, wy, 340, 70, { c1: '#e7b56c', c2: '#92400e' });
+        const tipY = wy + 10 + Math.min(adv, 50), sl = 150, r = 9; K.raw(ctx, () => { ctx.save(); ctx.beginPath(); ctx.rect(cx - 30, B.y0, 60, wy - B.y0 + 70); ctx.clip();
+          ctx.fillStyle = met(ctx, cx - r, 0, cx + r, 0, '#f1f5f9', '#64748b'); ctx.beginPath(); ctx.moveTo(cx, tipY + 14); ctx.lineTo(cx - r, tipY - 10); ctx.lineTo(cx - r, tipY - sl); ctx.lineTo(cx + r, tipY - sl); ctx.lineTo(cx + r, tipY - 10); ctx.closePath(); ctx.fill();
+          const pitch = clamp(v.p * k * 4, 5, 26), ph = (S.rot / TAU) * pitch % pitch; ctx.strokeStyle = '#334155'; ctx.lineWidth = 1.6; for (let y = tipY - sl + ph; y < tipY + 4; y += pitch) { ctx.beginPath(); ctx.moveTo(cx - r - 4, y); ctx.lineTo(cx + r + 4, y - pitch * .5); ctx.stroke(); } ctx.restore();
+          ctx.fillStyle = met(ctx, cx - 26, 0, cx + 26, 0, '#e2e8f0', '#475569'); rr(ctx, cx - 26, tipY - sl - 10, 52, 12, 4); ctx.fill(); });
+        const hr = clamp(v.R * 22, 18, 64), hy = tipY - sl - 60; K.raw(ctx, () => { ctx.fillStyle = '#94a3b8'; ctx.fillRect(cx - 4, hy, 8, 50); ctx.fillStyle = met(ctx, cx - hr, 0, cx + hr, 0, '#fca5a5', '#991b1b'); rr(ctx, cx - hr, hy - 70, hr * 2, 72, hr * .4); ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 2; for (let k2 = 0; k2 < 5; k2++) { const xx = cx + Math.sin(S.rot + k2 * 1.26) * hr * .8; if (Math.cos(S.rot + k2 * 1.26) > 0) { ctx.beginPath(); ctx.moveTo(xx, hy - 64); ctx.lineTo(xx, hy - 6); ctx.stroke(); } } });
+        Q24.dim(ctx, cx - hr, hy - 80, cx + hr, hy - 80, 'R ', '#dc2626', 0); M.screw._c = [cx, hy - 35, hr]; tag(ctx, 'درجة البريمة p = ' + nf(v.p) + ' cm', cx + 120, wy - 30, '#0f766e'); tag(ctx, 'دوّر المقبض ⟳', cx - hr - 70, hy - 35, '#7c3aed');
+        tag(ctx, 'القوة F = ' + nf(c.F) + ' N (عند حافة المقبض)', cx + hr + 110, hy - 50, '#dc2626'); tag(ctx, 'المقاومة W = ' + nf(c.W) + ' N', cx + 120, wy + 40, '#15803d'); },
+      op(B, S, v) { const c = M.screw._c || [(B.x0 + B.x1) / 2, B.y0 + 60, 30]; return { x: c[0], y: c[1], r: Math.max(40, c[2] + 10), cx: c[0], cy: c[1] + 400 }; },
+      dist(S, v) { return [Math.abs(S.rot) * v.R, Math.abs(S.rot) / TAU * v.p]; },
+      how: 'البريمة سطح مائل ملفوف حول أسطوانة. في كل لفة كاملة تقطع يدك محيط المقبض (2πR) بينما يتقدم البرغي مسافة صغيرة جداً هي درجة البريمة ⟸ ربح قوة كبير. كلما صغرت الدرجة زادت الفائدة.', life: 'البراغي، وأغطية القناني والعلب، والمثقب (شكل 2 ص 50).' },
+    jack: { g: 'inc', n: 'رافعة السيارة اللولبية', type: 'بريمة (سطح مائل ملفوف) + ذراع دوران', P: [['W', 'ثقل السيارة على الرافعة', 'N', 2000, 8000, 5000, 500], ['R', 'طول ذراع التدوير R', 'cm', 10, 40, 25, 1], ['p', 'درجة البريمة p', 'cm', .2, 1, .5, .1]], rot: 1,
+      calc(v) { const MA = 2 * Math.PI * v.R / v.p, F = v.W / MA; return { F, W: v.W, MA, eq: ['M.A = 2πR ÷ p = ' + nf(2 * Math.PI * v.R) + ' ÷ ' + nf(v.p) + ' = ' + nf(MA), 'F = W ÷ M.A = ' + nf(v.W) + ' ÷ ' + nf(MA) + ' = ' + nf(F) + ' N'] }; },
+      draw(ctx, B, S, v, c) { const cx = B.x0 + (B.x1 - B.x0) * .42, gy = B.y1 - 20, lift = clamp(S.rot / TAU * v.p * 3, 0, 60); ground(ctx, B.x0, B.x1, gy, { c1: '#737373', c2: '#404040' });
+        const top = gy - 90 - lift; K.raw(ctx, () => { ctx.fillStyle = met(ctx, cx - 40, 0, cx + 40, 0, '#fde68a', '#b45309'); ctx.beginPath(); ctx.moveTo(cx - 44, gy); ctx.lineTo(cx + 44, gy); ctx.lineTo(cx + 20, gy - 40); ctx.lineTo(cx - 20, gy - 40); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = met(ctx, cx - 10, 0, cx + 10, 0, '#f1f5f9', '#475569'); ctx.fillRect(cx - 10, top, 20, gy - 40 - top); ctx.strokeStyle = '#334155'; ctx.lineWidth = 1.4; const pitch = 8, ph = (S.rot * 3) % pitch; for (let y = top + ph; y < gy - 40; y += pitch) { ctx.beginPath(); ctx.moveTo(cx - 10, y); ctx.lineTo(cx + 10, y - 4); ctx.stroke(); }
+          ctx.fillStyle = '#334155'; rr(ctx, cx - 24, top - 8, 48, 10, 3); ctx.fill(); });
+        K.raw(ctx, () => { const cy0 = top - 10, x0 = cx - 150, x1 = B.x1 + 60; const g = ctx.createLinearGradient(0, cy0 - 110, 0, cy0); g.addColorStop(0, '#60a5fa'); g.addColorStop(1, '#1e3a8a'); ctx.fillStyle = g;
+          ctx.beginPath(); ctx.moveTo(x0, cy0 - 8); ctx.lineTo(x0 - 6, cy0 - 48); ctx.quadraticCurveTo(x0, cy0 - 62, x0 + 60, cy0 - 64); ctx.lineTo(x0 + 120, cy0 - 66); ctx.quadraticCurveTo(x0 + 160, cy0 - 118, x0 + 230, cy0 - 120); ctx.lineTo(x1, cy0 - 120); ctx.lineTo(x1, cy0 - 8); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = 'rgba(224,242,254,.9)'; ctx.beginPath(); ctx.moveTo(x0 + 134, cy0 - 70); ctx.quadraticCurveTo(x0 + 168, cy0 - 110, x0 + 226, cy0 - 112); ctx.lineTo(x0 + 226, cy0 - 70); ctx.closePath(); ctx.fill(); ctx.fillRect(x0 + 236, cy0 - 112, 90, 42);
+          ctx.fillStyle = '#fde047'; ctx.fillRect(x0 - 6, cy0 - 46, 10, 10); ctx.fillStyle = '#0f172a'; ctx.fillRect(x0, cy0 - 12, x1 - x0, 6);
+          const wx = x0 + 70, wy = cy0 + 14; ctx.fillStyle = '#111827'; ctx.beginPath(); ctx.arc(wx, wy, 32, 0, TAU); ctx.fill(); ctx.fillStyle = '#9ca3af'; ctx.beginPath(); ctx.arc(wx, wy, 17, 0, TAU); ctx.fill(); ctx.fillStyle = '#e5e7eb'; ctx.beginPath(); ctx.arc(wx, wy, 6, 0, TAU); ctx.fill(); });
+        const hx = cx - 70, hy = gy - 60, Rp = clamp(v.R * 2.6, 30, 100); M.jack._c = [cx, hy, Rp]; const ex = cx + Math.cos(S.rot) * Rp, ey = hy + Math.sin(S.rot) * Rp * .35;
+        K.raw(ctx, () => { ctx.strokeStyle = '#475569'; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(cx, hy); ctx.lineTo(ex, ey); ctx.stroke(); ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 10; ctx.beginPath(); ctx.moveTo(ex - (ex - cx) * .12, ey - (ey - hy) * .12); ctx.lineTo(ex, ey); ctx.stroke(); ctx.lineCap = 'butt'; ctx.strokeStyle = 'rgba(124,58,237,.5)'; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.ellipse(cx, hy, Rp, Rp * .35, 0, 0, TAU); ctx.stroke(); ctx.setLineDash([]); });
+        hand(ctx, ex, ey, -Math.PI / 2, 1);
+        tag(ctx, 'R = ' + nf(v.R) + ' cm', cx - Rp - 30, hy, '#7c3aed'); tag(ctx, 'القوة F = ' + nf(c.F) + ' N', ex + 40, ey - 46, '#dc2626'); tag(ctx, 'ثقل السيارة W = ' + nf(c.W) + ' N', B.x1 - 120, top - 140, '#15803d'); Q24.F(ctx, cx + 60, top - 130, 0, 50, '', '#15803d', 4); },
+      op(B, S, v) { const c = M.jack._c || [B.x0 + 200, B.y1 - 80, 60]; return { x: c[0] + Math.cos(S.rot) * c[2], y: c[1] + Math.sin(S.rot) * c[2] * .35, r: 34, cx: c[0], cy: c[1] }; },
+      dist(S, v) { return [Math.abs(S.rot) * v.R, Math.abs(S.rot) / TAU * v.p]; },
+      how: 'الرافعة اللولبية بريمة: ندوّر الذراع دورة كاملة (مسافة كبيرة 2πR) فيرتفع العمود درجة واحدة فقط ⟸ ربح قوة هائل يرفع السيارة بقوة اليد.', life: 'نستعملها لتبديل إطار السيارة.' }
+  });
+  /* ---------------- wheel and axle ---------------- */
+  const WA = (o) => Object.assign({ g: 'wa', type: 'عجلة ومحور', rot: 1,
+    calc(v) { const MA = v.R / v.r, F = v.W / MA; return { F, W: v.W, MA, eq: ['F × R = W × r', 'M.A = R ÷ r = ' + nf(v.R) + ' ÷ ' + nf(v.r) + ' = ' + nf(MA), 'F = ' + nf(v.W) + ' × ' + nf(v.r) + ' ÷ ' + nf(v.R) + ' = ' + nf(F) + ' N'] }; },
+    dist(S, v) { return [Math.abs(S.rot) * v.R, Math.abs(S.rot) * v.r]; },
+    geoW(B, v) { const cx = B.x0 + (B.x1 - B.x0) * .45, cy = (B.y0 + B.y1) / 2 + 10, k = Math.min((B.y1 - B.y0) * .42, (B.x1 - B.x0) * .3) / this.P[1][4]; return { cx, cy, Rp: v.R * k, rp: Math.max(5, v.r * k), k }; },
+    op(B, S, v) { const G2 = this.geoW(B, v); return { x: G2.cx + Math.cos(S.rot - Math.PI / 2) * G2.Rp, y: G2.cy + Math.sin(S.rot - Math.PI / 2) * G2.Rp, r: 34, cx: G2.cx, cy: G2.cy }; },
+    common(ctx, B, S, v, c, G2, o = {}) { const e = [G2.cx + Math.cos(S.rot - Math.PI / 2) * G2.Rp, G2.cy + Math.sin(S.rot - Math.PI / 2) * G2.Rp], ta = S.rot; const tx = Math.cos(ta), ty = Math.sin(ta);
+      if (o.hand !== false) hand(ctx, e[0] - tx * 4, e[1] - ty * 4, ta, .9);
+      Q24.F(ctx, e[0] - tx * 4, e[1] - ty * 4, tx * 52, ty * 52, '', '#dc2626', 4); tag(ctx, 'القوة F = ' + nf(c.F) + ' N', e[0] + tx * 70, e[1] + ty * 70 - 14, '#dc2626');
+      const lp = [G2.cx - G2.rp, G2.cy]; Q24.F(ctx, lp[0], lp[1] - 4, 0, 40, '', '#15803d', 4); tag(ctx, 'المقاومة W = ' + nf(c.W) + ' N', lp[0] - 70, lp[1] + 50, '#15803d');
+      Q24.dim(ctx, G2.cx, G2.cy, e[0], e[1], 'R = ' + nf(v.R) + ' cm', '#7c3aed', 0); K.raw(ctx, () => { ctx.strokeStyle = '#0f766e'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(G2.cx, G2.cy); ctx.lineTo(lp[0], lp[1]); ctx.stroke(); }); tag(ctx, 'r = ' + nf(v.r) + ' cm', G2.cx - G2.rp / 2, G2.cy - 16, '#0f766e', { s: 10.5 });
+      tag(ctx, o.wl || 'العجلة', G2.cx + G2.Rp * .7, G2.cy + G2.Rp * .85, '#6d28d9'); tag(ctx, o.al || 'المحور', G2.cx + G2.Rp * .55, G2.cy - G2.Rp * .55, '#0f766e'); } }, o);
+  Object.assign(M, {
+    steer: WA({ n: 'عجلة قيادة السيارة — شكل 4', P: [['W', 'مقاومة دوران العجلات', 'N', 100, 1000, 400, 10], ['R', 'نصف قطر العجلة R', 'cm', 15, 25, 19, 1], ['r', 'نصف قطر المحور r', 'cm', 1, 5, 2, .5]],
+      draw(ctx, B, S, v, c) { const G2 = this.geoW(B, v); K.raw(ctx, () => { const dg = ctx.createLinearGradient(0, G2.cy + G2.Rp * .55, 0, B.y1); dg.addColorStop(0, '#94a3b8'); dg.addColorStop(1, '#475569'); ctx.fillStyle = dg; rr(ctx, B.x0 + 10, G2.cy + G2.Rp * .55, B.x1 - B.x0 - 20, B.y1 - G2.cy - G2.Rp * .55, 20); ctx.fill(); ctx.strokeStyle = '#111827'; ctx.lineWidth = 12; ctx.beginPath(); ctx.arc(G2.cx, G2.cy, G2.Rp, 0, TAU); ctx.stroke(); ctx.strokeStyle = '#78350f'; ctx.lineWidth = 9; ctx.beginPath(); ctx.arc(G2.cx, G2.cy, G2.Rp, S.rot + .5, S.rot + 2.6); ctx.stroke(); ctx.beginPath(); ctx.arc(G2.cx, G2.cy, G2.Rp, S.rot + 3.6, S.rot + 5.8); ctx.stroke();
+        ctx.strokeStyle = '#374151'; ctx.lineWidth = 10; [0, 2.3, 4].forEach(a => { ctx.beginPath(); ctx.moveTo(G2.cx, G2.cy); ctx.lineTo(G2.cx + Math.cos(S.rot + a + .4) * G2.Rp, G2.cy + Math.sin(S.rot + a + .4) * G2.Rp); ctx.stroke(); }); });
+        disc(ctx, G2.cx, G2.cy, Math.max(G2.rp, 16), '#9ca3af', '#4b5563', '#1f2937'); disc(ctx, G2.cx, G2.cy, G2.rp, '#e5e7eb', '#94a3b8', '#475569'); this.common(ctx, B, S, v, c, G2, { wl: 'العجلة (المقود)', al: 'المحور (عمود القيادة)' }); },
+      how: 'المقود عجلة كبيرة متصلة بعمود القيادة (المحور). قوة صغيرة على حافة المقود تكفي لتدوير عجلات السيارة الثقيلة ⟸ ربح قوة (R أكبر من r).', life: 'الشاحنات والحافلات لها مقود كبير جداً لتسهيل تدويرها.' }),
+    knob: WA({ n: 'مقبض الباب — شكل 4', P: [['W', 'مقاومة لسان القفل', 'N', 10, 100, 40, 5], ['R', 'نصف قطر المقبض R', 'cm', 2, 5, 3, .5], ['r', 'نصف قطر المحور r', 'cm', .4, 1.2, .6, .1]],
+      draw(ctx, B, S, v, c) { const G2 = this.geoW(B, v); K.raw(ctx, () => { const g = ctx.createLinearGradient(B.x0, 0, B.x1, 0); g.addColorStop(0, '#d6a26a'); g.addColorStop(1, '#92400e'); ctx.fillStyle = g; ctx.fillRect(B.x0 + 10, B.y0 + 10, B.x1 - B.x0 - 20, B.y1 - B.y0 - 10); ctx.fillStyle = met(ctx, G2.cx - G2.Rp * 1.3, 0, G2.cx + G2.Rp * 1.3, 0, '#f1f5f9', '#64748b'); ctx.beginPath(); ctx.arc(G2.cx, G2.cy, G2.Rp * 1.25, 0, TAU); ctx.fill(); });
+        disc(ctx, G2.cx, G2.cy, G2.Rp, '#ffffff', '#cbd5e1', '#64748b'); K.raw(ctx, () => { ctx.strokeStyle = 'rgba(71,85,105,.5)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(G2.cx, G2.cy, G2.Rp * .75, S.rot, S.rot + 1.5); ctx.stroke(); ctx.fillStyle = '#334155'; ctx.save(); ctx.translate(G2.cx, G2.cy); ctx.rotate(S.rot); ctx.fillRect(-G2.rp * .6, -G2.rp * .6, G2.rp * 1.2, G2.rp * 1.2); ctx.restore(); }); this.common(ctx, B, S, v, c, G2, { wl: 'العجلة (المقبض)', al: 'المحور' }); },
+      how: 'المقبض الدائري (العجلة) أكبر من المحور الذي يسحب لسان القفل. ندوّر المقبض بقوة صغيرة فيتغلب المحور على مقاومة اللسان.', life: 'جرّب أن تدوّر محور مقبض الباب بعد نزع المقبض: ستجده صعباً جداً!' }),
+    driver: WA({ n: 'المفك — شكل 4', P: [['W', 'مقاومة البرغي', 'N', 20, 200, 80, 5], ['R', 'نصف قطر المقبض R', 'cm', 1, 3, 1.8, .1], ['r', 'نصف قطر الساق r', 'cm', .2, .6, .3, .05]],
+      draw(ctx, B, S, v, c) { const G2 = this.geoW(B, v); disc(ctx, G2.cx, G2.cy, G2.Rp, '#fca5a5', '#dc2626', '#7f1d1d'); K.raw(ctx, () => { ctx.strokeStyle = 'rgba(17,24,39,.55)'; ctx.lineWidth = 5; for (let k2 = 0; k2 < 6; k2++) { const a = S.rot + k2 * TAU / 6; ctx.beginPath(); ctx.moveTo(G2.cx + Math.cos(a) * G2.Rp * .55, G2.cy + Math.sin(a) * G2.Rp * .55); ctx.lineTo(G2.cx + Math.cos(a) * G2.Rp * .95, G2.cy + Math.sin(a) * G2.Rp * .95); ctx.stroke(); } });
+        disc(ctx, G2.cx, G2.cy, G2.rp * 1.6, '#f1f5f9', '#94a3b8', '#334155'); K.raw(ctx, () => { ctx.save(); ctx.translate(G2.cx, G2.cy); ctx.rotate(S.rot); ctx.fillStyle = '#1e293b'; ctx.fillRect(-G2.rp * 1.3, -G2.rp * .25, G2.rp * 2.6, G2.rp * .5); ctx.restore(); });
+        tag(ctx, 'منظر من الخلف: ننظر على امتداد المفك', G2.cx, B.y0 + 16, '#334155'); this.common(ctx, B, S, v, c, G2, { wl: 'العجلة (المقبض)', al: 'المحور (الساق)' }); },
+      how: 'مقبض المفك السميك هو العجلة، وساقه الرفيعة هي المحور. لأن نصف قطر المقبض أكبر نربح قوة ونستطيع تدوير البرغي المشدود.', life: 'المفك ذو المقبض السميك يدوّر البراغي بسهولة أكبر من الرفيع.' }),
+    tap: WA({ n: 'مقبض صنبور الماء', P: [['W', 'مقاومة صمام الماء', 'N', 10, 100, 50, 5], ['R', 'نصف قطر المقبض R', 'cm', 2, 5, 3.5, .5], ['r', 'نصف قطر المحور r', 'cm', .3, 1, .5, .1]],
+      draw(ctx, B, S, v, c) { const G2 = this.geoW(B, v); K.raw(ctx, () => { ctx.fillStyle = met(ctx, G2.cx - 30, 0, G2.cx + 30, 0, '#f8fafc', '#64748b'); ctx.beginPath(); ctx.arc(G2.cx, G2.cy, G2.Rp * .45, 0, TAU); ctx.fill(); ctx.save(); ctx.translate(G2.cx, G2.cy); ctx.rotate(S.rot); for (let k2 = 0; k2 < 4; k2++) { ctx.rotate(Math.PI / 2); ctx.fillStyle = met(ctx, 0, -8, 0, 8, '#f8fafc', '#64748b'); rr(ctx, 0, -7, G2.Rp, 14, 7); ctx.fill(); ctx.fillStyle = k2 % 2 ? '#ef4444' : '#3b82f6'; ctx.beginPath(); ctx.arc(G2.Rp - 6, 0, 5, 0, TAU); ctx.fill(); } ctx.restore(); });
+        disc(ctx, G2.cx, G2.cy, G2.rp, '#e2e8f0', '#94a3b8', '#334155'); const fl = clamp(S.rot / 6, 0, 1); if (fl > 0) K.raw(ctx, () => { ctx.fillStyle = 'rgba(56,189,248,.7)'; ctx.fillRect(B.x1 - 90, G2.cy + 20, 10 * fl + 3, B.y1 - G2.cy - 20); }); tag(ctx, fl > 0 ? 'الماء يجري' : 'منظر من الأعلى', B.x1 - 84, G2.cy + 4, '#0284c7'); this.common(ctx, B, S, v, c, G2, { wl: 'العجلة (المقبض)', al: 'المحور' }); },
+      how: 'أذرع مقبض الصنبور تعمل كعجلة كبيرة حول محور رفيع يفتح الصمام. قوة صغيرة على أطراف الأذرع تتغلب على مقاومة الصمام.', life: 'صنابير الحدائق ذات المقبض الكبير أسهل فتحاً.' }),
+    windlass: WA({ n: 'رافعة البئر (الدولاب)', P: [['W', 'وزن الدلو المملوء', 'N', 50, 300, 150, 10], ['R', 'طول ذراع التدوير R', 'cm', 20, 50, 40, 5], ['r', 'نصف قطر الأسطوانة r', 'cm', 5, 15, 8, 1]],
+      draw(ctx, B, S, v, c) { const G2 = this.geoW(B, v); const lift = Math.max(0, S.rot) * G2.rp; ground(ctx, B.x0, B.x1, B.y1 - 30, { c1: '#a3e635', c2: '#4d7c0f' });
+        K.raw(ctx, () => { ctx.fillStyle = met(ctx, G2.cx - 60, 0, G2.cx + 60, 0, '#d6d3d1', '#57534e'); ctx.fillRect(G2.cx - 70, B.y1 - 70, 140, 42); ctx.fillStyle = '#0c4a6e'; ctx.fillRect(G2.cx - 56, B.y1 - 70, 112, 6); [-1, 1].forEach(s => Q24.wood(ctx, G2.cx + s * 70 - 6, G2.cy - 10, 12, B.y1 - 70 - G2.cy + 10)); });
+        const by = B.y1 - 100 - Math.min(lift, B.y1 - G2.cy - 150); K.raw(ctx, () => { ctx.strokeStyle = '#a16207'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(G2.cx - G2.rp, G2.cy); ctx.lineTo(G2.cx - G2.rp, by); ctx.stroke(); ctx.fillStyle = met(ctx, G2.cx - G2.rp - 16, 0, G2.cx - G2.rp + 16, 0, '#cbd5e1', '#475569'); ctx.beginPath(); ctx.moveTo(G2.cx - G2.rp - 14, by + 6); ctx.lineTo(G2.cx - G2.rp + 14, by + 6); ctx.lineTo(G2.cx - G2.rp + 11, by + 34); ctx.lineTo(G2.cx - G2.rp - 11, by + 34); ctx.closePath(); ctx.fill(); });
+        disc(ctx, G2.cx, G2.cy, G2.rp, '#e7b56c', '#a16207', '#78350f'); K.raw(ctx, () => { ctx.strokeStyle = '#a16207'; ctx.lineWidth = 2; for (let k2 = -2; k2 <= 2; k2++) { ctx.beginPath(); ctx.arc(G2.cx, G2.cy, G2.rp + k2 * .5, S.rot, S.rot + 2); ctx.stroke(); } const e = [G2.cx + Math.cos(S.rot - Math.PI / 2) * G2.Rp, G2.cy + Math.sin(S.rot - Math.PI / 2) * G2.Rp]; ctx.strokeStyle = '#475569'; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(G2.cx, G2.cy); ctx.lineTo(e[0], e[1]); ctx.stroke(); ctx.strokeStyle = '#92400e'; ctx.lineWidth = 9; ctx.beginPath(); ctx.arc(e[0], e[1], 4, 0, TAU); ctx.stroke(); ctx.lineCap = 'butt'; ctx.strokeStyle = 'rgba(124,58,237,.45)'; ctx.setLineDash([5, 4]); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(G2.cx, G2.cy, G2.Rp, 0, TAU); ctx.stroke(); ctx.setLineDash([]); });
+        this.common(ctx, B, S, v, c, G2, { wl: 'العجلة (الذراع)', al: 'المحور (الأسطوانة)' }); },
+      how: 'ذراع التدوير يرسم دائرة كبيرة (عجلة) حول أسطوانة صغيرة (محور) يلتف حولها الحبل. ندوّر الذراع بقوة صغيرة فيرتفع الدلو الثقيل.', life: 'آبار القرى القديمة، وبكرة خرطوم الحديقة.' })
+  });
+  /* ---------------- pulleys ---------------- */
+  const PUL = (o) => Object.assign({ g: 'pul', P: [['W', 'وزن الثقل (المقاومة)', 'N', 50, 1000, 400, 10]].concat(o.P2 || []),
+    nn(v) { return this.n0 || v.n; },
+    calc(v) { const n = this.nn(v), F = v.W / n; return { F, W: v.W, MA: n, dirOnly: n === 1, eq: n === 1 ? ['البكرة الثابتة: F = W', 'M.A = W ÷ F = 1', 'تغيّر اتجاه القوة فقط'] : ['عدد الحبال التي تحمل الثقل = ' + n, 'F = W ÷ ' + n + ' = ' + nf(v.W) + ' ÷ ' + n + ' = ' + nf(F) + ' N', 'M.A = ' + n] }; },
+    dist(S, v) { const n = this.nn(v); return [S.q * 120, S.q * 120 / n]; },
+    geoP(B) { return { cx: B.x0 + (B.x1 - B.x0) * .45, top: B.y0 + 26, r: 22, max: (B.y1 - B.y0) * .55 }; },
+    op(B, S, v) { const G2 = this.geoP(B), n = this.nn(v); const ex = G2.cx + (n === 2 && !this.n0 ? 0 : 0); const pull = S.q * G2.max; const P = this.handPt(B, S, v, G2, pull); return { x: P[0], y: P[1], r: 36, dir: this.pullDir === 'up' ? -Math.PI / 2 : Math.PI / 2, scale: G2.max }; },
+    draw(ctx, B, S, v, c) { const G2 = this.geoP(B), n = this.nn(v), pull = S.q * G2.max, lift = pull / n, r = G2.r; Q24.ceiling(ctx, B.x0 + 20, B.x1 - 20, G2.top);
+      const ly = B.y1 - 40 - lift; this.scene(ctx, B, S, v, c, G2, n, pull, lift, ly);
+      const bw = clamp(30 + v.W / 25, 36, 70); Q24.block(ctx, this.lx(G2, n), ly - 14, bw, bw * .8, nf(v.W) + ' N');
+      Q24.F(ctx, this.lx(G2, n) + bw / 2 + 16, ly, 0, 50, '', '#15803d', 4); tag(ctx, 'المقاومة W = ' + nf(v.W) + ' N', this.lx(G2, n) + bw / 2 + 70, ly + 60, '#15803d');
+      const P = this.handPt(B, S, v, G2, pull); hand(ctx, P[0] + 3, P[1], this.pullDir === 'up' ? Math.PI / 2 : -Math.PI / 2, .9);
+      const up = this.pullDir === 'up'; Q24.F(ctx, P[0] + 30, P[1], 0, up ? -50 : 50, '', '#dc2626', 4); tag(ctx, 'القوة F = ' + nf(c.F) + ' N', P[0] + 94, P[1] + (up ? -30 : 30), '#dc2626'); } }, o);
+  const ropeLine = (ctx, pts) => Q24.rope(ctx, pts, { w: 3.5 });
+  Object.assign(M, {
+    pfix: PUL({ n: 'البكرة الثابتة — شكل 5', type: 'بكرة ثابتة (عتلة من النوع الأول ذراعاها متساويان)', n0: 1, pullDir: 'down',
+      lx(G2) { return G2.cx - G2.r; }, handPt(B, S, v, G2, pull) { return [G2.cx + G2.r, B.y1 - 140 + pull * .9 - 40]; },
+      scene(ctx, B, S, v, c, G2, n, pull, lift, ly) { const py = G2.top + 40; Q24.strap(ctx, G2.cx, py, G2.r, G2.cx, G2.top); const P = this.handPt(B, S, v, G2, pull); ropeLine(ctx, [[G2.cx - G2.r, ly - 14], [G2.cx - G2.r, py], ...Array.from({ length: 9 }, (_, i) => [G2.cx - Math.cos(i / 8 * Math.PI) * G2.r, py - Math.sin(i / 8 * Math.PI) * G2.r]), [G2.cx + G2.r, P[1]]]); Q24.pulley(ctx, G2.cx, py, G2.r, pull / G2.r); tag(ctx, 'المرتكز (المحور)', G2.cx + 80, py, '#111827'); },
+      how: 'محور البكرة الثابتة لا يتحرك. نسحب الحبل إلى الأسفل فيرتفع الثقل إلى الأعلى: القوة = المقاومة، فالفائدة الميكانيكية = 1، لكنها تغيّر اتجاه القوة فيسهل العمل.', life: 'رفع العلم على السارية، وسحب الدلو من البئر.' }),
+    pmov: PUL({ n: 'البكرة المتحركة', type: 'بكرة متحركة (عتلة من النوع الثاني)', n0: 2, pullDir: 'up',
+      lx(G2) { return G2.cx; }, handPt(B, S, v, G2, pull) { return [G2.cx + G2.r, B.y1 - 200 - pull * .9 + 10]; },
+      scene(ctx, B, S, v, c, G2, n, pull, lift, ly) { const py = ly - 70; const P = this.handPt(B, S, v, G2, pull); ropeLine(ctx, [[G2.cx - G2.r, G2.top], [G2.cx - G2.r, py], ...Array.from({ length: 9 }, (_, i) => [G2.cx - Math.cos(i / 8 * Math.PI) * G2.r, py + Math.sin(i / 8 * Math.PI) * G2.r]), [G2.cx + G2.r, py], [G2.cx + G2.r, P[1]]]); Q24.strap(ctx, G2.cx, py, G2.r, G2.cx, ly - 14); Q24.pulley(ctx, G2.cx, py, G2.r, -lift / G2.r, { c2: '#c4b5fd', c3: '#6d28d9' });
+        tag(ctx, '1', G2.cx - G2.r - 14, (G2.top + py) / 2, '#7c3aed'); tag(ctx, '2', G2.cx + G2.r + 14, (py + P[1]) / 2 + 20, '#7c3aed'); },
+      how: 'البكرة المتحركة ترتفع مع الثقل، ويحمل الثقلَ حبلان، فنحتاج قوة تساوي نصف المقاومة (M.A = 2)، لكن نسحب الحبل ضعف المسافة التي يرتفعها الثقل.', life: 'الرافعات في مواقع البناء.' }),
+    ptackle: PUL({ n: 'نظام البكرات (البكرات المتعددة)', type: 'نظام من البكرات الثابتة والمتحركة', P2: [['n', 'عدد الحبال الحاملة n', '', 2, 6, 4, 1]], pullDir: 'down',
+      lx(G2) { return G2.cx; }, handPt(B, S, v, G2, pull) { return [G2.cx + G2.r * 2.2 + 30, B.y1 - 150 + pull * .9 - 30]; },
+      scene(ctx, B, S, v, c, G2, n, pull, lift, ly) { const py = G2.top + 40, my = ly - 60, sp = 14; const fx = n => G2.cx - (n - 1) * sp / 2; const P = this.handPt(B, S, v, G2, pull);
+        K.raw(ctx, () => { ctx.strokeStyle = '#d6a75c'; ctx.lineWidth = 3; for (let k2 = 0; k2 < n; k2++) { const x = G2.cx - G2.r * 1.4 + k2 * (G2.r * 2.8) / (n - 1 || 1); ctx.beginPath(); ctx.moveTo(x, py); ctx.lineTo(x, my); ctx.stroke(); } ctx.beginPath(); ctx.moveTo(G2.cx + G2.r * 1.4, py); ctx.lineTo(P[0], P[1]); ctx.stroke(); });
+        Q24.strap(ctx, G2.cx, py, G2.r * 1.4, G2.cx, G2.top); disc(ctx, G2.cx, py, G2.r * 1.5, '#e2e8f0', '#94a3b8', '#475569'); disc(ctx, G2.cx, my, G2.r * 1.5, '#ddd6fe', '#a78bfa', '#6d28d9'); Q24.strap(ctx, G2.cx, my, G2.r * 1.4, G2.cx, ly - 14);
+        for (let k2 = 0; k2 < n; k2++) tag(ctx, String(k2 + 1), G2.cx - G2.r * 1.4 + k2 * (G2.r * 2.8) / (n - 1 || 1), (py + my) / 2, '#7c3aed', { s: 10.5 }); tag(ctx, 'بكرات ثابتة', G2.cx - 100, py, '#334155'); tag(ctx, 'بكرات متحركة', G2.cx - 100, my, '#6d28d9'); },
+      how: 'نجمع بكرات ثابتة ومتحركة في نظام واحد. القوة = الوزن ÷ عدد الحبال التي تحمل الثقل. كلما زاد عدد الحبال قلّت القوة وزادت المسافة التي نسحبها.', life: 'رافعات الأثقال في تشييد البنايات العالية (ص 51)، ورفع محركات السيارات في الورش.' })
+  });
+  /* ---------------- compound machines ---------------- */
+  Object.assign(M, {
+    bike: { g: 'cmp', n: 'الدراجة الهوائية (آلة مركبة)', type: 'آلة مركبة: عجلة ومحور (الدواسة) + مسننات وسلسلة + عجلة', P: [['Nf', 'أسنان المسنن الأمامي', '', 28, 52, 44, 2], ['Nr', 'أسنان المسنن الخلفي', '', 12, 32, 16, 1], ['c', 'طول ذراع الدواسة', 'cm', 15, 18, 17, .5]], rot: 1, Rw: 34,
+      calc(v) { const ratio = v.Nf / v.Nr, MA = (v.c / this.Rw) / ratio; return { F: 1 / MA, W: 1, MA, eq: ['دورة الدواسة الواحدة تدوّر العجلة ' + nf(ratio) + ' دورة (' + v.Nf + ' ÷ ' + v.Nr + ')', 'M.A = (ذراع الدواسة ÷ نصف قطر العجلة) ÷ ' + nf(ratio) + ' = ' + nf(MA), 'M.A أصغر من 1 ⟸ ربح سرعة'] }; },
+      dist(S, v) { return [Math.abs(S.rot) * v.c, Math.abs(S.rot) * v.Nf / v.Nr * this.Rw]; },
+      geoB(B) { const k = Math.min((B.x1 - B.x0) / 230, (B.y1 - B.y0) / 110); const cy = B.y1 - 34 * k - 10; return { k, rw: [B.x0 + 40 * k + 20, cy], fw: [B.x0 + 185 * k, cy], cr: [B.x0 + 100 * k, cy - 4 * k] }; },
+      op(B, S, v) { const G2 = this.geoB(B); const L = v.c * G2.k * .9; return { x: G2.cr[0] + Math.cos(S.rot) * L, y: G2.cr[1] + Math.sin(S.rot) * L, r: 30, cx: G2.cr[0], cy: G2.cr[1] }; },
+      draw(ctx, B, S, v, c) { const G2 = this.geoB(B), k = G2.k, R = this.Rw * k; ground(ctx, B.x0, B.x1, G2.rw[1] + R, { c1: '#a3a3a3', c2: '#525252' }); const wa = S.rot * v.Nf / v.Nr;
+        [G2.rw, G2.fw].forEach(p => K.raw(ctx, () => { ctx.strokeStyle = '#111827'; ctx.lineWidth = 5 * k; ctx.beginPath(); ctx.arc(p[0], p[1], R, 0, TAU); ctx.stroke(); ctx.strokeStyle = '#9ca3af'; ctx.lineWidth = 1; for (let s = 0; s < 16; s++) { const a = wa + s * TAU / 16; ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(p[0] + Math.cos(a) * R, p[1] + Math.sin(a) * R); ctx.stroke(); } }));
+        const rf = v.Nf * .42 * k, rr2 = v.Nr * .42 * k; K.raw(ctx, () => { ctx.strokeStyle = '#dc2626'; ctx.lineWidth = 4 * k; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(G2.rw[0], G2.rw[1]); ctx.lineTo(G2.cr[0], G2.cr[1]); ctx.lineTo(G2.cr[0] + 30 * k, G2.cr[1] - 55 * k); ctx.lineTo(G2.rw[0] + 18 * k, G2.rw[1] - 50 * k); ctx.closePath(); ctx.stroke(); ctx.beginPath(); ctx.moveTo(G2.cr[0] + 30 * k, G2.cr[1] - 55 * k); ctx.lineTo(G2.fw[0] - 12 * k, G2.cr[1] - 62 * k); ctx.lineTo(G2.fw[0], G2.fw[1]); ctx.stroke(); ctx.lineCap = 'butt';
+          ctx.strokeStyle = '#334155'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(G2.cr[0], G2.cr[1] - rf); ctx.lineTo(G2.rw[0], G2.rw[1] - rr2); ctx.moveTo(G2.cr[0], G2.cr[1] + rf); ctx.lineTo(G2.rw[0], G2.rw[1] + rr2); ctx.stroke(); ctx.setLineDash([3, 3]); ctx.lineDashOffset = -S.rot * rf; ctx.strokeStyle = '#94a3b8'; ctx.stroke(); ctx.setLineDash([]); });
+        gear(ctx, G2.rw[0], G2.rw[1], rr2, v.Nr, wa, '#64748b'); gear(ctx, G2.cr[0], G2.cr[1], rf, v.Nf, S.rot, '#475569');
+        const L = v.c * k * .9, pe = [G2.cr[0] + Math.cos(S.rot) * L, G2.cr[1] + Math.sin(S.rot) * L]; K.raw(ctx, () => { ctx.strokeStyle = '#1f2937'; ctx.lineWidth = 4 * k; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(G2.cr[0], G2.cr[1]); ctx.lineTo(pe[0], pe[1]); ctx.stroke(); ctx.lineCap = 'butt'; ctx.fillStyle = '#111827'; rr(ctx, pe[0] - 8 * k, pe[1] - 2 * k, 16 * k, 4 * k, 2); ctx.fill(); });
+        tag(ctx, 'المسنن الأمامي ' + v.Nf, G2.cr[0], G2.cr[1] + rf + 22, '#475569'); tag(ctx, 'المسنن الخلفي ' + v.Nr, G2.rw[0], G2.rw[1] - rr2 - 18, '#64748b'); tag(ctx, 'دوّر الدواسة ⟳', pe[0] + 60, pe[1] - 20, '#7c3aed'); tag(ctx, 'دورات العجلة = ' + nf(Math.abs(wa) / TAU), G2.fw[0], G2.fw[1] - R - 16, '#0f766e'); },
+      how: 'الدراجة آلة مركبة: الدواسة وذراعها (عجلة ومحور) تدوّر المسنن الأمامي الكبير، والسلسلة تدوّر المسنن الخلفي الصغير المثبت بالعجلة. كل دورة للدواسة تدوّر العجلة عدة دورات ⟸ ربح سرعة.', life: 'تبديل السرعات: المسنن الخلفي الكبير يسهّل صعود المرتفعات (ربح قوة أكبر)، والصغير يزيد السرعة في الطريق المستوي.' },
+    gears: { g: 'cmp', n: 'المسننات (التروس)', type: 'عجلتان مسننتان متعاشقتان (عجلة ومحور)', P: [['N1', 'أسنان المسنن القائد (تدوّره أنت)', '', 8, 30, 10, 1], ['N2', 'أسنان المسنن المُقاد', '', 8, 40, 30, 1], ['W', 'المقاومة على محور المُقاد', 'N', 10, 200, 90, 5]], rot: 1,
+      calc(v) { const MA = v.N2 / v.N1, F = v.W / MA; return { F, W: v.W, MA, eq: ['M.A = أسنان المُقاد ÷ أسنان القائد = ' + v.N2 + ' ÷ ' + v.N1 + ' = ' + nf(MA), 'F = ' + nf(v.W) + ' ÷ ' + nf(MA) + ' = ' + nf(F) + ' N', MA > 1 ? 'المُقاد يدور أبطأ ⟸ ربح قوة' : 'المُقاد يدور أسرع ⟸ ربح سرعة'] }; },
+      dist() { return [0, 0]; },
+      geoG(B, v) { const m = Math.min((B.x1 - B.x0 - 40) / ((v.N1 + v.N2) * 1.15 + 6), (B.y1 - B.y0 - 30) / (Math.max(v.N1, v.N2) * 1.15 + 4)) * .5; const r1 = v.N1 * m, r2 = v.N2 * m, cy = (B.y0 + B.y1) / 2 + 6, x1 = (B.x0 + B.x1) / 2 - (r1 + r2) / 2 + r1 * 0; return { m, r1, r2, c1: [x1 - r1 * .02, cy], c2: [x1 + r1 + r2, cy] }; },
+      op(B, S, v) { const G2 = this.geoG(B, v); return { x: G2.c1[0] + Math.cos(S.rot - 1) * G2.r1 * .7, y: G2.c1[1] + Math.sin(S.rot - 1) * G2.r1 * .7, r: 30, cx: G2.c1[0], cy: G2.c1[1] }; },
+      draw(ctx, B, S, v, c) { const G2 = this.geoG(B, v); gear(ctx, G2.c1[0], G2.c1[1], G2.r1, v.N1, S.rot, '#2563eb'); gear(ctx, G2.c2[0], G2.c2[1], G2.r2, v.N2, -S.rot * v.N1 / v.N2 + Math.PI / v.N2, '#ea580c');
+        const h = [G2.c1[0] + Math.cos(S.rot - 1) * G2.r1 * .7, G2.c1[1] + Math.sin(S.rot - 1) * G2.r1 * .7]; K.raw(ctx, () => { ctx.fillStyle = '#facc15'; ctx.strokeStyle = '#a16207'; ctx.beginPath(); ctx.arc(h[0], h[1], 8, 0, TAU); ctx.fill(); ctx.stroke(); });
+        tag(ctx, 'القائد: ' + v.N1 + ' سناً', G2.c1[0], G2.c1[1] + G2.r1 + 20, '#2563eb'); tag(ctx, 'المُقاد: ' + v.N2 + ' سناً', G2.c2[0], G2.c2[1] + G2.r2 + 20, '#ea580c');
+        tag(ctx, 'دورات القائد ' + nf(Math.abs(S.rot) / TAU) + '  ⟸  دورات المُقاد ' + nf(Math.abs(S.rot) / TAU * v.N1 / v.N2), (B.x0 + B.x1) / 2, B.y0 + 14, '#334155'); },
+      how: 'مسننان متعاشقان: عندما يدور القائد سناً واحداً يدور المُقاد سناً واحداً. إذا كان المُقاد أكبر يدور أبطأ لكن بقوة أكبر (ربح قوة)، وإذا كان أصغر يدور أسرع (ربح سرعة).', life: 'في الساعات، والخلاط، وعلبة سرعات السيارة، والدراجة.' }
+  });
+  Object.keys(M).forEach(k => { M[k].k = k; if (M[k].lever) M[k].type = CN[M[k].cls]; });
+  const ORDER = { l1: ['seesaw', 'scissors', 'pliers', 'crowbar', 'hammer'], l2: ['barrow', 'nut', 'opener'], l3: ['tweezers', 'stapler', 'broom', 'rod', 'arm'], inc: ['ramp', 'wedge', 'axe', 'knife', 'screw', 'jack'], wa: ['steer', 'knob', 'driver', 'tap', 'windlass'], pul: ['pfix', 'pmov', 'ptackle'], cmp: ['bike', 'gears'] };
+  const ALL = GRP.flatMap(g => ORDER[g[0]]);
+
+  const D = { id: 'g8_mach_shop', ch: 24, sec: 'الدرسان 1 و 2: الآلات البسيطة والمركبة', page: 46, kind: 'نشاط',
+    title: 'ورشة الآلات: اختر الآلة وشغّلها',
+    desc: 'ورشة فيها ' + ALL.length + ' آلة: عتلات الأنواع الثلاثة (المقص، الأرجوحة، الكماشة، عتلة الصخرة، قالعة المسامير، عربة اليد، كسارة البندق، فتّاحة القناني، الملقط، الكابسة، المكنسة، الصنارة، ذراع الإنسان)، السطح المائل والأسفين والفأس والسكين والبريمة والرافعة اللولبية، العجلة والمحور (المقود، مقبض الباب، المفك، الصنبور، رافعة البئر)، البكرات، والآلات المركبة (الدراجة والمسننات). اختر الآلة فيتغير المشهد، شغّلها بالسحب، وغيّر القيم.',
+    tags: 'ورشة الآلات جميع الآلات البسيطة مقص كماشة أرجوحة عتلة صخرة قالعة مسامير عربة يد كسارة بندق فتاحة ملقط كابسة مكنسة صنارة ذراع الإنسان منحدر أسفين فأس سكين بريمة برغي رافعة سيارة مقود مقبض الباب مفك صنبور بئر بكرة ثابتة متحركة نظام بكرات دراجة مسننات تروس آلة مركبة',
+    tools: ['آلات من الحياة اليومية'],
+    steps: ['اختر نوع الآلة من الأزرار العليا (عتلات ①②③، سطح مائل وأشباهه، عجلة ومحور، بكرات، آلات مركبة)، ثم اختر الآلة.', 'تعرّف على أجزائها في المشهد: القوة (أحمر)، المقاومة (أخضر)، المرتكز أو ما يقابله.', 'شغّل الآلة بالسحب: اضغط على المقبض، ادفع الصندوق، دوّر العجلة، اسحب الحبل…', 'غيّر القيم من أزرار ➖ ➕ أو المنزلقات أسفل المشهد، وراقب القوة والفائدة الميكانيكية.', 'اقرأ بطاقة «كيف تعمل؟» و«في حياتنا»، وسجّل الآلة في الجدول 📋 مع نوعها وفائدتها.', 'قارن: أي الآلات تعطي ربح قوة؟ أيها ربح سرعة؟ وأيها تغيّر اتجاه القوة فقط؟'],
+    concl: ['الآلة البسيطة أداة تساعدنا على إنجاز الشغل بطريقة أسهل: العتلات، البكرات، السطح المائل، الأسفين، البريمة، العجلة والمحور (ص 46).', 'الفائدة الميكانيكية M.A = المقاومة ÷ القوة: أكبر من 1 ربح قوة، أصغر من 1 ربح سرعة، تساوي 1 (البكرة الثابتة) تغيّر اتجاه القوة فقط.', 'ربح القوة يرافقه دائماً قطع مسافة أكبر: القوة تتحرك أكثر من المقاومة. لا تقلل الآلة الشغل.', 'الآلات المركبة (كالدراجة) تتكون من آلتين بسيطتين أو أكثر تعملان معاً (ص 53).'],
+    laws: ['g8_ma', 'g8_gain', 'g8_lever', 'g8_incl', 'g8_wedge', 'g8_wheel', 'g8_pul'],
+    controls: [SEL('mc', 'الآلة', ALL.map(k => [k, M[k].n]), 'seesaw', (v, S) => D.pick(S, v)),
+      BT('', [{ t: '↺ أعد الآلة', on: S => { S.q = 0; S.rot = 0; } }, { t: '▶ شغّل تلقائياً', on: S => { S.auto = 1; } }]),
+      TG('vec', 'أسهم القوة والمقاومة', true, null, 'force'), TG('arms', 'الأذرع والأبعاد', true, null, 'vector'), TG('lab', 'الأسماء (مرتكز، قوة، مقاومة)', true, null, 'labels'), TG('info', 'بطاقة «كيف تعمل؟»', true, null, 'eye'), TG('dist', 'المسافات (قوة/مقاومة)', true, null, 'velocity')],
+    setup(S) { S.V = {}; S.q = 0; S.rot = 0; S.auto = 0; D.pick(S, S.p.mc || 'seesaw'); },
+    pick(S, k) { const m = M[k]; if (!m) return; S.V = S.V || {}; if (!S.V[k]) { S.V[k] = {}; m.P.forEach(p => S.V[k][p[0]] = p[5]); } S.q = 0; S.rot = 0; S.auto = 0; },
+    m(S) { return M[S.p.mc] || M.seesaw; },
+    v(S) { const m = D.m(S); if (!S.V[m.k]) D.pick(S, m.k); return S.V[m.k]; },
+    lay(S) { const w = S.W, h = S.H; const cb = D.chips(S); const y0 = cb[cb.length - 1].y + 24; const pnH = 22 + D.m(S).P.length * 40; const ch = D.cardLines(S).length * 18 + 32; const y1 = h - 66 - Math.max(pnH, ch) - 14; return { w, h, x0: 76, x1: w - 16, y0, y1, py: y1 + 12 }; },
+    cardW(S) { const w = S.W, pw = Math.min(360, (w - 100) * .46); return w - 14 - (76 + 4 + pw) - 12; },
+    cardLines(S) { const m = D.m(S), v = D.v(S), c = m.calc(v), wd = D.cardW(S); const ctx = D._mc || (D._mc = document.createElement('canvas').getContext('2d')); const gain = c.dirOnly ? 'تغيّر اتجاه القوة فقط (M.A = 1)' : c.MA > 1.001 ? 'ربح قوة: القوة أصغر من المقاومة' : c.MA < .999 ? 'ربح سرعة: المقاومة تتحرك أسرع وأبعد' : 'لا ربح';
+      const L = [{ t: 'النوع: ' + m.type, c: '#6d28d9', w: 900, s: 12 }].concat(c.eq.map(t => ({ t, c: '#1e293b', s: 12 }))).concat([{ t: gain, c: c.dirOnly ? '#0369a1' : c.MA > 1.001 ? '#0f766e' : '#b45309', w: 900 }]);
+      if (S.p.info !== false) { D.wrap(ctx, 'كيف تعمل؟ ' + m.how, wd).forEach(t => L.push({ t, c: '#334155', s: 11.5, w: 700 })); D.wrap(ctx, 'في حياتنا: ' + m.life, wd).forEach(t => L.push({ t, c: '#0f766e', s: 11.5, w: 700 })); } return L; },
+    tabs(S) { const w = S.W, n = GRP.length, per = w < 800 ? 4 : n, bw = Math.min(124, (w - 90) / per - 6); return GRP.map((g, i) => { const r = Math.floor(i / per), j = i % per, m = Math.min(per, n - r * per); return { x: Q24.cx(w) + ((m - 1) / 2 - j) * (bw + 6), y: 38 + r * 34, w: bw, h: 30, g: g[0], lab: g[1], on: D.m(S).g === g[0] }; }); },
+    chips(S) { const w = S.W, ks = ORDER[D.m(S).g], n = ks.length, tb = D.tabs(S), y = tb[tb.length - 1].y + 38, bw = Math.min(150, (w - 90) / n - 6); return ks.map((k, i) => ({ x: Q24.cx(w) + ((n - 1) / 2 - i) * (bw + 6), y, w: bw, h: 30, k, lab: M[k].n.replace(/ — شكل.*| \(.*?\)/g, ''), on: S.p.mc === k })); },
+    /* lever geometry (shared by draw & drags) */
+    LG(S, B) { const m = D.m(S), v = D.v(S), b = m.box; const u = Math.min((B.x1 - B.x0 - 30) / (b[1] - b[0]), (B.y1 - B.y0 - 20) / (b[3] - b[2])); const O = [(B.x0 + B.x1) / 2 - (b[0] + b[1]) / 2 * u, B.y0 + 10 - b[2] * u + ((B.y1 - B.y0 - 20) - (b[3] - b[2]) * u) * (m.oy ?? .5)];
+      const xe = m.cls === 1 ? v.d1 : v.d1, xl = m.cls === 1 ? -v.d2 : v.d2; let phi, phiL = null;
+      if (m.pair) { const op = m.o0 * (1 - S.q) + m.o1 * S.q; phi = -op / 2; } else phi = m.a0 + m.sgn * m.amax * S.q;
+      const X = (x, y, ph = phi) => [O[0] + (x * Math.cos(ph) - y * Math.sin(ph)) * u, O[1] + (x * Math.sin(ph) + y * Math.cos(ph)) * u];
+      const n = [-Math.sin(phi), Math.cos(phi)]; return { u, O, phi, X, xe, xl, n, E: X(xe, 0), L: X(xl, 0) }; },
+    update(S, dt) { const m = D.m(S); if (S.auto) { if (m.rot) { S.rot += dt * 2.2; if (S.rot > TAU * 2) S.auto = 0; } else { S.q = Math.min(1, S.q + dt * .7); if (S.q >= 1) S.auto = 0; } } },
+    draw(ctx, w, h, S) {
+      const p = S.p, m = D.m(S), v = D.v(S), c = m.calc(v), B = D.lay(S); K.bg(ctx, w, h, { benchY: h + 40 });
+      K.raw(ctx, () => { ctx.fillStyle = 'rgba(255,255,255,.55)'; rr(ctx, B.x0, B.y0 - 4, B.x1 - B.x0, B.y1 - B.y0 + 8, 14); ctx.fill(); ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5; ctx.stroke(); });
+      D.tabs(S).forEach(b => C2.btn(ctx, b.x, b.y, b.w, b.h, b.lab, { col: b.on ? '#9333ea' : '#94a3b8', s: 11, on: b.on }));
+      D.chips(S).forEach(b => C2.btn(ctx, b.x, b.y, b.w, b.h, b.lab, { col: b.on ? '#0f766e' : '#64748b', s: 11.5, on: b.on }));
+      K.raw(ctx, () => { ctx.save(); ctx.beginPath(); ctx.rect(B.x0, B.y0 - 4, B.x1 - B.x0, B.y1 - B.y0 + 8); ctx.clip();
+        if (m.lever) D.drawLever(ctx, S, B, m, v, c); else { m.draw(ctx, B, S, v, c, m); }
+        ctx.restore(); });
+      tag(ctx, m.type, Q24.cx(w), B.y0 + 14, m.lever ? ['', '#2563eb', '#ea580c', '#c026d3'][m.cls] : '#0f766e', { s: 12.5 });
+      if (p.dist !== false) { const d = m.dist(S, v, m); if (d[0] > .01) tag(ctx, 'تتحرك القوة ' + nf(d[0]) + ' cm   ،   تتحرك المقاومة ' + nf(d[1]) + ' cm', Q24.cx(w), B.y1 - 12, '#334155', { s: 11.5 }); }
+      D.panel(ctx, S, B, m, v); D.card(ctx, S, B, m, v, c);
+      K.party(ctx, S);
+    },
+    drawLever(ctx, S, B, m, v, c) { const p = S.p, G2 = D.LG(S, B), u = G2.u, O = G2.O;
+      m.bg && m.bg(ctx, O, u, B, v, S, m, G2.X);
+      K.raw(ctx, () => { if (m.pair) { const op = -G2.phi * 2; [[op / 2, 0], [-op / 2, 1]].forEach(([a, lo]) => { ctx.save(); ctx.translate(O[0], O[1]); ctx.rotate(a); if (lo) ctx.scale(1, -1); m.half(ctx, u, v, !lo); ctx.restore(); }); }
+        else { ctx.save(); ctx.translate(O[0], O[1]); ctx.rotate(G2.phi); m.skin(ctx, u, v, S); ctx.restore(); } });
+      m.fore && m.fore(ctx, O, u, v, S, m, G2.X);
+      if (m.oHand) m.oHand(ctx, O, u); if (m.eHand) m.eHand(ctx, G2.E, u, O, G2.phi);
+      else if (m.pair) LV.finger(ctx, G2.E[0], G2.E[1] - 2, [-Math.sin(G2.phi) * 0 + 0, 1], Math.max(4, u * .7));
+      // overlay
+      if (p.arms !== false) { const s1 = m.cls === 1 ? -1 : 1; Q24.dim(ctx, O[0], O[1], G2.E[0], G2.E[1], p.lab !== false ? 'd₁ = ' + nf(v.d1) + ' cm' : '', '#dc2626', -28 * (G2.E[0] >= O[0] ? 1 : -1)); Q24.dim(ctx, O[0], O[1], G2.L[0], G2.L[1], p.lab !== false ? 'd₂ = ' + nf(v.d2) + ' cm' : '', '#15803d', (m.cls === 1 ? -28 : 28) * (G2.L[0] >= O[0] ? 1 : -1) * (m.cls === 1 ? -1 : 1)); }
+      if (p.vec !== false) { const n = G2.n, kF = 60 / Math.max(c.F, c.W), lE = clamp(c.F * kF, 20, 64), lL = clamp(c.W * kF, 20, 64);
+        const ar = (P, dir, len, col, lab) => { const dx = n[0] * dir, dy = n[1] * dir; Q24.F(ctx, P[0] - dx * (len + 6), P[1] - dy * (len + 6), dx * len, dy * len, '', col, 4); if (p.lab !== false) tag(ctx, lab, P[0] - dx * (len + 22), P[1] - dy * (len + 22), col); };
+        ar(G2.E, m.eDir, lE, '#dc2626', 'القوة ' + nf(c.F) + ' N'); ar(G2.L, m.lDir, lL, '#15803d', 'المقاومة ' + nf(c.W) + ' N'); }
+      K.raw(ctx, () => { ctx.fillStyle = '#fde047'; ctx.strokeStyle = '#111827'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(O[0], O[1], 6, 0, TAU); ctx.fill(); ctx.stroke(); });
+      if (p.lab !== false) tag(ctx, 'المرتكز', O[0] + (m.cls === 1 ? 0 : -34), O[1] + 26, '#111827'); },
+    /* parameter panel (on canvas): − value + with a slider */
+    prow(S, B, i) { const w = S.W, pw = Math.min(360, (w - 100) * .46); return { x0: B.x0 + 4, x1: B.x0 + 4 + pw, y: B.py + 30 + i * 40 }; },
+    panel(ctx, S, B, m, v) { const r0 = D.prow(S, B, 0); K.raw(ctx, () => { ctx.fillStyle = 'rgba(255,255,255,.95)'; rr(ctx, r0.x0, B.py, r0.x1 - r0.x0, 22 + m.P.length * 40, 12); ctx.fill(); ctx.strokeStyle = '#a5b4fc'; ctx.lineWidth = 1.5; ctx.stroke(); });
+      tag(ctx, '🎛️ غيّر القيم', (r0.x0 + r0.x1) / 2, B.py + 12, '#4f46e5', { s: 11.5 });
+      m.P.forEach((q, i) => { const R2 = D.prow(S, B, i), val = v[q[0]]; Q24.T(ctx, q[1] + ' = ' + nf(val) + (q[2] ? ' ' + q[2] : ''), R2.x1 - 10, R2.y - 2, { s: 12, w: 900, c: '#1e293b', a: 'right' });
+        const tx0 = R2.x0 + 46, tx1 = R2.x1 - 46, ty = R2.y + 14, f = (val - q[3]) / (q[4] - q[3]);
+        K.raw(ctx, () => { ctx.fillStyle = '#e2e8f0'; rr(ctx, tx0, ty - 3, tx1 - tx0, 6, 3); ctx.fill(); ctx.fillStyle = '#6366f1'; rr(ctx, tx0, ty - 3, (tx1 - tx0) * f, 6, 3); ctx.fill(); ctx.fillStyle = '#fff'; ctx.strokeStyle = '#4f46e5'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(tx0 + (tx1 - tx0) * f, ty, 8, 0, TAU); ctx.fill(); ctx.stroke(); });
+        C2.btn(ctx, R2.x0 + 18, ty, 30, 24, '−', { col: '#64748b', s: 14 }); C2.btn(ctx, R2.x1 - 18, ty, 30, 24, '+', { col: '#4f46e5', s: 14 }); }); },
+    card(ctx, S, B, m, v, c) { const x1 = S.W - 14, wd = D.cardW(S); Q24.lines(ctx, D.cardLines(S), x1, B.py, wd, { title: m.n + ' — M.A = ' + nf(c.MA), bd: '#9333ea', lh: 18 }); },
+    wrap(ctx, s, wd) { ctx.font = '700 11.5px Tajawal,sans-serif'; const words = s.split(' '), out = []; let cur = ''; words.forEach(wo => { const t = cur ? cur + ' ' + wo : wo; if (ctx.measureText(t).width > wd - 22 && cur) { out.push(cur); cur = wo; } else cur = t; }); if (cur) out.push(cur); return out; },
+    setV(S, k, val) { const m = D.m(S), q = m.P.find(x => x[0] === k); if (!q) return; const st = q[6]; S.nv = (S.nv || 0) + 1; S.V[m.k][k] = +clamp(Math.round((val - q[3]) / st) * st + q[3], q[3], q[4]).toFixed(3); },
+    drags(S) {
+      if (!S.W) return []; const m = D.m(S), v = D.v(S), B = D.lay(S), out = [];
+      D.tabs(S).forEach(b => out.push(Q24.btn(S, 'g_' + b.g, b, '', S => { if (D.m(S).g !== b.g) setParam(S, 'mc', ORDER[b.g][0]); }, { tip: 'اختر ' + b.lab })));
+      D.chips(S).forEach(b => out.push(Q24.btn(S, 'm_' + b.k, b, '', S => setParam(S, 'mc', b.k), { tip: M[b.k].n })));
+      m.P.forEach((q, i) => { const R2 = D.prow(S, B, i), ty = R2.y + 14, tx0 = R2.x0 + 46, tx1 = R2.x1 - 46;
+        out.push(Q24.btn(S, 'dec_' + q[0], { x: R2.x0 + 18, y: ty, w: 34, h: 28 }, '', S => D.setV(S, q[0], S.V[D.m(S).k][q[0]] - q[6]), { tip: 'أنقص ' + q[1] }));
+        out.push(Q24.btn(S, 'inc_' + q[0], { x: R2.x1 - 18, y: ty, w: 34, h: 28 }, '', S => D.setV(S, q[0], S.V[D.m(S).k][q[0]] + q[6]), { tip: 'زِد ' + q[1] }));
+        const f = (v[q[0]] - q[3]) / (q[4] - q[3]); out.push({ id: 'sl_' + q[0], x: tx0 + (tx1 - tx0) * f, y: ty, r: 16, axis: 'x', keep: true, hint: false, tip: 'اسحب لتغيير ' + q[1], drag: (S, d) => D.setV(S, q[0], q[3] + clamp((d.x - tx0) / (tx1 - tx0), 0, 1) * (q[4] - q[3])) }); });
+      // operating handle
+      if (m.lever) { const G2 = D.LG(S, B); const dir = Math.atan2(G2.n[1] * m.eDir * (m.pair ? 1 : m.sgn * m.eDir) , G2.n[0] * m.eDir * (m.pair ? 1 : m.sgn * m.eDir)); const mvdir = m.pair ? Math.atan2(G2.n[1], G2.n[0]) : Math.atan2(G2.n[1] * m.sgn, G2.n[0] * m.sgn);
+        const span = m.pair ? v.d1 * G2.u * (m.o0 - m.o1) / 2 : v.d1 * G2.u * m.amax;
+        out.push({ id: 'op', x: G2.E[0], y: G2.E[1], r: 34, dir: mvdir, keep: true, tip: 'اسحب لتشغيل الآلة (القوة)', idle: 'شغّلني ✋', down: S => { S.q0 = S.q; S.auto = 0; }, drag: (S, d) => { S.q = clamp(S.q0 + ((d.x - d.sx) * Math.cos(mvdir) + (d.y - d.sy) * Math.sin(mvdir)) / Math.max(10, span), 0, 1); } }); }
+      else { const o = m.op(B, S, v); if (o.cx != null) out.push({ id: 'op', x: o.x, y: o.y, r: o.r, cx: o.cx, cy: o.cy, keep: true, tip: 'دوّر لتشغيل الآلة', idle: 'دوّرني ⟳', down: S => { S.auto = 0; }, drag: (S, d) => { S.rot = clamp(S.rot + (d.dang || 0), -TAU * 4, TAU * 6); } });
+        else out.push({ id: 'op', x: o.x, y: o.y, r: o.r, dir: o.dir, keep: true, tip: 'اسحب لتشغيل الآلة', idle: 'شغّلني ✋', down: S => { S.q0 = S.q; S.auto = 0; }, drag: (S, d) => { S.q = clamp(S.q0 + ((d.x - d.sx) * Math.cos(o.dir) + (d.y - d.sy) * Math.sin(o.dir)) / Math.max(10, o.scale), 0, 1); } }); }
+      return out;
+    },
+    readings(S) { const m = D.m(S), v = D.v(S), c = m.calc(v); return [rd('الآلة', m.n, 1), rd('نوعها', m.type, 1), rd('القوة', nf(c.F) + ' N'), rd('المقاومة', nf(c.W) + ' N'), rd('الفائدة الميكانيكية', nf(c.MA)), rd('النتيجة', c.dirOnly ? 'تغيير اتجاه القوة' : c.MA > 1.001 ? 'ربح قوة' : c.MA < .999 ? 'ربح سرعة' : 'لا ربح', 1)]; },
+    record(S) { const m = D.m(S), v = D.v(S), c = m.calc(v); return { n: m.n.replace(/ — شكل.*/, ''), t: m.type.replace(/ \(.*\)/, ''), MA: nf(c.MA), r: c.dirOnly ? 'تغيير اتجاه القوة' : c.MA > 1.001 ? 'ربح قوة' : c.MA < .999 ? 'ربح سرعة' : 'لا ربح', l: m.life.split('،')[0].slice(0, 40) }; },
+    cols: [['n', 'الآلة'], ['t', 'نوعها'], ['MA', 'M.A'], ['r', 'الفائدة'], ['l', 'مثال من حياتنا']],
+    explain(S) { const m = D.m(S), v = D.v(S), c = m.calc(v); return '<b>' + m.n + '</b> — ' + m.type + '.<br>' + m.how + '<br>الفائدة الميكانيكية الآن <b>' + nf(c.MA) + '</b> ⟸ ' + (c.dirOnly ? 'لا ربح قوة لكنها تغيّر اتجاه القوة.' : c.MA > 1.001 ? '<b>ربح قوة</b>: قوة صغيرة تتغلب على مقاومة كبيرة، لكن يدك تتحرك مسافة أكبر.' : '<b>ربح سرعة</b>: القوة أكبر من المقاومة، لكن المقاومة تتحرك أسرع وأبعد.') + '<br><b>في حياتنا:</b> ' + m.life; }
+  };
+  M8.P[D.id] = D;
+  D._M = M;
+})();
 /* simple daily-life line appended to each part's explanation (teacher: explain for a 13-year-old) */
 (() => { const LIFE = {
   g8_lever_law: 'الأرجوحة (السيسو) تتزن عندما يجلس الطفل الأثقل أقرب إلى المرتكز: الوزن × البعد متساوٍ في الجهتين.',
   g8_lever_types: 'المقص والميزان (النوع الأول)، فتّاحة القناني وكسارة البندق (النوع الثاني)، الملقط والكابسة وساعدك (النوع الثالث).',
-  g8_lever_examples: 'هكذا يحسب المهندسون القوة اللازمة لرفع الأثقال بالعتلات: نحوّل الأطوال إلى المتر ثم نطبّق القانون.',
+  g8_lever_lab: 'هكذا يحسب المهندسون القوة اللازمة لرفع الأثقال بالعتلات: نحوّل الأطوال إلى المتر ثم نطبّق القانون.',
   g8_lever_sort: 'ابحث في مطبخ بيتك: الملعقة التي تفتح بها علبة، الملقط، فتّاحة القناني… كلها عتلات!',
   g8_incline: 'منحدر الكراسي المتحركة عند المستشفى، والطرق الجبلية المتعرجة، ولوح تحميل البضائع في الشاحنات.',
   g8_screw_wedge: 'غطاء القنينة والبرغي (بريمة)، والفأس والسكين ورأس المسمار (أسفين).',
@@ -1234,7 +1696,7 @@ M8.merge({ id: 'g8_levers', ch: 24, sec: 'نشاط استهلالي + الدرس
     { q: 'عتلة طولها 80 cm ترتكز على أحد طرفيها، عُلّق فيها ثقل 60 N على بعد 20 cm من المرتكز. القوة اللازمة في الطرف الآخر لتتزن أفقياً:', o: ['15 N', '240 N', '30 N'], a: 0, why: 'س6: F × 0.8 = 60 × 0.2 ⟸ F = 15 N ، M.A = 4.' },
     { q: 'ما نوع العتلة التي تكون القوة المؤثرة فيها دائماً أقل من المقاومة؟', o: ['النوع الأول', 'النوع الثاني', 'النوع الثالث'], a: 1, why: 'مراجعة الدرس س3: النوع الثاني ربح قوة دائماً.' }
   ],
-  parts: [{ id: 'g8_lever_law', n: 'قانون العتلات (نشاط استهلالي)' }, { id: 'g8_lever_types', n: 'أنواع العتلات الثلاثة' }, { id: 'g8_lever_examples', n: 'أمثلة محلولة (مثال 1، 2، 3)' }, { id: 'g8_lever_sort', n: 'نشاط: صنّف العتلات' }] });
+  parts: [{ id: 'g8_lever_law', n: 'قانون العتلات (نشاط استهلالي)' }, { id: 'g8_lever_types', n: 'أنواع العتلات الثلاثة' }, { id: 'g8_lever_lab', n: 'مختبر العتلة: حوّل النوع + أمثلة الكتاب' }, { id: 'g8_lever_sort', n: 'نشاط: صنّف العتلات' }] });
 M8.merge({ id: 'g8_incline_wheel', ch: 24, sec: 'الدرس 2: السطح المائل والبريمة والأسفين والعجلة والمحور', page: 49, kind: 'نشاط',
   title: 'السطح المائل والبريمة والأسفين والعجلة والمحور',
   desc: 'آلات بسيطة نحصل منها على ربح قوة: السطح المائل (M.A = L/h)، البريمة (سطح مائل ملفوف)، الأسفين (سطحان مائلان متقابلان)، والعجلة والمحور (M.A = R/r).',
@@ -1268,4 +1730,15 @@ M8.merge({ id: 'g8_efficiency', ch: 24, sec: 'الدرس 2: كفاءة الآل�
     { q: 'لماذا الشغل الناتج دائماً أقل من الشغل المنجز في الآلة؟', o: ['بسبب الاحتكاك', 'بسبب الجاذبية', 'لأن الآلة صغيرة'], a: 0, why: 'مراجعة الفصل س3-3.' }
   ],
   parts: [{ id: 'g8_eff_main', n: 'كفاءة الآلة (س7)' }, { id: 'g8_life_main', n: 'الآلات في حياتنا والآلات المركبة' }] });
+M8.merge({ id: 'g8_machines', ch: 24, sec: 'الدرسان 1 و 2 + الفيزياء والمجتمع: ورشة الآلات', page: 46, kind: 'نشاط',
+  title: 'ورشة الآلات: كل الآلات البسيطة والمركبة في مكان واحد',
+  desc: 'اختر الآلة فيتغير المشهد: عتلات الأنواع الثلاثة، السطح المائل والأسفين والبريمة، العجلة والمحور، البكرات، والدراجة والمسننات. شغّل كل آلة بالسحب وغيّر قيمها وشاهد فائدتها الميكانيكية.',
+  tags: 'ورشة الآلات آلات بسيطة مركبة',
+  fact: ['الآلة لا تقلل الشغل: إذا ربحنا قوة خسرنا مسافة، وإذا ربحنا سرعة احتجنا قوة أكبر.', 'الدراجة والساعة والأجهزة المنزلية آلات مركبة من آلتين بسيطتين أو أكثر، وفائدتها الميكانيكية حاصل ضرب فوائد آلاتها البسيطة (ص 53).'],
+  quiz: [
+    { q: 'آلة بسيطة تتكوّن من مستويين مائلين متقابلين تُستخدم لشق المواد أو اختراقها:', o: ['البريمة', 'الأسفين', 'البكرة'], a: 1, why: 'مراجعة الفصل س1-4: الأسفين (الوتد).' },
+    { q: 'مقبض الباب والمفك وعجلة القيادة أمثلة على:', o: ['العجلة والمحور', 'السطح المائل', 'البكرة المتحركة'], a: 0, why: 'شكل 4 ص 50: نصف قطر العجلة أكبر من نصف قطر المحور فنحصل على ربح قوة.' },
+    { q: 'آلة بسيطة تتكوّن من عجلة تدور حول محور تحوي على أخدود يمر فيه حبل أو سلك:', o: ['العجلة والمحور', 'البكرة', 'البريمة'], a: 1, why: 'مراجعة الفصل س1-3: البكرة.' }
+  ],
+  parts: [{ id: 'g8_mach_shop', n: 'ورشة الآلات (' + Object.keys(M8.P.g8_mach_shop._M).length + ' آلة)' }] });
 /* END */

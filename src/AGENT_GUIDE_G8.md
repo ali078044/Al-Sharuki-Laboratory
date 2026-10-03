@@ -43,3 +43,11 @@ Finish with a short report (per experiment: book page, what the student does, ef
   text (explain(S) changes per part), its own readings, and the book's page/figure for that part. Keep many varied real examples.
 * Rough target: a book lesson → 1–3 experiments; a chapter → ~5–7 experiments total. Merge, don't drop content.
 * Each idea must be **explained in words a 13-year-old understands**: what you see, why it happens, a daily-life example (short sentences).
+
+## Teacher's feedback after batch 2 (also HIGHEST PRIORITY)
+* **Coverage audit is mandatory**: before finishing, list every «نشاط», «مثال», figure, table, classification/type and review question
+  on your pages, and confirm each one appears (official book activities reproduced exactly as in the book: same apparatus, steps, numbers, table).
+  Put this checklist at the end of your report (page → item → where it is in the lab).
+* **Comparisons**: where the book distinguishes similar concepts, build a comparison activity that shows them side by side on the same motion/object
+  (e.g. distance vs displacement, speed «الانطلاق» vs velocity «السرعة» vs acceleration «التعجيل»; transverse vs longitudinal waves; regular vs diffuse reflection; convex vs concave…).
+* **Same apparatus, many cases**: let the student change values (weight, force, distances…) on one apparatus to reproduce each book example on it.

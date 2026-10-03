@@ -1,7 +1,7 @@
 'use strict';
 /* ====================== الثاني المتوسط — الفصل الأول: الحركة (ch 21) — بترتيب الكتاب ======================
    القياس (ص 6–10) · الحركة وأنواعها (ص 11–13) · وصف الحركة (ص 14–19) · الفيزياء والمجتمع (ص 20) · مراجعة الفصل (ص 21–22)
-   Merged (teacher feedback): 6 experiments made of parts (M8.merge, expg8_0kit.js) — g8_measure · g8_motion · g8_kinds · g8_displace · g8_speedx · g8_velacc.
+   Merged (teacher feedback): 7 experiments made of parts (M8.merge, expg8_0kit.js) — g8_measure · g8_motion · g8_kinds · g8_displace · g8_speedx · g8_velacc · g8_compare (comparison d/x/S/v/a).
    Every activity below is registered as a part with P8(); the merges are at the end of the file. */
 LW({ id: 'g8_speed', cat: 21, name: 'الانطلاق', fx: '<i>S</i> = ' + FR('<i>d</i>', '<i>t</i>'), sym: 'S الانطلاق (m/s)، d المسافة (m)، t الزمن (s) — كمية مقدارية', calc: { in: [['d', 'المسافة d', 'm', 30], ['t', 'الزمن t', 's', 2]], out: 'الانطلاق S', u: 'm/s', f: v => v.d / v.t } });
 LW({ id: 'g8_avgspeed', cat: 21, name: 'معدل الانطلاق', fx: '<i>S</i><sub>average</sub> = ' + FR('<i>d</i><sub>total</sub>', '<i>t</i><sub>total</sub>'), sym: 'المسافة الكلية المقطوعة ÷ الزمن الكلي المستغرق لقطعها', calc: { in: [['d', 'المسافة الكلية', 'km', 450], ['t', 'الزمن الكلي', 'h', 5]], out: 'معدل الانطلاق', u: 'km/h', f: v => v.d / v.t } });
@@ -407,7 +407,7 @@ LW({ id: 'g8_period', cat: 21, name: 'زمن الاهتزازة الواحدة',
       readings(S) { const c = SC[S.p.sc], r = reading(S); return [rd('موضع العين', where(S)), rd('القراءة', r.v.toFixed(c.dec) + ' ' + c.u), rd('القيمة الحقيقية', c.tv.toFixed(c.dec) + ' ' + c.u), rd('الخطأ', (r.v - c.tv).toFixed(c.dec) + ' ' + c.u)]; },
       record(S) { const c = SC[S.p.sc], r = reading(S); return { pos: where(S), v: +r.v.toFixed(c.dec), e: +(r.v - c.tv).toFixed(c.dec) }; },
       cols: [['pos', 'موضع العين'], ['v', 'القراءة'], ['e', 'الخطأ']],
-      explain(S) { const r = reading(S), c = SC[S.p.sc]; return r.ok ? `العين <b>بمستوى</b> ${S.p.sc === 'spring' ? 'المؤشر' : 'سطح السائل'} وخط النظر <b>عمودي</b> على التدريج، فالقراءة <b>${c.tv.toFixed(c.dec)} ${c.u}</b> صحيحة.` : `العين <b>${S.eye < 0 ? 'أعلى' : 'أسفل'}</b> من المستوى، فخط النظر مائل ويقطع التدريج عند <b>${r.v.toFixed(c.dec)} ${c.u}</b> بدلاً من ${c.tv.toFixed(c.dec)} ${c.u} — هذا <b>خطأ في طريقة القياس</b>.`; },
+      explain(S) { const r = reading(S), c = SC[S.p.sc]; return r.ok ? `العين <b>بمستوى</b> ${S.p.sc === 'spring' ? 'المؤشر' : 'سطح السائل'} وخط النظر <b>عمودي</b> على التدريج، فالقراءة <b>${c.tv.toFixed(c.dec)} ${c.u}</b> صحيحة.` : `العين <b>${S.eye < 0 ? 'أعلى' : 'أسفل'}</b> من المستوى، فخط النظر مائل ويقطع التدريج عند <b>${r.v.toFixed(c.dec)} ${c.u}</b> بدلاً من ${c.tv.toFixed(c.dec)} ${c.u} — هذا <b>خطأ في طريقة القياس</b>.` + (S.p.sc === 'bur' ? '<br><span style="color:#475569">في شكل 1 بالكتاب: القراءات الثلاث 19.82 mL و 19.70 mL و 19.62 mL، والصحيحة هي <b>19.70 mL</b> (العين بمستوى السطح، الموضع 2 ✓).</span>' : ''); },
       quiz: [
         { q: 'أين يجب أن تكون العين عند قراءة حجم سائل في مخبار مدرج؟', o: ['أعلى من سطح السائل', 'بمستوى سطح السائل', 'أسفل سطح السائل'], a: 1, why: 'يكون خط النظر عمودياً على التدريج عندما تكون العين بمستوى السطح.' },
         { q: 'ما المقصود بالخطأ في القياس؟', o: ['انحراف القيمة المقاسة عن القيمة الحقيقية', 'تكرار القياس عدة مرات', 'استعمال وحدة القياس الدولية'], a: 0, why: 'الخطأ هو الفرق بين القيمة المقاسة والقيمة الحقيقية.' },
@@ -710,12 +710,12 @@ LW({ id: 'g8_period', cat: 21, name: 'زمن الاهتزازة الواحدة',
       desc: 'نختار نقطة الإسناد بالنقر على أي جسم (الأرض، الحافلة، التلميذ الجالس، السيارة…) فيبقى ذلك الجسم ثابتاً على الشاشة ونرى أي الأجسام متحركة وأيها ساكنة بالنسبة له. وفي مشهد الصف نحدد موقع التلميذ بالبعد والاتجاه.',
       tags: 'الحركة السكون نسبي نقطة الإسناد الموقع حافلة قطار',
       tools: ['حافلة / قطار', 'أشخاص', 'مخطط الصف'],
-      steps: ['شغّل المشهد: الحافلة تتحرك والرجل في الموقف ينتظر.', 'انقر على «الأرض» (أو الرجل) لتجعلها نقطة الإسناد: من المتحرك ومن الساكن؟', 'انقر على التلميذ الجالس في الحافلة: أصبحت الحافلة ساكنة بالنسبة له، والرجل في الموقف هو الذي يتحرك إلى الخلف!', 'اجعل سرعة السيارة مساوية لسرعة الحافلة: ماذا تلاحظ؟', 'في مشهد «موقعي في الصف» اسحب التلميذ وصف موقعه بالبعد والاتجاه بالنسبة للباب أو السبورة.'],
+      steps: ['مشهد الشلال (شكل 1): الأرض نقطة إسناد ثابتة — الماء الساقط متحرك والصخور ساكنة. انقر على قطرة الماء أو القارب لتغيير نقطة الإسناد.', 'في مشهد الحافلة: الحافلة تتحرك والرجل في الموقف ينتظر.', 'انقر على «الأرض» (أو الرجل) لتجعلها نقطة الإسناد: من المتحرك ومن الساكن؟', 'انقر على التلميذ الجالس في الحافلة: أصبحت الحافلة ساكنة بالنسبة له، والرجل في الموقف هو الذي يتحرك إلى الخلف!', 'اجعل سرعة السيارة مساوية لسرعة الحافلة: ماذا تلاحظ؟', 'في مشهد «موقعي في الصف» اسحب التلميذ وصف موقعه بالبعد والاتجاه بالنسبة للباب أو السبورة.'],
       concl: ['الموقع: مكان وجود الجسم، يحدَّد بالبعد وبالاتجاه بالنسبة إلى جسم آخر يكون ثابتاً.', 'الحركة: تغير مستمر في موقع الجسم نسبة إلى جسم آخر يكون ثابتاً.', 'الحركة مفهوم نسبي يعتمد على موقع نقطة الإسناد: فأنت متحرك نسبة إلى نقطة إسناد ثابتة في حين أنك ساكن نسبة إلى نقطة إسناد أخرى.', 'الجسم الساكن: الذي لا يغير موقعه بالنسبة لنقطة ثابتة مع مرور الزمن، ويعدّ سطح الأرض نقطة إسناد ثابتة.'],
       laws: [],
       fact: ['أنت الآن «ساكن» بالنسبة لكرسيك، لكنك تدور مع الأرض حول محورها بانطلاق يقارب 1600 km/h عند خط الاستواء، وتدور حول الشمس بنحو 107000 km/h!', 'في الشلال (شكل 1) نعدّ سطح الأرض نقطة إسناد ثابتة لحركة الماء الساقط.'],
-      controls: [SEL('sc', 'المشهد', [['bus', '🚌 حافلة المدرسة والموقف'], ['train', '🚆 قطاران متجاوران'], ['class', '🏫 موقعي في الصف']], 'bus', (v, S) => { setParam(S, 'ref', 'ground'); }),
-        SEL('ref', 'نقطة الإسناد', [['ground', 'الأرض'], ['man', 'الرجل الواقف'], ['bus', 'الحافلة/القطار'], ['pass', 'الراكب'], ['car', 'السيارة/القطار الآخر']], 'ground'),
+      controls: [SEL('sc', 'المشهد', [['fall', '🏞️ الشلال (شكل 1 — كالكتاب)'], ['bus', '🚌 حافلة المدرسة والموقف'], ['train', '🚆 قطاران متجاوران'], ['class', '🏫 موقعي في الصف']], 'fall', (v, S) => { setParam(S, 'ref', 'ground'); }),
+        SEL('ref', 'نقطة الإسناد', [['ground', 'الأرض'], ['man', 'الرجل الواقف'], ['bus', 'الحافلة/القطار/قطرة الماء'], ['pass', 'الراكب'], ['car', 'السيارة/القطار الآخر/القارب']], 'ground'),
         R('v', 'انطلاق الحافلة/القطار الأحمر', 0, 12, 6, .5, 'm/s'), R('v2', 'انطلاق السيارة/القطار الأزرق', -8, 12, 3, .5, 'm/s'),
         SEL('cref', 'الموقع بالنسبة إلى (الصف)', [['door', 'الباب'], ['board', 'السبورة'], ['win', 'الشباك']], 'door'),
         TG('vel', 'أسهم السرعة النسبية', true, null, 'velocity'), TG('tags', 'بطاقات ساكن/متحرك', true, null, 'labels'), TG('grid', 'شبكة الأمتار', true, null, 'grid')],
@@ -724,6 +724,7 @@ LW({ id: 'g8_period', cat: 21, name: 'زمن الاهتزازة الواحدة',
       draw(ctx, w, h, S) {
         const p = S.p;
         if (p.sc === 'class') return this.drawClass(ctx, w, h, S);
+        if (p.sc === 'fall') return this.drawFall(ctx, w, h, S);
         const objs = OBJS[p.sc](S), ref = objs.find(o => o.id === p.ref) || objs[0], t = S.tt, ppm = (w - 74) / 30, cam = wx(ref, t);
         const anchor = ref.id === 'ground' ? 15 : ref.id === 'man' ? 15 : 12;
         const SX = x => { let d = md(x - cam + anchor, LW); if (d > LW - 15) d -= LW; return 74 + d * ppm; };
@@ -760,6 +761,59 @@ LW({ id: 'g8_period', cat: 21, name: 'زمن الاهتزازة الواحدة',
         H.box(ctx, 64 + 150, 54, 260, 'نقطة الإسناد: ' + ref.n, [['انقر على أي جسم لتجعله نقطة الإسناد', { s: 12, c: '#475569' }]], { bd: '#7c3aed' });
         H.banner(ctx, w, 'من يتحرك؟ ومن ساكن؟ — حسب نقطة الإسناد', '#7c3aed');
       },
+
+      /* waterfall (book fig 1): the ground is a fixed reference point for the falling water */
+      fallObjs(S) { const t = S.tt, per = 2.3, tf = t % per, fallT = Math.sqrt(2 * 20 / 9.8), tt = Math.min(tf, fallT), under = tf > fallT;
+        return { drop: { y: 4.9 * tt * tt, v: under ? 0 : 9.8 * tt, under }, boat: { x: S.p.v2 * .5 * t, v: S.p.v2 * .5 } }; },
+      fallRel(S) { const F = this.fallObjs(S), V = { ground: [0, 0], man: [0, 0], bus: [0, F.drop.v], pass: [0, F.drop.v], car: [F.boat.v, 0] }, r = V[S.p.ref] || [0, 0];
+        return { F, V, r, N: { ground: 'الأرض (الصخور)', man: 'رجل على الضفة', bus: 'قطرة الماء الساقطة', pass: 'قطرة الماء الساقطة', car: 'القارب' } }; },
+      drawFall(ctx, w, h, S) {
+        const p = S.p, R = this.fallRel(S), F = R.F, ref = p.ref === 'pass' ? 'bus' : p.ref, x0 = 74, xc = x0 + (w - x0) * .5, yl = 112, yp = h * .7, ppm = (yp - yl) / 20;
+        const span = w - x0, bx0 = x0 + span * .7, bxw = span * .62, boatX = x0 + md(F.boat.x * 9 + (bx0 - x0), span + 120) - 60;
+        const dropY = yl + F.drop.y * ppm, anchorY = yl + (yp - yl) * .3, anchorX = x0 + span * .5;
+        const oy = ref === 'bus' && !F.drop.under ? anchorY - dropY : 0, ox = ref === 'car' ? anchorX - boatX : 0;
+        const t = S.tt;
+        G.bg(ctx, w, h, false);
+        K.raw(ctx, () => { const g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#bae6fd'); g.addColorStop(1, '#e0f2fe'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h); });
+        K.raw(ctx, () => { ctx.save(); ctx.translate(ox, oy);
+          const ext = 2000;
+          // cliffs (rock layers)
+          const rock = (xa, xb, top, rough) => { const g = ctx.createLinearGradient(xa, 0, xb, 0); g.addColorStop(0, '#a16207'); g.addColorStop(.5, '#c9a36b'); g.addColorStop(1, '#8b5e34'); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(xa, yp + 40); ctx.lineTo(xa, top); for (let x = xa; x <= xb; x += 14) ctx.lineTo(x, top - 6 * Math.sin(x * rough) - 4 * Math.sin(x * .13)); ctx.lineTo(xb, yp + 40); ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = 'rgba(92,52,20,.35)'; ctx.lineWidth = 2; for (let y = top + 22; y < yp; y += 26) { ctx.beginPath(); ctx.moveTo(xa, y); for (let x = xa; x <= xb; x += 20) ctx.lineTo(x, y + 4 * Math.sin(x * .05 + y)); ctx.stroke(); } };
+          rock(x0 - ext, xc - 40, yl - 6, .07); rock(xc + 40, w + ext, yl - 30, .05);
+          // greenery on top
+          ctx.fillStyle = '#4d7c0f'; for (let x = x0 - 200; x < xc - 50; x += 26) { ctx.beginPath(); ctx.arc(x, yl - 14 - 6 * Math.sin(x), 16, 0, TAU); ctx.fill(); } for (let x = xc + 50; x < w + 200; x += 26) { ctx.beginPath(); ctx.arc(x, yl - 38 - 6 * Math.sin(x), 16, 0, TAU); ctx.fill(); }
+          ctx.fillStyle = '#65a30d'; for (let x = x0 + 10; x < xc - 80; x += 34) { ctx.beginPath(); ctx.arc(x, yp - 30, 22, Math.PI, TAU); ctx.fill(); }
+          // river on top feeding the fall
+          ctx.fillStyle = '#60a5fa'; ctx.fillRect(xc - 40, yl - 34, 80, 30);
+          // waterfall column
+          const wg = ctx.createLinearGradient(xc - 40, 0, xc + 40, 0); wg.addColorStop(0, 'rgba(219,234,254,.85)'); wg.addColorStop(.5, '#ffffff'); wg.addColorStop(1, 'rgba(191,219,254,.9)'); ctx.fillStyle = wg; ctx.beginPath(); ctx.moveTo(xc - 40, yl - 6); ctx.lineTo(xc + 40, yl - 6); ctx.lineTo(xc + 52, yp); ctx.lineTo(xc - 52, yp); ctx.closePath(); ctx.fill();
+          ctx.strokeStyle = 'rgba(96,165,250,.55)'; ctx.lineWidth = 2.5; for (let k = 0; k < 9; k++) { const xx = xc - 34 + k * 8.5, ph = (t * 1.6 + k * .37) % 1; for (let j = 0; j < 4; j++) { const f = (ph + j / 4) % 1, ya = yl + f * f * (yp - yl), yb = ya + 18 + 40 * f; ctx.beginPath(); ctx.moveTo(xx + (xx - xc) * .25 * f, ya); ctx.lineTo(xx + (xx - xc) * .25 * f, Math.min(yb, yp)); ctx.stroke(); } }
+          // pool
+          const pg = ctx.createLinearGradient(0, yp, 0, h); pg.addColorStop(0, '#2dd4bf'); pg.addColorStop(1, '#0f766e'); ctx.fillStyle = pg; ctx.fillRect(x0 - ext, yp, w + 2 * ext, h - yp + ext);
+          ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 2; for (let k = 0; k < 40; k++) { const xx = x0 - 400 + k * 60 + 10 * Math.sin(t + k), yy = yp + 18 + (k % 4) * 22; ctx.beginPath(); ctx.moveTo(xx, yy); ctx.quadraticCurveTo(xx + 12, yy - 5, xx + 24, yy); ctx.stroke(); }
+          ctx.fillStyle = 'rgba(255,255,255,.75)'; for (let k = 0; k < 7; k++) { ctx.beginPath(); ctx.ellipse(xc - 60 + k * 20, yp + 4, 18 + 4 * Math.sin(t * 3 + k), 9, 0, 0, TAU); ctx.fill(); }
+          // bank on the right where the man stands
+          ctx.fillStyle = '#d6d3d1'; ctx.fillRect(xc + 120, yp - 14, w + ext, 16); ctx.fillStyle = '#78716c'; for (let x = xc + 120; x < w + 40; x += 22) ctx.fillRect(x, yp - 26, 3, 14); ctx.fillRect(xc + 120, yp - 27, w, 3);
+          ctx.restore(); });
+        // objects in screen coords (world + frame offset)
+        const manX = xc + 170 + ox, manY = yp - 14 + oy; person(ctx, manX, manY, .75, { shirt: '#f97316', wave: 1 });
+        const by = yp + 26 + oy, bX = boatX + ox;
+        K.raw(ctx, () => { ctx.save(); ctx.translate(bX, by); ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(0, 10, 62, 8, 0, 0, TAU); ctx.fill(); const g = ctx.createLinearGradient(0, -14, 0, 14); g.addColorStop(0, '#e5e7eb'); g.addColorStop(1, '#6b7280'); ctx.fillStyle = g; rr(ctx, -58, -12, 116, 24, 12); ctx.fill(); ctx.strokeStyle = '#374151'; ctx.lineWidth = 1.5; ctx.stroke();
+          [-30, 0, 28].forEach((dx, k) => { ctx.fillStyle = ['#ef4444', '#2563eb', '#f59e0b'][k]; rr(ctx, dx - 7, -30, 14, 20, 5); ctx.fill(); ctx.fillStyle = '#f2c49b'; ctx.beginPath(); ctx.arc(dx, -36, 7, 0, TAU); ctx.fill(); ctx.fillStyle = '#3f2a14'; ctx.beginPath(); ctx.arc(dx, -38, 7, Math.PI, TAU); ctx.fill(); }); ctx.restore(); });
+        const dX = xc + ox, dY = (F.drop.under ? yp : dropY) + oy;
+        if (!F.drop.under) K.raw(ctx, () => { ctx.save(); ctx.shadowColor = '#1d4ed8'; ctx.shadowBlur = 12; ctx.fillStyle = '#2563eb'; ctx.beginPath(); ctx.moveTo(dX, dY - 16); ctx.quadraticCurveTo(dX + 11, dY - 2, dX, dY + 8); ctx.quadraticCurveTo(dX - 11, dY - 2, dX, dY - 16); ctx.fill(); ctx.restore(); ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.beginPath(); ctx.arc(dX - 3, dY - 2, 2.5, 0, TAU); ctx.fill(); });
+        // tags + relative velocity arrows
+        const P = { man: [manX, manY - 112], car: [bX, by - 60], bus: [dX + 120, dY] };
+        if (p.tags) { ['man', 'car', 'bus'].forEach(k => { if (k === 'bus' && F.drop.under) return; const vr = [R.V[k][0] - R.r[0], R.V[k][1] - R.r[1]], sp = Math.hypot(vr[0], vr[1]), isRef = k === ref, still = sp < .01;
+            const [x, y] = P[k]; T(ctx, isRef ? '📍 نقطة الإسناد' : R.N[k] + (still ? ': ساكن' : ': متحرك'), x, y, { s: 12.5, w: 900, c: '#fff', bg: isRef ? '#7c3aed' : still ? '#16a34a' : '#dc2626' });
+            if (p.vel && !still) { const k2 = 5, L = Math.min(90, sp * k2), ux = vr[0] / sp, uy = vr[1] / sp; const ax = k === 'bus' ? dX - 34 : x, ay = k === 'bus' ? dY - L / 2 * uy : y + 30; H.arrow(ctx, ax - ux * L / 2, ay - (k === 'bus' ? 0 : uy * L / 2), ax + ux * L / 2, ay + (k === 'bus' ? L * uy : uy * L / 2), '#dc2626', 4, sp.toFixed(1) + ' m/s', { off: -2, s: 11 }); } });
+          if (ref !== 'ground' && ref !== 'man') T(ctx, ref === 'bus' ? 'الصخور والأرض تبدو صاعدة إلى الأعلى ↑ بالنسبة للقطرة!' : 'الصخور والشلال تبدو متحركة بعكس اتجاه القارب!', (64 + w) / 2, 84, { s: 12.5, w: 900, c: '#fff', bg: '#dc2626' });
+          else T(ctx, 'سطح الأرض نقطة إسناد ثابتة: الماء الساقط متحرك والصخور ساكنة', (64 + w) / 2, 84, { s: 12.5, w: 900, c: '#fff', bg: '#16a34a' }); }
+        H.box(ctx, 64 + 150, 108, 260, 'نقطة الإسناد: ' + R.N[ref], [['انقر على الصخور أو الرجل أو القطرة أو القارب', { s: 11.5, c: '#475569' }]], { bd: '#7c3aed' });
+        H.banner(ctx, w, 'شكل 1: الشلال — من يتحرك؟ ومن ساكن؟', '#7c3aed');
+        this._fg = { P, dX, dY, bX, by, manX, manY, yp, under: F.drop.under, xc };
+      },
       drawClass(ctx, w, h, S) {
         const p = S.p, x0 = 110, y0 = 110, cw = Math.min(w - 170, 560), ch = Math.min(h - 260, 470), ppm = Math.min(cw / 8, ch / 6), Wm = 8, Hm = 6;
         K.bg(ctx, w, h, { bench: false, benchY: h + 5 });
@@ -788,6 +842,8 @@ LW({ id: 'g8_period', cat: 21, name: 'زمن الاهتزازة الواحدة',
       },
       drags(S) {
         const p = S.p, w = S.W, h = S.H;
+        if (p.sc === 'fall') { const g = this._fg; if (!g) return []; const L = [{ id: 'pick_ground', x: g.xc - 160, y: g.yp - 120, w: 150, h: 120, hint: false, tip: 'انقر: اجعل الأرض (الصخور) نقطة الإسناد', click: S => setParam(S, 'ref', 'ground') }, { id: 'pick_man', x: g.manX, y: g.manY - 45, w: 44, h: 90, hint: false, tip: 'انقر: اجعل الرجل نقطة الإسناد', click: S => setParam(S, 'ref', 'man') }, { id: 'pick_car', x: g.bX, y: g.by - 10, w: 120, h: 56, hint: false, tip: 'انقر: اجعل القارب نقطة الإسناد', click: S => setParam(S, 'ref', 'car') }];
+          if (!g.under) L.push({ id: 'pick_bus', x: g.dX, y: g.dY, w: 70, h: 70, hint: true, idle: 'انقر على القطرة لتراقب من مكانها 👀', tip: 'انقر: اجعل قطرة الماء نقطة الإسناد', click: S => setParam(S, 'ref', 'bus') }); return L.filter(o => o.x > 70 && o.x < S.W - 10); }
         if (p.sc === 'class') { const g = this._cg; if (!g) return []; return [{ id: 'kid', x: g.X(S.kx), y: g.Y(S.ky), r: 26, axis: 'xy', keep: true, idle: 'اسحب التلميذ ✋', tip: 'اسحب التلميذ إلى مكان آخر', drag: (S, d) => { S.kx = clamp(Math.round((d.x - g.x0) / g.ppm * 2) / 2, .5, g.Wm - .5); S.ky = clamp(Math.round((d.y - g.y0) / g.ppm * 2) / 2, .5, g.Hm - .5); } },
           ...['door', 'board', 'win'].map((k, i) => { const P = { door: [g.Wm, 4.6], board: [4, 0], win: [0, 2.75] }[k]; return { id: 'ref_' + k, x: g.X(P[0]), y: g.Y(P[1]), r: 24, hint: false, tip: 'انقر لجعلها نقطة الإسناد', click: S => setParam(S, 'cref', k) }; })]; }
         const objs = OBJS[p.sc](S), ref = objs.find(o => o.id === p.ref) || objs[0], t = S.tt, ppm = (w - 74) / 30, cam = wx(ref, t), anchor = ref.id === 'ground' || ref.id === 'man' ? 15 : 12;
@@ -803,8 +859,10 @@ LW({ id: 'g8_period', cat: 21, name: 'زمن الاهتزازة الواحدة',
           L.push({ id: 'pick_' + o.id, x: hx, y: hy, w: hw, h: hh, hint: o.id === 'pass', idle: o.id === 'pass' ? 'انقر على التلميذ لتراقب من مكانه 👀' : undefined, tip: 'انقر: اجعل «' + o.n + '» نقطة الإسناد', click: S => setParam(S, 'ref', o.id) }); });
         return L;
       },
-      readings(S) { const p = S.p; if (p.sc === 'class') return [rd('نقطة الإسناد', { door: 'الباب', board: 'السبورة', win: 'الشباك' }[p.cref]), rd('موقعي (أفقياً، عمودياً)', '(' + S.kx + ' m , ' + S.ky + ' m)')]; const objs = OBJS[p.sc](S), ref = objs.find(o => o.id === p.ref) || objs[0]; return [rd('نقطة الإسناد', ref.n)].concat(objs.filter(o => o.id !== 'ground' && o.id !== p.ref).map(o => rd(o.n, Math.abs(o.v - ref.v) < .01 ? 'ساكن' : 'متحرك ' + (o.v - ref.v).toFixed(1) + ' m/s'))); },
-      explain(S) { const p = S.p; if (p.sc === 'class') return 'لتحديد <b>موقع</b> جسم نذكر <b>البعد</b> و<b>الاتجاه</b> بالنسبة إلى جسم ثابت، مثل: «أجلس على بعد مترين يمين الباب».'; const objs = OBJS[p.sc](S), ref = objs.find(o => o.id === p.ref) || objs[0];
+      readings(S) { const p = S.p; if (p.sc === 'fall') { const R = this.fallRel(S), ref = p.ref === 'pass' ? 'bus' : p.ref; return [rd('نقطة الإسناد', R.N[ref])].concat(['ground', 'man', 'bus', 'car'].filter(k => k !== ref).map(k => { const sp = Math.hypot(R.V[k][0] - R.r[0], R.V[k][1] - R.r[1]); return rd(R.N[k], sp < .01 ? 'ساكن' : 'متحرك ' + sp.toFixed(1) + ' m/s'); })); }
+        if (p.sc === 'class') return [rd('نقطة الإسناد', { door: 'الباب', board: 'السبورة', win: 'الشباك' }[p.cref]), rd('موقعي (أفقياً، عمودياً)', '(' + S.kx + ' m , ' + S.ky + ' m)')]; const objs = OBJS[p.sc](S), ref = objs.find(o => o.id === p.ref) || objs[0]; return [rd('نقطة الإسناد', ref.n)].concat(objs.filter(o => o.id !== 'ground' && o.id !== p.ref).map(o => rd(o.n, Math.abs(o.v - ref.v) < .01 ? 'ساكن' : 'متحرك ' + (o.v - ref.v).toFixed(1) + ' m/s'))); },
+      explain(S) { const p = S.p; if (p.sc === 'fall') { const r = p.ref; if (r === 'ground' || r === 'man') return 'في <b>شكل 1</b> نعدّ <b>سطح الأرض</b> نقطة إسناد ثابتة: الماء الساقط <b>متحرك</b> لأن موقعه يتغير بالنسبة للصخور، والصخور والرجل على الضفة <b>ساكنون</b>.'; return r === 'car' ? 'نقطة الإسناد الآن <b>القارب</b>: الركاب ساكنون بالنسبة له، أما الصخور والشلال والرجل فتبدو <b>متحركة</b> بعكس اتجاه القارب. الحركة والسكون <b>مفهومان نسبيان</b>.' : 'تخيّل أنك <b>قطرة الماء</b>: أنت ساكنة بالنسبة لنفسك، والصخور والرجل يبدون <b>صاعدين إلى الأعلى</b>! لذلك نقول: الحركة <b>نسبية</b> تعتمد على نقطة الإسناد، ونختار عادة سطح الأرض نقطة إسناد ثابتة.'; }
+        if (p.sc === 'class') return 'لتحديد <b>موقع</b> جسم نذكر <b>البعد</b> و<b>الاتجاه</b> بالنسبة إلى جسم ثابت، مثل: «أجلس على بعد مترين يمين الباب».'; const objs = OBJS[p.sc](S), ref = objs.find(o => o.id === p.ref) || objs[0];
         if (ref.id === 'ground' || ref.id === 'man') return 'نقطة الإسناد ثابتة على <b>الأرض</b>: الحافلة والتلميذ الجالس فيها <b>متحركان</b>، والرجل في الموقف <b>ساكن</b>.';
         return `نقطة الإسناد هي <b>${ref.n}</b>: ${ref.id === 'pass' || ref.id === 'bus' ? 'التلميذ <b>ساكن</b> بالنسبة للحافلة، أما الرجل في الموقف فيبدو <b>متحركاً إلى الخلف</b>!' : 'ما يبدو ساكناً أو متحركاً تغير بتغير نقطة الإسناد.'} لذلك نقول: <b>الحركة والسكون مفهومان نسبيان</b>.`; },
       quiz: [
@@ -1845,15 +1903,388 @@ LW({ id: 'g8_period', cat: 21, name: 'زمن الاهتزازة الواحدة',
   })();
 
   /* =========================================================================================
+     16) مقارنة: المسافة والإزاحة · الانطلاق والسرعة · التعجيل — حركة واحدة وكل الكميات معاً (ص 14–19)
+         الجزء 1: قُد أو اختر حركة وشاهد الكميات الخمس حيّة + جدول المقارنة
+         الجزء 2: تحديات «A أم B؟» (انطلاق واحد وسرعتان، إزاحة صفر ومسافة 400 m، عداد ثابت وسرعة تتغير، الطيار والرياح…)
+         الجزء 3: رتّب بطاقات جدول المقارنة
+     ========================================================================================= */
+  (() => {
+    const COL = { d: '#ea580c', x: '#dc2626', S: '#0284c7', v: '#16a34a', a: '#7c3aed' };
+    const n1 = v => String(+(Math.abs(v) < .005 ? 0 : v).toFixed(1));
+    const n2 = v => String(+(Math.abs(v) < .005 ? 0 : v).toFixed(2));
+    /* direction name of a vector (x east, y north) */
+    const dirN = (vx, vy) => { const m = Math.hypot(vx, vy); if (m < .02) return ''; let a = Math.atan2(vy, vx) * 180 / Math.PI; if (a < 0) a += 360;
+      const near = c => Math.abs(((a - c + 540) % 360) - 180) < 2.5; if (near(0)) return 'شرقاً'; if (near(90)) return 'شمالاً'; if (near(180)) return 'غرباً'; if (near(270)) return 'جنوباً';
+      return a < 90 ? 'شمال الشرق' : a < 180 ? 'شمال الغرب' : a < 270 ? 'جنوب الغرب' : 'جنوب الشرق'; };
+    /* speed profile: start from rest, accelerate in ta, cruise at V, brake in ta, stop after distance D */
+    const prof = (t, D, V, ta) => { const tc = Math.max(0, (D - V * ta) / V), T = 2 * ta + tc; if (t <= 0 || t >= T) return 0; if (t < ta) return V * t / ta; if (t < ta + tc) return V; return V * (T - t) / ta; };
+    const profT = (D, V, ta) => 2 * ta + Math.max(0, (D - V * ta) / V);
+    /* trips: prog(t) → velocity [vx, vy] (m/s); end = [x, y, d] exact; f = 1 car, .5 runner */
+    const TR = {
+      line: { n: '➡️ رحلة مستقيمة باتجاه واحد (200 m)', mk: f => { const V = 10 * f; return { T: profT(200, V, 2), prog: t => [prof(t, 200, V, 2), 0], end: [200, 0, 200], marks: [['flag', 200, 0, 'النهاية']] }; } },
+      round: { n: '🏫 إلى المدرسة 200 m والعودة (التفكير الناقد ص 19)', mk: f => { const V = 10 * f, T1 = profT(200, V, 2), P = 1.2; return { T: 2 * T1 + P, prog: t => t < T1 ? [prof(t, 200, V, 2), 0] : t < T1 + P ? [0, 0] : [-prof(t - T1 - P, 200, V, 2), 0], end: [0, 0, 400], marks: [['school', 200, 0, 'المدرسة']], wide: 1 }; } },
+      circle: { n: '🏟️ لفة كاملة في مضمار دائري (400 m)', mk: f => { const V = 10 * f, R = 400 / TAU, w = V / R; return { T: 400 / V, prog: t => [V * Math.cos(w * t), V * Math.sin(w * t)], end: [0, 0, 400], track: 1 }; } },
+      speedup: { n: '⛽ تسارع منتظم 0 → 20 m/s (شكل 5)', mk: f => { const V = 20 * f; return { T: 8, prog: t => [V * clamp(t / 8, 0, 1), 0], end: [4 * V, 0, 4 * V], marks: [['flag', 4 * V, 0, '']] }; } },
+      slowdown: { n: '🛑 تباطؤ منتظم 20 → 0 m/s (شكل 4)', mk: f => { const V = 20 * f; return { T: 8, prog: t => [V * clamp(1 - t / 8, 0, 1), 0], end: [4 * V, 0, 4 * V] }; } },
+      turn: { n: '↱ 120 m شرقاً ثم انعطاف 90 m شمالاً', mk: f => { const V = 10 * f, T1 = profT(120, V, 2), P = .8, T2 = profT(90, V, 2); return { T: T1 + P + T2, prog: t => t < T1 ? [prof(t, 120, V, 2), 0] : t < T1 + P ? [0, 0] : [0, prof(t - T1 - P, 90, V, 2)], end: [120, 90, 210], marks: [['stop', 120, 0, 'قف'], ['flag', 120, 90, 'النهاية']] }; } },
+      drive: { n: '🕹️ قُد بنفسك (بنزين، فرامل، مقود)', mk: f => ({ ext: f < 1 ? [-70, 70, -45, 45] : [-140, 140, -90, 90], free: 1 }) },
+      /* used by the challenges */
+      cE: { mk: () => ({ T: 12, prog: () => [15, 0], end: [180, 0, 180] }) }, cW: { mk: () => ({ T: 12, prog: () => [-15, 0], end: [-180, 0, 180] }) },
+      l400: { mk: f => { const V = 10 * f; return { T: profT(400, V, 2), prog: t => [prof(t, 400, V, 2), 0], end: [400, 0, 400], marks: [['flag', 400, 0, 'النهاية']] }; } },
+      lc10: { mk: () => ({ T: 400 / 10, prog: () => [10, 0], end: [400, 0, 400] }) },
+      windE: { mk: () => ({ T: 10, prog: () => [20, 50], end: [200, 500, 10 * Math.hypot(20, 50)], nose: Math.PI / 2, wind: [20, 0], plan: [0, 500] }) },
+      windW: { mk: () => ({ T: 10, prog: () => [-20, 50], end: [-200, 500, 10 * Math.hypot(20, 50)], nose: Math.PI / 2, wind: [-20, 0], plan: [0, 500] }) }
+    };
+    const WHO = { car: { n: '🚗 سيارة', f: 1 }, run: { n: '🏃 عدّاء', f: .5 } };
+    /* ---------- the motion engine (one moving body) ---------- */
+    const route = tr => { if (tr._r) return tr._r; const P = [[0, 0]]; let x = 0, y = 0; const h = .05; for (let t = 0; t < tr.T; t += h) { const v = tr.prog(t + h / 2); x += v[0] * h; y += v[1] * h; P.push([x, y]); } P.push([tr.end[0], tr.end[1]]); return (tr._r = P); };
+    const extOf = tr => { if (tr.ext) return tr.ext; const P = route(tr).concat(tr.plan ? [tr.plan] : []); let a = 0, b = 0, c = 0, d = 0; P.forEach(([x, y]) => { a = Math.min(a, x); b = Math.max(b, x); c = Math.min(c, y); d = Math.max(d, y); });
+      const sx = Math.max(b - a, 40), sy = Math.max(d - c, 40), mx = (a + b) / 2, my = (c + d) / 2; return [mx - sx * .62, mx + sx * .62, my - sy * .62, my + sy * .62]; };
+    const sim = (key, f, vk) => { const tr = TR[key].mk(f); const r = { key, f, vk: vk || 'car', tr, st: 0, x: 0, y: 0, d: 0, vx: 0, vy: 0, sp: 0, hd: tr.nose || 0, hist: [], path: [[0, 0]], snaps: [], done: false };
+      if (tr.prog) { const v = tr.prog(0); r.vx = v[0]; r.vy = v[1]; if (Math.hypot(v[0], v[1]) > .01) r.hd = tr.nose ?? Math.atan2(v[1], v[0]); }
+      r.hist = [[0, r.vx, r.vy]]; r.snaps = [{ t: 0, x: 0, y: 0, vx: r.vx, vy: r.vy }]; return r; };
+    const step = (r, h, c) => {
+      const tr = r.tr, t0 = r.st; let vx, vy;
+      if (tr.prog) { const v = tr.prog(t0 + h / 2); vx = v[0]; vy = v[1]; }
+      else { let s = r.sp + (c.gas ? 3 * r.f : c.brake ? -7 * r.f : -.35 * r.f) * h; s = clamp(s, 0, 20 * r.f); r.sp = s; r.hd += (c.left ? 1 : c.right ? -1 : 0) * Math.min(.9 * Math.min(1, s / (3 * r.f)), 3.5 * r.f / Math.max(s, .1)) * h; vx = s * Math.cos(r.hd); vy = s * Math.sin(r.hd); }
+      const ox = r.x, oy = r.y; r.x += vx * h; r.y += vy * h;
+      if (tr.ext) { const E = tr.ext, m = 4 * r.f; if (r.x < E[0] + m || r.x > E[1] - m || r.y < E[2] + m || r.y > E[3] - m) { r.x = clamp(r.x, E[0] + m, E[1] - m); r.y = clamp(r.y, E[2] + m, E[3] - m); r.sp = 0; r.bump = 1.2; } }
+      r.d += Math.hypot(r.x - ox, r.y - oy); r.st = t0 + h;
+      if (tr.prog) { const v = tr.prog(r.st); r.vx = v[0]; r.vy = v[1]; } else { r.vx = r.sp * Math.cos(r.hd); r.vy = r.sp * Math.sin(r.hd); }
+      if (tr.T && r.st >= tr.T - 1e-9) { r.st = tr.T; r.x = tr.end[0]; r.y = tr.end[1]; r.d = tr.end[2]; r.done = true; }
+      if (tr.prog && Math.hypot(r.vx, r.vy) > .05 && tr.nose == null) r.hd = Math.atan2(r.vy, r.vx);
+      r.hist.push([r.st, r.vx, r.vy]); while (r.hist.length > 2 && r.hist[1][0] <= r.st - 1) r.hist.shift();
+      const lp = r.path[r.path.length - 1]; if (Math.hypot(r.x - lp[0], r.y - lp[1]) > .3 * r.f || r.done) r.path.push([r.x, r.y]);
+      if (Math.floor(r.st + 1e-9) > Math.floor(t0 + 1e-9)) r.snaps.push({ t: Math.round(r.st), x: r.x, y: r.y, vx: r.vx, vy: r.vy });
+      if (r.bump) r.bump = Math.max(0, r.bump - h);
+    };
+    const run = (r, dt, c) => { let rem = dt; while (rem > 1e-9 && !r.done) { const h = Math.min(rem, 1 / 120); step(r, h, c || {}); rem -= h; } };
+    /* acceleration as the book defines it: a = Δv / t, measured over the last 1 s */
+    const acc = r => { const tq = Math.max(0, r.st - 1), H0 = r.hist; let v1 = [H0[0][1], H0[0][2]];
+      for (let i = 0; i < H0.length - 1; i++) { const A = H0[i], B = H0[i + 1]; if (A[0] <= tq && B[0] >= tq) { const k = B[0] > A[0] ? (tq - A[0]) / (B[0] - A[0]) : 0; v1 = [A[1] + (B[1] - A[1]) * k, A[2] + (B[2] - A[2]) * k]; break; } }
+      const dt = r.st - tq; if (dt < .15) return { ax: 0, ay: 0, dvx: 0, dvy: 0, v1, dt: 0 };
+      const dvx = r.vx - v1[0], dvy = r.vy - v1[1]; return { ax: dvx / dt, ay: dvy / dt, dvx, dvy, v1, dt }; };
+    const akind = (r, a) => { const am = Math.hypot(a.ax, a.ay), vm = Math.hypot(r.vx, r.vy), vm1 = Math.hypot(a.v1[0], a.v1[1]); if (am < .05) return 'لا تعجيل: السرعة ثابتة'; if (vm < .05 && vm1 < .05) return 'لا تعجيل';
+      const ux = vm > .05 ? r.vx / vm : a.v1[0] / vm1, uy = vm > .05 ? r.vy / vm : a.v1[1] / vm1, c = (a.ax * ux + a.ay * uy) / am;
+      return c > .9 ? 'تسارعي: السرعة تزداد' : c < -.9 ? 'تباطئي: السرعة تقل' : Math.abs(c) < .35 ? 'يغيّر اتجاه السرعة' : c > 0 ? 'يزيد السرعة ويغيّر اتجاهها' : 'يقلل السرعة ويغيّر اتجاهها'; };
+    /* ---------- drawing ---------- */
+    const carTop = (ctx, x, y, hd, s = 1, col = '#2563eb') => K.raw(ctx, () => { ctx.save(); ctx.translate(x, y); ctx.rotate(-hd); ctx.scale(s, s);
+      ctx.fillStyle = 'rgba(0,0,0,.25)'; rr(ctx, -21, -10, 46, 24, 7); ctx.fill();
+      ctx.fillStyle = '#111827'; [[-13, -12], [11, -12], [-13, 9], [11, 9]].forEach(([a, b]) => { rr(ctx, a, b, 9, 4, 1.5); ctx.fill(); });
+      const g = ctx.createLinearGradient(0, -11, 0, 11); g.addColorStop(0, shade(col, 30)); g.addColorStop(.5, col); g.addColorStop(1, shade(col, -30)); ctx.fillStyle = g; rr(ctx, -22, -11, 44, 22, 8); ctx.fill(); ctx.strokeStyle = 'rgba(15,23,42,.7)'; ctx.lineWidth = 1.2; ctx.stroke();
+      ctx.fillStyle = '#bfdbfe'; rr(ctx, 4, -8, 9, 16, 3); ctx.fill(); ctx.fillStyle = '#93c5fd'; rr(ctx, -15, -7.5, 6, 15, 2.5); ctx.fill(); ctx.fillStyle = shade(col, -15); rr(ctx, -8, -8.5, 11, 17, 3); ctx.fill();
+      ctx.fillStyle = '#fef08a'; ctx.fillRect(20, -9, 2.5, 4); ctx.fillRect(20, 5, 2.5, 4); ctx.fillStyle = '#ef4444'; ctx.fillRect(-22.5, -9, 2, 4); ctx.fillRect(-22.5, 5, 2, 4); ctx.restore(); });
+    const runTop = (ctx, x, y, hd, ph, s = 1) => K.raw(ctx, () => { ctx.save(); ctx.translate(x, y); ctx.rotate(-hd); ctx.scale(s, s); ctx.lineCap = 'round'; const sw = Math.sin(ph) * 7;
+      ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(-2, 2, 11, 13, 0, 0, TAU); ctx.fill();
+      ctx.strokeStyle = '#1e3a8a'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(0, -4); ctx.lineTo(sw, -5); ctx.moveTo(0, 4); ctx.lineTo(-sw, 5); ctx.stroke();
+      ctx.strokeStyle = '#f2c49b'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(0, -9); ctx.lineTo(-sw * .8, -12); ctx.moveTo(0, 9); ctx.lineTo(sw * .8, 12); ctx.stroke();
+      ctx.fillStyle = '#f8fafc'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(0, 0, 6, 10.5, 0, 0, TAU); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#5b3716'; ctx.beginPath(); ctx.arc(1, 0, 5.2, 0, TAU); ctx.fill(); ctx.fillStyle = '#f2c49b'; ctx.beginPath(); ctx.arc(3.2, 0, 2.6, -1.3, 1.3); ctx.fill(); ctx.restore(); ctx.lineCap = 'butt'; });
+    const planeTop = (ctx, x, y, hd, s = 1) => K.raw(ctx, () => { ctx.save(); ctx.translate(x, y); ctx.rotate(-hd); ctx.scale(s, s);
+      ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(-4, 6, 26, 6, 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#cbd5e1'; ctx.strokeStyle = '#475569'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(4, 0); ctx.lineTo(-6, -24); ctx.lineTo(-12, -24); ctx.lineTo(-6, 0); ctx.lineTo(-12, 24); ctx.lineTo(-6, 24); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-20, 0); ctx.lineTo(-25, -9); ctx.lineTo(-28, -9); ctx.lineTo(-25, 0); ctx.lineTo(-28, 9); ctx.lineTo(-25, 9); ctx.closePath(); ctx.fill(); ctx.stroke();
+      const g = ctx.createLinearGradient(0, -5, 0, 5); g.addColorStop(0, '#f8fafc'); g.addColorStop(1, '#94a3b8'); ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(-2, 0, 27, 4.8, 0, 0, TAU); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#1e3a8a'; ctx.beginPath(); ctx.ellipse(18, 0, 4, 2.5, 0, 0, TAU); ctx.fill(); ctx.restore(); });
+    const body = (ctx, r, x, y, s = 1) => { if (r.tr.nose != null) planeTop(ctx, x, y, r.tr.nose, s); else if (r.vk === 'run') runTop(ctx, x, y, r.hd, r.d / (.9 * r.f) * 1.4, s * 1.5); else carTop(ctx, x, y, r.hd, s, r.col || '#2563eb'); };
+    const flag = (ctx, x, y, col, lab) => { K.raw(ctx, () => { ctx.strokeStyle = '#334155'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - 30); ctx.stroke(); ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x, y - 30); ctx.lineTo(x + 18, y - 25); ctx.lineTo(x, y - 19); ctx.closePath(); ctx.fill(); }); if (lab) T(ctx, lab, x, y + 13, { s: 11, w: 900, c: '#fff', bg: col }); };
+    /* map of one motion inside box B {x,y,w,h}; o = {path, disp, vel, acc, snap, small} */
+    const drawMap = (ctx, r, B, o) => {
+      const tr = r.tr, E = extOf(tr), pad = o.small ? 16 : 26, ppm = Math.min((B.w - 2 * pad) / (E[1] - E[0]), (B.h - 2 * pad) / (E[3] - E[2])), cx = B.x + B.w / 2, cy = B.y + B.h / 2, mx = (E[0] + E[1]) / 2, my = (E[2] + E[3]) / 2;
+      const X = x => cx + (x - mx) * ppm, Y = y => cy - (y - my) * ppm, air = tr.nose != null;
+      K.raw(ctx, () => { ctx.save(); ctx.beginPath(); rr(ctx, B.x, B.y, B.w, B.h, 12); ctx.clip();
+        const g = ctx.createLinearGradient(0, B.y, 0, B.y + B.h); if (air) { g.addColorStop(0, '#7dd3fc'); g.addColorStop(1, '#bae6fd'); } else { g.addColorStop(0, '#9fd17f'); g.addColorStop(1, '#6faa52'); } ctx.fillStyle = g; ctx.fillRect(B.x, B.y, B.w, B.h);
+        if (air) { ctx.fillStyle = 'rgba(255,255,255,.75)'; for (let k = 0; k < 6; k++) { const xx = B.x + ((k * 137 + (o.t || 0) * 18 * Math.sign(tr.wind[0])) % B.w + B.w) % B.w, yy = B.y + 20 + (k * 53) % (B.h - 30); ctx.beginPath(); ctx.ellipse(xx, yy, 22, 8, 0, 0, TAU); ctx.ellipse(xx + 14, yy - 5, 14, 8, 0, 0, TAU); ctx.fill(); } }
+        // grid in metres
+        const st = [5, 10, 20, 25, 50, 100, 200].find(q => q * ppm >= (o.small ? 34 : 44)) || 500; ctx.strokeStyle = air ? 'rgba(255,255,255,.35)' : 'rgba(255,255,255,.22)'; ctx.lineWidth = 1; ctx.beginPath();
+        for (let gx = Math.ceil(E[0] / st) * st - st * 4; gx <= E[1] + st * 4; gx += st) { ctx.moveTo(X(gx), B.y); ctx.lineTo(X(gx), B.y + B.h); }
+        for (let gy = Math.ceil(E[2] / st) * st - st * 4; gy <= E[3] + st * 4; gy += st) { ctx.moveTo(B.x, Y(gy)); ctx.lineTo(B.x + B.w, Y(gy)); } ctx.stroke(); o._st = st;
+        // the road / track / plaza
+        if (tr.free) { ctx.fillStyle = '#9ca3af'; rr(ctx, X(E[0]) + 6, Y(E[3]) + 6, (E[1] - E[0]) * ppm - 12, (E[3] - E[2]) * ppm - 12, 14); ctx.fill(); ctx.strokeStyle = '#f8fafc'; ctx.setLineDash([10, 10]); ctx.lineWidth = 2; ctx.strokeRect(X(E[0]) + 14, Y(E[3]) + 14, (E[1] - E[0]) * ppm - 28, (E[3] - E[2]) * ppm - 28); ctx.setLineDash([]); }
+        else if (!air) { const P = route(tr), rw = r.vk === 'run' ? 16 : 20; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+          ctx.strokeStyle = r.vk === 'run' ? '#b45309' : '#4b5563'; ctx.lineWidth = rw + 4; ctx.beginPath(); P.forEach(([x, y], i) => i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y))); ctx.stroke();
+          ctx.strokeStyle = r.vk === 'run' ? '#c2410c' : '#6b7280'; ctx.lineWidth = rw; ctx.stroke(); ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1.6; ctx.setLineDash(r.vk === 'run' ? [] : [9, 9]); ctx.stroke(); ctx.setLineDash([]); ctx.lineCap = 'butt'; }
+        if (air && tr.plan) { ctx.strokeStyle = 'rgba(30,41,59,.45)'; ctx.lineWidth = 2; ctx.setLineDash([6, 6]); ctx.beginPath(); ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(tr.plan[0]), Y(tr.plan[1])); ctx.stroke(); ctx.setLineDash([]); }
+        if (air) { ctx.strokeStyle = 'rgba(14,116,144,.55)'; ctx.fillStyle = 'rgba(14,116,144,.55)'; for (let k = 0; k < 4; k++) { const yy = B.y + 30 + k * (B.h - 50) / 3, xx = B.x + B.w * .14, L = 40 * Math.sign(tr.wind[0]); ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(xx - L / 2, yy); ctx.lineTo(xx + L / 2, yy); ctx.stroke(); ctx.beginPath(); ctx.moveTo(xx + L / 2, yy); ctx.lineTo(xx + L / 2 - 8 * Math.sign(L), yy - 5); ctx.lineTo(xx + L / 2 - 8 * Math.sign(L), yy + 5); ctx.fill(); } }
+        ctx.restore(); });
+      if (air) T(ctx, 'الرياح 20 m/s ' + dirN(tr.wind[0], 0), B.x + B.w * .14, B.y + 16, { s: 11, w: 900, c: '#fff', bg: '#0e7490' });
+      if (air && tr.plan) T(ctx, 'الوجهة المقصودة', X(tr.plan[0]), Y(tr.plan[1]) - 2, { s: 10.5, w: 800, c: '#fff', bg: 'rgba(30,41,59,.7)' });
+      // marks
+      (tr.marks || []).forEach(([k, x, y, lab]) => { const px = X(x), py = Y(y); if (k === 'school') { K.raw(ctx, () => { ctx.fillStyle = '#fde68a'; ctx.strokeStyle = '#92400e'; ctx.lineWidth = 1.5; ctx.fillRect(px - 20, py - 52, 40, 26); ctx.strokeRect(px - 20, py - 52, 40, 26); ctx.fillStyle = '#b91c1c'; ctx.beginPath(); ctx.moveTo(px - 24, py - 52); ctx.lineTo(px, py - 66); ctx.lineTo(px + 24, py - 52); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#7c2d12'; ctx.fillRect(px - 5, py - 40, 10, 14); }); T(ctx, lab, px, py - 76, { s: 11, w: 900, c: '#fff', bg: '#92400e' }); }
+        else if (k === 'stop') { K.raw(ctx, () => { ctx.strokeStyle = '#475569'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(px + 22, py + 14); ctx.lineTo(px + 22, py - 14); ctx.stroke(); ctx.fillStyle = '#dc2626'; ctx.beginPath(); for (let i = 0; i < 8; i++) { const a = Math.PI / 8 + i * Math.PI / 4; ctx.lineTo(px + 22 + 11 * Math.cos(a), py - 22 + 11 * Math.sin(a)); } ctx.closePath(); ctx.fill(); }); T(ctx, lab, px + 22, py - 22, { s: 9.5, w: 900, c: '#fff' }); }
+        else if (k === 'flag' && !o.small) flag(ctx, px + 4, py - 12, '#0f172a', lab); });
+      if (!tr.free && !air) flag(ctx, X(0) - 4, Y(0) - 12, '#16a34a', o.small ? '' : 'البداية O');
+      else { K.raw(ctx, () => { ctx.fillStyle = '#16a34a'; ctx.beginPath(); ctx.arc(X(0), Y(0), 5, 0, TAU); ctx.fill(); }); T(ctx, 'O', X(0) - 12, Y(0) + 10, { s: 11, w: 900, c: '#fff', bg: '#16a34a' }); }
+      // stroboscopic pictures every 1 s
+      if (o.snap) r.snaps.forEach(q => { K.raw(ctx, () => { ctx.globalAlpha = .38; }); body(ctx, Object.assign({}, r, { hd: Math.hypot(q.vx, q.vy) > .05 && r.tr.nose == null ? Math.atan2(q.vy, q.vx) : r.hd }), X(q.x), Y(q.y), o.small ? .6 : .75); K.raw(ctx, () => { ctx.globalAlpha = 1; });
+        if (!o.small && q.t % 2 === 0) T(ctx, q.t + ' s', X(q.x), Y(q.y) + 18, { s: 9.5, w: 800, c: '#fff', bg: 'rgba(15,23,42,.55)' }); });
+      // distance: the path actually travelled
+      if (o.path) K.raw(ctx, () => { ctx.strokeStyle = COL.d; ctx.lineWidth = o.small ? 3.5 : 5; ctx.lineJoin = 'round'; ctx.beginPath(); r.path.forEach(([x, y], i) => i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y))); ctx.lineTo(X(r.x), Y(r.y)); ctx.stroke(); });
+      // displacement arrow
+      const xm = Math.hypot(r.x, r.y);
+      if (o.disp && xm * ppm > 6) H.arrow(ctx, X(0), Y(0), X(r.x), Y(r.y), COL.x, o.small ? 3.5 : 4.5, o.small ? 'x' : 'x = ' + n1(xm) + ' m', { off: -15, s: o.small ? 11 : 12 });
+      else if (o.disp && r.st > 0 && r.d > 1 && !o.small) T(ctx, 'x = 0 (رجع إلى البداية!)', X(0), Y(0) - 46, { s: 12, w: 900, c: '#fff', bg: COL.x });
+      // the body itself + its vectors
+      const bx = X(r.x), by = Y(r.y); body(ctx, r, bx, by, o.small ? .8 : 1);
+      if (r.bump) T(ctx, 'حافة الساحة!', bx, by - 30, { s: 11, w: 900, c: '#fff', bg: '#dc2626' });
+      const kv = (o.small ? 2.2 : 3.4) / Math.max(.5, r.f) * (air ? .35 : 1), vm = Math.hypot(r.vx, r.vy);
+      if (o.vel && vm > .05) H.arrow(ctx, bx, by, bx + r.vx * kv, by - r.vy * kv, COL.v, o.small ? 3.5 : 4.5, o.small ? 'v' : 'v = ' + n1(vm) + ' m/s', { off: 14, s: o.small ? 11 : 12 });
+      if (o.acc) { const a = acc(r), am = Math.hypot(a.ax, a.ay), ka = (o.small ? 9 : 14) / Math.max(.5, r.f); if (am > .05) H.arrow(ctx, bx, by, bx + a.ax * ka, by - a.ay * ka, COL.a, o.small ? 3 : 4, o.small ? 'a' : 'a = ' + n2(am) + ' m/s²', { off: -24, s: o.small ? 11 : 12 }); }
+      // compass + scale bar
+      if (!o.small) { const qx = B.x + B.w - 62, qy = B.y + 34; K.raw(ctx, () => { ctx.fillStyle = 'rgba(255,255,255,.88)'; ctx.beginPath(); ctx.arc(qx, qy, 19, 0, TAU); ctx.fill(); ctx.strokeStyle = '#334155'; ctx.lineWidth = 1.2; ctx.stroke(); ctx.fillStyle = '#dc2626'; ctx.beginPath(); ctx.moveTo(qx, qy - 15); ctx.lineTo(qx + 5, qy); ctx.lineTo(qx - 5, qy); ctx.fill(); ctx.fillStyle = '#334155'; ctx.beginPath(); ctx.moveTo(qx, qy + 15); ctx.lineTo(qx + 5, qy); ctx.lineTo(qx - 5, qy); ctx.fill(); }); T(ctx, 'شمال', qx, qy - 28, { s: 10, w: 900, c: '#fff', bg: '#dc2626' }); T(ctx, 'شرق', qx + 36, qy, { s: 10, w: 900, c: '#fff', bg: '#334155' });
+        const sb = o._st * ppm, sx = B.x + 14, sy = B.y + B.h - 14; K.raw(ctx, () => { ctx.fillStyle = 'rgba(255,255,255,.9)'; rr(ctx, sx - 4, sy - 20, sb + 8, 26, 5); ctx.fill(); ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(sx, sy - 4); ctx.lineTo(sx, sy); ctx.lineTo(sx + sb, sy); ctx.lineTo(sx + sb, sy - 4); ctx.stroke(); }); T(ctx, o._st + ' m', sx + sb / 2, sy - 11, { s: 10.5, w: 900, c: '#0f172a', mono: 1 }); }
+      return { X, Y, ppm };
+    };
+    /* small instruments */
+    const compass = (ctx, x, y, R, vx, vy, col) => { const m = Math.hypot(vx, vy);
+      K.raw(ctx, () => { ctx.fillStyle = '#f8fafc'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, R, 0, TAU); ctx.fill(); ctx.stroke(); ctx.strokeStyle = '#e2e8f0'; ctx.beginPath(); ctx.moveTo(x - R, y); ctx.lineTo(x + R, y); ctx.moveTo(x, y - R); ctx.lineTo(x, y + R); ctx.stroke(); });
+      T(ctx, 'ش', x, y - R + 8, { s: 9, w: 900, c: '#64748b' }); T(ctx, 'ق', x + R - 8, y, { s: 9, w: 900, c: '#64748b' }); T(ctx, 'ج', x, y + R - 8, { s: 9, w: 900, c: '#64748b' }); T(ctx, 'غ', x - R + 8, y, { s: 9, w: 900, c: '#64748b' });
+      if (m > .02) H.arrow(ctx, x, y, x + vx / m * R * .8, y - vy / m * R * .8, col, 3.5); else K.raw(ctx, () => { ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, 4, 0, TAU); ctx.fill(); }); };
+    const odometer = (ctx, x, y, d) => { const s = ('0000' + d.toFixed(1)).slice(-6); K.raw(ctx, () => { ctx.fillStyle = '#0f172a'; rr(ctx, x - 50, y - 16, 100, 32, 6); ctx.fill(); ctx.direction = 'ltr'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '800 17px ui-monospace,monospace';
+      for (let i = 0; i < 6; i++) { const cx = x - 40 + i * 16; if (s[i] === '.') { ctx.fillStyle = '#fbbf24'; ctx.fillText('.', cx, y + 2); continue; } ctx.fillStyle = i === 5 ? '#b91c1c' : '#1e293b'; rr(ctx, cx - 7, y - 12, 14, 24, 3); ctx.fill(); ctx.fillStyle = '#f8fafc'; ctx.fillText(s[i], cx, y + 1); } ctx.textBaseline = 'alphabetic'; }); T(ctx, 'm', x + 58, y, { s: 11, w: 900, c: '#334155', mono: 1 }); };
+    const dvPic = (ctx, x, y, R, r, a) => { const v0 = a.v1, v1 = [r.vx, r.vy], M = Math.max(Math.hypot(v0[0], v0[1]), Math.hypot(v1[0], v1[1]), .01), k = R / M, ox = x - (v1[0] + v0[0]) / 2 * k * .5, oy = y + (v1[1] + v0[1]) / 2 * k * .5;
+      K.raw(ctx, () => { ctx.fillStyle = '#f8fafc'; ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1; rr(ctx, x - R - 8, y - R - 6, 2 * R + 16, 2 * R + 12, 8); ctx.fill(); ctx.stroke(); });
+      if (Math.hypot(v0[0], v0[1]) > .05) { K.raw(ctx, () => { ctx.globalAlpha = .4; }); H.arrow(ctx, ox, oy, ox + v0[0] * k, oy - v0[1] * k, COL.v, 3); K.raw(ctx, () => { ctx.globalAlpha = 1; }); }
+      if (Math.hypot(v1[0], v1[1]) > .05) H.arrow(ctx, ox, oy, ox + v1[0] * k, oy - v1[1] * k, COL.v, 3);
+      const dm = Math.hypot(a.dvx, a.dvy); if (dm > .03) H.arrow(ctx, ox + v0[0] * k, oy - v0[1] * k, ox + v1[0] * k, oy - v1[1] * k, COL.a, 3, 'Δv', { off: -10, s: 10 }); else T(ctx, 'Δv = 0', x, y + R - 4, { s: 10.5, w: 900, c: COL.a, mono: 1 }); };
+    /* the live comparison table under the map */
+    const ROWS = {
+      d: { h: 'المسافة d', ty: 'مقدارية', u: 'm', law: 'طول المسار كله', ins: 'عدّاد المسافات' },
+      x: { h: 'الإزاحة x', ty: 'اتجاهية', u: 'm + اتجاه', law: 'من البداية إلى النهاية', ins: 'سهم مستقيم من O' },
+      S: { h: 'الانطلاق S', ty: 'مقدارية', u: 'm/s', law: 'S = d / t', ins: 'عداد السرعة: رقم فقط' },
+      v: { h: 'السرعة v', ty: 'اتجاهية', u: 'm/s + اتجاه', law: 'v = x / t', ins: 'رقم + اتجاه (سهم)' },
+      a: { h: 'التعجيل a', ty: 'اتجاهية', u: 'm/s²', law: 'a = Δv / t', ins: 'تغيّر السرعة كل 1 s' } };
+    const tableH = full => 24 + 88 + 40 + (full ? 3 * 19 + 6 : 0);
+    const drawTable = (ctx, x0, y0, W, r, full) => {
+      const keys = ['d', 'x', 'S', 'v', 'a'], cw = W / 5, Ht = tableH(full), a = acc(r), xm = Math.hypot(r.x, r.y), vm = Math.hypot(r.vx, r.vy), t = r.st, am = Math.hypot(a.ax, a.ay);
+      H.card(ctx, x0, y0, W, Ht, { bd: '#cbd5e1', lw: 1.5, r: 12 });
+      keys.forEach((k, i) => { const cx = x0 + W - cw * (i + .5), c = COL[k], R = ROWS[k];
+        K.raw(ctx, () => { ctx.fillStyle = c; rr(ctx, cx - cw / 2 + 3, y0 + 3, cw - 6, 22, 7); ctx.fill(); if (i) { ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx + cw / 2, y0 + 28); ctx.lineTo(cx + cw / 2, y0 + Ht - 6); ctx.stroke(); } });
+        T(ctx, R.h, cx, y0 + 14, { s: 12.5, w: 900, c: '#fff' });
+        const iy = y0 + 24 + 44;
+        if (k === 'd') { odometer(ctx, cx - 6, iy - 6, r.d); T(ctx, 'عدّاد المسافات', cx, iy + 28, { s: 10, w: 800, c: '#64748b' }); }
+        if (k === 'x') compass(ctx, cx, iy, 36, r.x, r.y, c);
+        if (k === 'S') H.speedo(ctx, cx, iy + 10, 40, vm, 25 * r.f, 'm/s');
+        if (k === 'v') compass(ctx, cx, iy, 36, r.vx, r.vy, c);
+        if (k === 'a') dvPic(ctx, cx, iy, 32, r, a);
+        const vy1 = y0 + 24 + 88 + 10, vy2 = vy1 + 18, sm = cw < 140 ? 11 : 12;
+        if (k === 'd') { T(ctx, 'd = ' + n1(r.d) + ' m', cx, vy1, { s: sm + 1, w: 900, c, mono: 1 }); T(ctx, 'رقم فقط (بلا اتجاه)', cx, vy2, { s: 10.5, w: 800, c: '#64748b' }); }
+        if (k === 'x') { T(ctx, 'x = ' + n1(xm) + ' m', cx, vy1, { s: sm + 1, w: 900, c, mono: 1 }); T(ctx, dirN(r.x, r.y) || (r.d > 1 ? 'صفر: عاد إلى O' : '—'), cx, vy2, { s: 11, w: 900, c }); }
+        if (k === 'S') { T(ctx, 'd/t = ' + (t > .05 ? n1(r.d / t) : '0') + ' m/s', cx, vy1, { s: sm, w: 900, c, mono: 1 }); T(ctx, 'العداد الآن: ' + n1(vm), cx, vy2, { s: 10.5, w: 800, c: '#334155' }); }
+        if (k === 'v') { T(ctx, 'x/t = ' + (t > .05 ? n1(xm / t) : '0') + ' m/s', cx, vy1, { s: sm, w: 900, c, mono: 1 }); T(ctx, vm > .05 ? 'الآن: ' + n1(vm) + ' ' + dirN(r.vx, r.vy) : 'الآن: 0', cx, vy2, { s: 10.5, w: 900, c }); }
+        if (k === 'a') { T(ctx, 'Δv/t = ' + n2(am) + ' m/s²', cx, vy1, { s: sm, w: 900, c, mono: 1 }); T(ctx, akind(r, a), cx, vy2, { s: 10, w: 900, c }); }
+        if (full) { const ry = y0 + 24 + 88 + 40 + 10; [['النوع: ', R.ty], ['الوحدة: ', R.u], ['', R.law], ['', R.ins]].slice(0, 3).forEach(([p, q], j) => T(ctx, p + q, cx, ry + j * 19, { s: 11, w: j ? 800 : 900, c: j ? '#334155' : (R.ty === 'اتجاهية' ? '#b91c1c' : '#0369a1'), mono: j === 2 && /=/.test(q) })); }
+      });
+    };
+    const phoneB = () => (typeof Runner !== 'undefined' && Runner.cv && Runner.cv.__k < 1) ? 64 : 0; // the floating toolbar covers the bottom of the canvas on phones
+    const ctlOf = S => ({ gas: S.kGas, brake: S.kBrake, left: S.kL, right: S.kR });
+    const lay1 = S => { const w = S.W, h = S.H, full = S.p.table, th = tableH(full), top = 46, bot = h - 58 - phoneB() - th - 6; return { map: { x: 74, y: top, w: w - 74 - 12, h: Math.max(160, bot - top) }, ty: Math.max(160, bot - top) + top + 8, th, full }; };
+    const reset1 = S => { const f = WHO[S.p.who].f; S.sim = sim(S.p.trip, f, S.p.who); S.sim.col = '#2563eb'; S.run = S.p.trip !== 'drive'; S.kGas = S.kBrake = S.kL = S.kR = false; };
+    const TIP = {
+      line: r => r.done ? 'رحلة مستقيمة باتجاه واحد: <b>المسافة = مقدار الإزاحة = 200 m</b>، لذلك <b>الانطلاق المتوسط = مقدار السرعة المتوسطة</b>. التعجيل ظهر فقط عند الانطلاق (تسارعي) وعند التوقف (تباطئي).' : 'في الخط المستقيم وباتجاه واحد يكون عدّاد المسافات مساوياً لطول سهم الإزاحة، ورقم عداد السرعة مساوياً لطول سهم السرعة.',
+      round: r => r.done ? 'قطعتَ <b>400 m</b> (ذهاباً وإياباً) لكنك رجعت إلى نقطة البداية: <b>الإزاحة = صفر</b>! لذلك معدل الانطلاق d/t ليس صفراً، أما السرعة المتوسطة x/t = <b>صفر</b> (التفكير الناقد ص 19).' : r.x > 100 && r.vx < 0 ? 'في طريق العودة: <b>المسافة تزداد</b> لكن <b>الإزاحة تقل</b>، وسهم السرعة انقلب نحو الغرب مع أن عداد السرعة يقرأ الرقم نفسه.' : 'في الذهاب إلى المدرسة: المسافة والإزاحة متساويتان حتى الآن. انتظر طريق العودة!',
+      circle: r => 'عداد السرعة ثابت على <b>' + n1(10 * r.f) + ' m/s</b> طوال اللفة، لكن <b>سهم السرعة يدور</b> فيتغير اتجاهه — إذن <b>السرعة تتغير</b> ويوجد <b>تعجيل</b> (Δv ليس صفراً) يتجه نحو مركز المضمار.' + (r.done ? ' وبعد لفة كاملة: المسافة 400 m والإزاحة <b>صفر</b>.' : ''),
+      speedup: () => 'شكل 5: السائق يضغط دواسة البنزين فتزداد السرعة <b>بانتظام</b> 2.5 m/s كل ثانية. سهم التعجيل <b>باتجاه السرعة</b> = تعجيل تسارعي.',
+      slowdown: () => 'شكل 4: السائق يضغط الفرامل فتقل السرعة <b>بانتظام</b> حتى تتوقف. سهم التعجيل <b>بعكس اتجاه السرعة</b> = تعجيل تباطئي.',
+      turn: r => r.done ? 'المسافة d = 120 + 90 = <b>210 m</b>، أما الإزاحة فهي خط مستقيم من O إلى النهاية = <b>150 m شمال الشرق</b>. لذلك الانطلاق المتوسط أكبر من مقدار السرعة المتوسطة.' : 'عند الانعطاف يتغير اتجاه السرعة. لاحظ أن المسافة صارت أكبر من مقدار الإزاحة.',
+      drive: r => 'اضغط مطولاً على ⛽ للتسريع و🛑 للفرامل، و↺ ↻ للمقود. جرّب: لفّ دائرة كاملة وارجع إلى O — كم المسافة؟ وكم الإزاحة؟ وحاول أن تبقي عداد السرعة ثابتاً وأنت تنعطف: هل يوجد تعجيل؟' };
+    P8({
+      id: 'g8_cmp_live', ch: 21, sec: 'الدرس الثالث: وصف الحركة', page: 18, fig: 'مقارنة ص 14–19', kind: 'نشاط', title: 'حركة واحدة وخمس كميات: المسافة والإزاحة، الانطلاق والسرعة والتعجيل',
+      desc: 'نختار حركة (أو نقود السيارة بأنفسنا) فنرى في اللحظة نفسها: المسافة (المسار البرتقالي وعدّاد المسافات)، الإزاحة (السهم الأحمر من O)، الانطلاق (عداد السرعة: رقم فقط)، السرعة (السهم الأخضر: رقم واتجاه)، والتعجيل (تغيّر السرعة Δv كل ثانية)، مع جدول مقارنة حيّ.',
+      tags: 'مقارنة المسافة الإزاحة الانطلاق السرعة التعجيل مقدارية اتجاهية عداد السرعة عداد المسافات مضمار ذهاب وإياب',
+      tools: ['سيارة / عدّاء', 'عدّاد المسافات', 'عدّاد السرعة', 'بوصلة الاتجاهات', 'ساعة توقيت'],
+      steps: ['اختر «الحركة» و«الجسم المتحرك» (سيارة أو عدّاء)؛ تبدأ الحركة تلقائياً.', 'راقب المسار البرتقالي (المسافة) والسهم الأحمر من O (الإزاحة): متى يتساويان؟ ومتى يختلفان؟', 'قارن عداد السرعة (الانطلاق: رقم فقط) بالسهم الأخضر (السرعة: رقم واتجاه).', 'راقب عمود التعجيل: السهم الباهت هو السرعة قبل ثانية، والغامق هو السرعة الآن، والبنفسجي Δv هو تغيّر السرعة.', 'جرّب «الذهاب إلى المدرسة والعودة» و«المضمار الدائري» ثم «قُد بنفسك».', 'اضغط «تسجيل» في نهاية كل رحلة وقارن القيم في الجدول.'],
+      concl: ['المسافة (مقدارية): طول المسار كله. الإزاحة (اتجاهية): أقصر خط مستقيم من البداية إلى النهاية مع الاتجاه.', 'الانطلاق (مقداري) S = d / t ويبيّنه عداد السرعة رقماً فقط. السرعة (اتجاهية) v = x / t: مقدار مع اتجاه.', 'التعجيل (اتجاهي) a = Δv / t: يحدث إذا تغيّر مقدار السرعة (تسارع أو تباطؤ) أو تغيّر اتجاهها (انعطاف).', 'في خط مستقيم وباتجاه واحد: المسافة = مقدار الإزاحة، والانطلاق = مقدار السرعة.', 'إذا رجع الجسم إلى نقطة البداية فإزاحته صفر مهما كانت المسافة التي قطعها.'],
+      laws: ['g8_speed', 'g8_velocity', 'g8_accel', 'g8_avgspeed'],
+      fact: ['عداد السرعة في السيارة يقيس الانطلاق فقط (رقم بلا اتجاه)، أما جهاز الملاحة GPS فيعرف الانطلاق والاتجاه معاً — أي السرعة.', 'في مضمار سباق 400 m يقطع العدّاء في السباق الكامل مسافة 400 m لكن إزاحته صفر لأنه ينتهي حيث بدأ.'],
+      controls: [SEL('trip', 'الحركة', Object.keys(TR).filter(k => TR[k].n).map(k => [k, TR[k].n]), 'line', (v, S) => reset1(S)),
+        SEL('who', 'الجسم المتحرك', Object.keys(WHO).map(k => [k, WHO[k].n]), 'car', (v, S) => { setParam(S, 'ff', v === 'run' ? '4' : '2'); reset1(S); }),
+        SEL('ff', 'تسريع الزمن', [['1', '×1 (الزمن الحقيقي)'], ['2', '×2'], ['4', '×4']], '2'),
+        TG('path', 'المسافة: المسار المقطوع', true, null, 'dot'), TG('disp', 'سهم الإزاحة', true, null, 'vector'), TG('vel', 'سهم السرعة', true, null, 'velocity'), TG('acc', 'سهم التعجيل', true, null, 'force'), TG('snap', 'صورة كل ثانية', false, null, 'stopwatch'), TG('table', 'جدول المقارنة (النوع والوحدة والقانون)', true, null, 'graph'),
+        BT('', [{ t: '▶ / ⏸ الحركة', on: S => { if (S.sim.done) reset1(S); else S.run = !S.run; } }, { t: '↺ من البداية', on: S => reset1(S) }])],
+      setup(S) { reset1(S); },
+      update(S, dt) { if (!S.sim) reset1(S); if (S.run) { run(S.sim, dt * (+S.p.ff || 1), ctlOf(S)); if (S.sim.done) { S.run = false; if (!S._fin) { S._fin = 1; H.snd('ok'); } } } else S._fin = S.sim.done ? 1 : 0; },
+      draw(ctx, w, h, S) {
+        const r = S.sim, L = lay1(S), p = S.p;
+        G.bg(ctx, w, h, false); K.raw(ctx, () => { ctx.fillStyle = '#eef2f7'; ctx.fillRect(0, 0, w, h); });
+        drawMap(ctx, r, L.map, { path: p.path, disp: p.disp, vel: p.vel, acc: p.acc, snap: p.snap, t: S.t });
+        H.banner(ctx, w, 'حركة واحدة… خمس كميات: d · x · S · v · a', '#0f766e', 22);
+        // stopwatch + play button on the map
+        const sx = L.map.x + 44, sy = L.map.y + 64; H.stopwatch(ctx, sx, sy, 28, r.st, S.run);
+        if (!r.tr.free) C2.btn(ctx, sx + 92, sy - 10, 104, 34, r.done ? '↺ أعِد' : S.run ? '⏸ إيقاف' : '▶ انطلق', { col: S.run ? '#b45309' : '#16a34a', s: 12.5 });
+        if (+p.ff > 1) T(ctx, 'الزمن مُسرَّع ×' + p.ff, sx, sy + 44, { s: 10, w: 800, c: '#fff', bg: 'rgba(15,23,42,.6)' });
+        if (r.tr.free) { const B = this.pedals(S); B.forEach(b => C2.btn(ctx, b.x, b.y, b.w, b.h, b.l, { col: b.c, on: S[b.k], s: 13 })); }
+        drawTable(ctx, 74, L.ty, w - 86, r, L.full);
+        if (r.done && !S._party) { S._party = 1; K.cheer(S, L.map.x + L.map.w / 2, L.map.y + 60); } if (!r.done) S._party = 0; K.party(ctx, S);
+      },
+      pedals(S) { const L = lay1(S), m = L.map, y = m.y + m.h - 36, bw = 70, bh = 48;
+        return [{ k: 'kGas', l: '⛽ بنزين', c: '#16a34a', x: m.x + m.w - 50, y, w: bw, h: bh }, { k: 'kBrake', l: '🛑 فرامل', c: '#dc2626', x: m.x + m.w - 130, y, w: bw, h: bh }, { k: 'kL', l: '↺ يسار', c: '#2563eb', x: m.x + 130, y, w: bw, h: bh }, { k: 'kR', l: '↻ يمين', c: '#2563eb', x: m.x + 210, y, w: bw, h: bh }]; },
+      drags(S) { const r = S.sim; if (!r) return []; const L = lay1(S), sx = L.map.x + 44, sy = L.map.y + 64, D = [];
+        if (!r.tr.free) D.push({ id: 'go', x: sx + 92, y: sy - 10, w: 110, h: 40, hint: !S.run && !r.done && r.st === 0, idle: 'انقر للتشغيل أو الإيقاف ✋', tip: 'تشغيل / إيقاف الحركة', click: S2 => { if (S2.sim.done) reset1(S2); else S2.run = !S2.run; H.snd(); } });
+        else this.pedals(S).forEach((b, i) => D.push({ id: 'ped_' + b.k, x: b.x, y: b.y, w: b.w + 6, h: b.h + 6, axis: 'xy', keep: true, hint: i === 0, idle: i === 0 ? 'اضغط مطولاً على البنزين ✋' : undefined, tip: 'اضغط مطولاً: ' + b.l,
+          down: S2 => { S2[b.k] = true; S2.run = true; }, drag: S2 => { S2[b.k] = true; }, up: S2 => { S2[b.k] = false; } }));
+        return D; },
+      readings(S) { const r = S.sim; if (!r) return []; const a = acc(r), xm = Math.hypot(r.x, r.y), vm = Math.hypot(r.vx, r.vy), t = r.st;
+        return [rd('الزمن t', n1(t) + ' s'), rd('المسافة d', n1(r.d) + ' m'), rd('الإزاحة x', n1(xm) + ' m ' + dirN(r.x, r.y)), rd('عداد السرعة (الانطلاق الآن)', n1(vm) + ' m/s = ' + n1(vm * 3.6) + ' km/h'), rd('معدل الانطلاق S = d / t', t > .05 ? n2(r.d / t) + ' m/s' : '—'),
+          rd('السرعة الآن', n1(vm) + ' m/s ' + dirN(r.vx, r.vy)), rd('السرعة المتوسطة v = x / t', t > .05 ? n2(xm / t) + ' m/s ' + dirN(r.x, r.y) : '—'), rd('التعجيل a = Δv / t', n2(Math.hypot(a.ax, a.ay)) + ' m/s² — ' + akind(r, a), 1)]; },
+      record(S) { const r = S.sim, xm = Math.hypot(r.x, r.y), t = r.st; if (t < .2) { Runner.toast('شغّل الحركة أولاً', 'info'); return null; } const a = acc(r);
+        return { trip: (TR[S.p.trip].n || '').replace(/^\S+\s/, '').slice(0, 26), t: +t.toFixed(1), d: +r.d.toFixed(1), x: +xm.toFixed(1), S: +(r.d / t).toFixed(2), v: +(xm / t).toFixed(2), a: +Math.hypot(a.ax, a.ay).toFixed(2) }; },
+      cols: [['trip', 'الحركة'], ['t', 't (s)'], ['d', 'المسافة d (m)'], ['x', 'الإزاحة x (m)'], ['S', 'S = d/t (m/s)'], ['v', 'v = x/t (m/s)'], ['a', 'a (m/s²)']],
+      graph: { x: 'd', y: 'x', xl: 'المسافة d (m)', yl: 'مقدار الإزاحة x (m)' },
+      explain(S) { const r = S.sim; if (!r) return ''; const vm = Math.hypot(r.vx, r.vy), xm = Math.hypot(r.x, r.y), a = acc(r);
+        return '<div style="margin-bottom:6px">' + TIP[S.p.trip](r) + '</div>' +
+          `<div>🟠 <b style="color:${COL.d}">المسافة</b> ${n1(r.d)} m: كم مشيت على الطريق كله (رقم فقط).<br>🔴 <b style="color:${COL.x}">الإزاحة</b> ${n1(xm)} m ${dirN(r.x, r.y)}: من نقطة البداية إلى مكانك الآن بخط مستقيم.<br>🔵 <b style="color:${COL.S}">الانطلاق</b> ${n1(vm)} m/s: ما يقرؤه عداد السرعة — رقم بلا اتجاه.<br>🟢 <b style="color:${COL.v}">السرعة</b> ${n1(vm)} m/s ${dirN(r.vx, r.vy)}: الرقم نفسه <b>مع الاتجاه</b>.<br>🟣 <b style="color:${COL.a}">التعجيل</b> ${n2(Math.hypot(a.ax, a.ay))} m/s²: ${akind(r, a)}.</div>`; },
+      quiz: [
+        { q: 'سيارة سارت في مضمار دائري وعداد سرعتها ثابت على 10 m/s. هل لها تعجيل؟', o: ['لا، لأن الانطلاق ثابت', 'نعم، لأن اتجاه السرعة يتغير', 'لا، لأنها لا تتوقف'], a: 1, why: 'التعجيل = تغير السرعة ÷ الزمن، والسرعة كمية اتجاهية: تغيّر الاتجاه وحده يعني تغيّر السرعة.' },
+        { q: 'أيّ مما يأتي يقيسه عداد السرعة في السيارة؟', o: ['الانطلاق', 'السرعة مع الاتجاه', 'الإزاحة'], a: 0, why: 'العداد يعطي رقماً بلا اتجاه، أي الانطلاق.' },
+        { q: 'سرت 120 m شرقاً ثم 90 m شمالاً. المسافة والإزاحة:', o: ['210 m و 210 m', '210 m و 150 m شمال الشرق', '150 m و 210 m'], a: 1, why: 'المسافة = 120 + 90 = 210 m، والإزاحة = خط مستقيم من البداية إلى النهاية = 150 m.' }
+      ]
+    });
+
+    /* ---------- Part 2: challenges «A أم B؟» ---------- */
+    const CASES = {
+      c1: { n: 'نفس الانطلاق… والسرعة مختلفة؟', A: ['cE', 'car', 'السيارة A: 15 m/s شرقاً'], B: ['cW', 'car', 'السيارة B: 15 m/s غرباً'],
+        q: 'عدّادا السرعة يقرآن 15 m/s في السيارتين. هل للسيارتين السرعة نفسها؟', o: ['نعم، لأن الرقم نفسه', 'لا؛ الانطلاق نفسه لكن الاتجاه مختلف فالسرعة مختلفة', 'لا؛ لأن انطلاقهما مختلف'], a: 1,
+        why: 'الانطلاق رقم فقط (15 m/s في الاثنين). السرعة رقم + اتجاه: A شرقاً و B غرباً، إذن سرعتاهما مختلفتان.' },
+      c2: { n: 'إزاحة صفر… ومسافة 400 m', A: ['round', 'run', 'A: إلى المدرسة 200 m ثم العودة'], B: ['l400', 'run', 'B: يسير 400 m في خط مستقيم'],
+        q: 'بعد انتهاء الرحلتين، قطع كلٌّ منهما 400 m. أيّهما إزاحته صفر؟', o: ['A: الذهاب إلى المدرسة والعودة', 'B: السير 400 m في خط مستقيم', 'كلاهما، لأن المسافة 400 m'], a: 0,
+        why: 'A رجع إلى نقطة البداية فإزاحته صفر مع أن المسافة 400 m (التفكير الناقد ص 19). أما B فإزاحته 400 m شرقاً.' },
+      c3: { n: 'العداد ثابت… والسرعة تتغير', A: ['circle', 'car', 'A: مضمار دائري 10 m/s'], B: ['lc10', 'car', 'B: طريق مستقيم 10 m/s'],
+        q: 'العدادان ثابتان على 10 m/s طوال الوقت. أيّ السيارتين لها تعجيل؟', o: ['A: في المضمار الدائري', 'B: على الطريق المستقيم', 'لا أحد؛ لأن الانطلاق ثابت'], a: 0,
+        why: 'في A يتغير اتجاه السرعة باستمرار، فتتغير السرعة (Δv ≠ 0) ويوجد تعجيل. في B لا يتغير المقدار ولا الاتجاه: التعجيل صفر.' },
+      c4: { n: 'متى تساوي السرعةُ الانطلاقَ؟', A: ['line', 'car', 'A: 200 m في خط مستقيم'], B: ['turn', 'car', 'B: 120 m شرقاً ثم 90 m شمالاً'],
+        q: 'في أيّ رحلة يكون مقدار الإزاحة مساوياً للمسافة، فيتساوى معدل الانطلاق ومقدار السرعة المتوسطة؟', o: ['A: خط مستقيم وباتجاه واحد', 'B: رحلة فيها انعطاف', 'في الرحلتين'], a: 0,
+        why: 'تصبح سرعة الجسم مساوية لانطلاقه (مقداراً) عندما يتحرك في خط مستقيم وباتجاه واحد (مراجعة الدرس ص 19). في B: d = 210 m و x = 150 m.' },
+      c5: { n: 'تعجيل تسارعي أم تباطئي؟', A: ['speedup', 'car', 'A: تسارع 0 → 20 m/s (شكل 5)'], B: ['slowdown', 'car', 'B: تباطؤ 20 → 0 m/s (شكل 4)'],
+        q: 'في أيّ سيارة يكون التعجيل بعكس اتجاه السرعة؟', o: ['A: السيارة التي تتسارع', 'B: السيارة التي تتباطأ', 'لا يوجد تعجيل في الحالتين'], a: 1,
+        why: 'عند الضغط على الفرامل تتناقص السرعة بانتظام ويكون التعجيل باتجاه معاكس لاتجاه السرعة: تعجيل تباطئي (شكل 4).' },
+      c6: { n: 'الطيار والرياح (التفكير الناقد ص 19)', A: ['windE', 'plane', 'A: الرياح 20 m/s شرقاً'], B: ['windW', 'plane', 'B: الرياح 20 m/s غرباً'],
+        q: 'الطائرتان تتجهان شمالاً، والرياح لها الانطلاق نفسه 20 m/s. هل تصلان إلى المكان نفسه؟', o: ['نعم، لأن انطلاق الرياح نفسه', 'لا؛ اتجاه الرياح مختلف، لذلك يحتاج الطيار سرعة الرياح (مقدار + اتجاه)', 'لا؛ لأن انطلاق الطائرتين مختلف'], a: 1,
+        why: 'الرياح تدفع الطائرة A نحو الشرق و B نحو الغرب. لذلك يتطلب من الطيار معرفة السرعة المتجهة للرياح (مقدارها واتجاهها) وليس مقدار سرعتها فقط.' } };
+    const CK = Object.keys(CASES);
+    const reset2 = S => { const c = CASES[S.p.cs]; const fo = k => k === 'run' ? .5 : 1; S.A = sim(c.A[0], fo(c.A[1]), c.A[1]); S.B = sim(c.B[0], fo(c.B[1]), c.B[1]); S.A.col = '#2563eb'; S.B.col = '#e11d48'; S.run = true; S.pick = null; };
+    const lay2 = S => { const w = S.W, h = S.H - phoneB(), qh = 196, top = 46, lh = Math.max(110, (h - 34 - qh - top - 8) / 2), pw = Math.min(250, (w - 74) * .36);
+      const lane = i => ({ map: { x: 74, y: top + i * (lh + 4), w: w - 74 - 12 - pw - 6, h: lh }, pan: { x: w - 12 - pw, y: top + i * (lh + 4), w: pw, h: lh } });
+      const qy = top + 2 * lh + 12, bw = Math.min(w - 100, 640), ox = (74 + w - 12) / 2; return { lane, qy, bw, ox, opt: j => ({ x: ox, y: qy + 64 + j * 38, w: bw, h: 33 }), next: { x: 74 + 70, y: qy + 16, w: 128, h: 28 } }; };
+    const miniPanel = (ctx, P, r, tag, col) => {
+      H.card(ctx, P.x, P.y, P.w, P.h, { bd: col, lw: 2, r: 12 }); T(ctx, tag, P.x + P.w / 2, P.y + 13, { s: 11.5, w: 900, c: '#fff', bg: col });
+      const a = acc(r), vm = Math.hypot(r.vx, r.vy), xm = Math.hypot(r.x, r.y), sr = Math.min(40, P.h * .19), cy = P.y + 34 + sr;
+      H.speedo(ctx, P.x + P.w * .28, cy, sr, vm, r.tr.nose != null ? 60 : 25 * r.f, 'm/s');
+      compass(ctx, P.x + P.w * .74, cy - sr * .1, sr * .85, r.vx, r.vy, COL.v);
+      T(ctx, 'عداد السرعة', P.x + P.w * .28, cy + sr * .72, { s: 10, w: 900, c: COL.S }); T(ctx, 'اتجاه السرعة', P.x + P.w * .74, cy + sr * .9, { s: 10, w: 900, c: COL.v });
+      const L = [['المسافة d = ' + n1(r.d) + ' m', COL.d], ['الإزاحة x = ' + n1(xm) + ' m ' + (dirN(r.x, r.y) || ''), COL.x], ['السرعة v = ' + n1(vm) + ' m/s ' + (dirN(r.vx, r.vy) || ''), COL.v], ['التعجيل a = ' + n2(Math.hypot(a.ax, a.ay)) + ' m/s²', COL.a]];
+      const y0 = cy + sr + 16, lh = Math.min(20, (P.y + P.h - 10 - y0) / 3.5); L.forEach(([t, c], i) => T(ctx, t, P.x + P.w - 12, y0 + i * lh, { s: 12, w: 900, c, a: 'right' }));
+    };
+    P8({
+      id: 'g8_cmp_cases', ch: 21, sec: 'الدرس الثالث: وصف الحركة', page: 19, fig: 'التفكير الناقد ص 19', kind: 'نشاط', title: 'تحديات المقارنة: A أم B؟',
+      desc: 'حركتان تجريان معاً (A و B) ولكل منهما عداد سرعة وبوصلة لاتجاه السرعة وقيم d و x و v و a. نجيب عن سؤال يكشف الفرق: انطلاق واحد وسرعتان، إزاحة صفر ومسافة 400 m، عداد ثابت وسرعة تتغير، تسارع وتباطؤ، والطيار والرياح.',
+      tags: 'تحدي مقارنة انطلاق سرعة إزاحة مسافة تعجيل الرياح الطيار',
+      tools: ['سيارتان / عدّاءان / طائرتان', 'عدادا سرعة', 'بوصلتان'],
+      steps: ['اختر التحدي (1 إلى 6). تبدأ الحركتان A و B معاً.', 'راقب عدّاد السرعة وبوصلة اتجاه السرعة والقيم d و x و v و a لكل حركة.', 'اقرأ السؤال وانقر على الإجابة التي تراها صحيحة.', 'اقرأ التفسير، ثم انقر «التحدي التالي».'],
+      concl: ['الانطلاق نفسه لا يعني السرعة نفسها: يجب أن يكون الاتجاه نفسه أيضاً.', 'الإزاحة صفر إذا عاد الجسم إلى نقطة البداية، مهما كانت المسافة.', 'إذا تغيّر اتجاه السرعة ولو بقي الانطلاق ثابتاً فهناك تعجيل.', 'يحتاج الطيار سرعة الرياح المتجهة (مقدار + اتجاه) لا مقدارها فقط.'],
+      laws: ['g8_velocity', 'g8_accel'],
+      fact: ['تُعطى الطائرات قبل الإقلاع نشرة جوية فيها سرعة الرياح واتجاهها على ارتفاعات مختلفة، فيعدّل الطيار اتجاه الطائرة ليصل إلى وجهته.'],
+      controls: [SEL('cs', 'التحدي', CK.map((k, i) => [k, (i + 1) + ') ' + CASES[k].n]), 'c1', (v, S) => reset2(S)),
+        BT('', [{ t: '↺ أعِد الحركتين', on: S => { const pk = S.pick; reset2(S); S.pick = pk; } }, { t: 'التحدي التالي ←', on: S => { setParam(S, 'cs', CK[(CK.indexOf(S.p.cs) + 1) % CK.length]); reset2(S); } }])],
+      setup(S) { S.score = 0; S.tried = 0; reset2(S); },
+      update(S, dt) { if (!S.A) reset2(S); if (S.run) { const k = CASES[S.p.cs].A[1] === 'run' ? 4 : 2; run(S.A, dt * k); run(S.B, dt * k); if (S.A.done && S.B.done) S.run = false; } },
+      draw(ctx, w, h, S) {
+        const c = CASES[S.p.cs], L = lay2(S);
+        G.bg(ctx, w, h, false); K.raw(ctx, () => { ctx.fillStyle = '#eef2f7'; ctx.fillRect(0, 0, w, h); });
+        H.banner(ctx, w, '🎯 التحدي ' + (CK.indexOf(S.p.cs) + 1) + ' من ' + CK.length + ': ' + c.n, '#0f766e', 22);
+        [[S.A, c.A[2], '#2563eb'], [S.B, c.B[2], '#e11d48']].forEach(([r, tag, col], i) => { const Q = L.lane(i); drawMap(ctx, r, Q.map, { path: true, disp: true, vel: true, acc: true, small: true, t: S.t });
+          T(ctx, i ? 'B' : 'A', Q.map.x + 16, Q.map.y + 16, { s: 14, w: 900, c: '#fff', bg: col }); miniPanel(ctx, Q.pan, r, tag, col); });
+        H.card(ctx, 74, L.qy, w - 86, h - phoneB() - 34 - L.qy - 4, { bd: '#0f766e', lw: 2, r: 12 });
+        const ql = wrapT(c.q, Math.floor((w - 400) / 7)); ql.forEach((t, k) => T(ctx, t, (74 + 220 + w - 90) / 2, L.qy + 16 + k * 19, { s: 13.5, w: 900, c: '#0f172a' }));
+        c.o.forEach((t, j) => { const b = L.opt(j), right = S.pick != null && j === c.a, wrong = S.pick === j && j !== c.a; C2.btn(ctx, b.x, b.y, b.w, b.h, t, { col: S.pick == null ? '#475569' : right ? '#16a34a' : wrong ? '#dc2626' : '#94a3b8', on: S.pick === j, s: b.w < 520 ? 11.5 : 12.5 }); });
+        { const nb = L.next; C2.btn(ctx, nb.x, nb.y, nb.w, nb.h, S.pick != null ? 'التحدي التالي ←' : '↺ أعد الحركتين', { col: S.pick != null ? '#0f766e' : '#475569', s: 11.5 }); }
+        T(ctx, 'نقاطك: ' + S.score + ' / ' + S.tried, w - 56, L.qy - 2, { s: 11.5, w: 900, c: '#fff', bg: '#0f766e' });
+        K.party(ctx, S);
+      },
+      drags(S) { const c = CASES[S.p.cs], L = lay2(S), nb = L.next, D = [{ id: 'next', x: nb.x, y: nb.y, w: nb.w, h: nb.h, hint: true, idle: 'شاهد الحركتين ثم انقر إجابتك ✋', tip: S.pick != null ? 'التحدي التالي' : 'أعد تشغيل الحركتين',
+          click: S2 => { if (S2.pick != null) { setParam(S2, 'cs', CK[(CK.indexOf(S2.p.cs) + 1) % CK.length]); reset2(S2); } else { reset2(S2); } H.snd(); } }].concat(c.o.map((t, j) => { const b = L.opt(j); return { id: 'opt' + j, x: b.x, y: b.y, w: b.w, h: b.h, hint: false, tip: 'اختر: ' + t,
+          click: S2 => { if (S2.pick != null) return; S2.pick = j; S2.tried++; if (j === c.a) { S2.score++; H.snd('ok'); K.cheer(S2, b.x, b.y); } else H.snd('bad'); H.act(S2, 'opt'); } }; }));
+        return D; },
+      readings(S) { if (!S.A) return []; const f = r => n1(r.d) + ' m | x ' + n1(Math.hypot(r.x, r.y)) + ' m'; const c = CASES[S.p.cs]; return [rd('A: d | x', f(S.A)), rd('B: d | x', f(S.B)), rd('A: v', n1(Math.hypot(S.A.vx, S.A.vy)) + ' m/s ' + dirN(S.A.vx, S.A.vy)), rd('B: v', n1(Math.hypot(S.B.vx, S.B.vy)) + ' m/s ' + dirN(S.B.vx, S.B.vy)), rd('إجابتك', S.pick == null ? '—' : (S.pick === c.a ? '✔ صحيحة' : '✘ خاطئة'), 1), rd('النقاط', S.score + ' / ' + S.tried)]; },
+      explain(S) { const c = CASES[S.p.cs]; if (S.pick == null) return 'شاهد الحركتين A و B وقارن <b>عداد السرعة</b> (الانطلاق) مع <b>سهم السرعة</b> (الاتجاه)، و<b>المسافة</b> d مع <b>الإزاحة</b> x، ثم أجب: ' + c.q;
+        return (S.pick === c.a ? '<b style="color:#15803d">✔ صحيح!</b> ' : '<b style="color:#b91c1c">✘ ليس صحيحاً.</b> الإجابة: <b>' + c.o[c.a] + '</b>. ') + c.why; },
+      quiz: [
+        { q: 'لماذا يتطلب من الطيار معرفة السرعة المتجهة للرياح لا مقدارها فقط؟', o: ['لأن اتجاه الرياح يغيّر المكان الذي تصل إليه الطائرة', 'لأن الرياح لا تؤثر في الطائرة', 'لأن الانطلاق كمية اتجاهية'], a: 0, why: 'التفكير الناقد 2 ص 19: الرياح تدفع الطائرة باتجاهها.' },
+        { q: 'سيارتان عداد كل منهما 15 m/s، الأولى شرقاً والثانية غرباً. أيّ العبارات صحيحة؟', o: ['لهما الانطلاق نفسه وسرعتان مختلفتان', 'لهما السرعة نفسها', 'لهما انطلاقان مختلفان'], a: 0, why: 'الانطلاق رقم فقط، والسرعة رقم واتجاه.' },
+        { q: 'صباح كل يوم تسير 200 m إلى المدرسة وتعود ظهراً من الطريق نفسه. الإزاحة الكلية والمسافة الكلية:', o: ['صفر و 400 m', '400 m و صفر', '200 m و 200 m'], a: 0, why: 'التفكير الناقد 1 ص 19.' }
+      ]
+    });
+
+    /* ---------- Part 3: build the comparison table (sorter) ---------- */
+    const CT = [
+      { id: 'd1', label: 'طول المسار كله', bin: 'd' }, { id: 'd2', label: 'عدّاد المسافات', bin: 'd' }, { id: 'd3', label: '400 m', sub: 'ذهاباً وإياباً', bin: 'd', why: '400 m هي طول الطريق كله ذهاباً وإياباً: مسافة (أما الإزاحة فصفر).' },
+      { id: 'x1', label: 'أقصر خط مستقيم', sub: 'من البداية إلى النهاية', bin: 'x' }, { id: 'x2', label: '150 m', sub: 'شمال الشرق', bin: 'x', why: 'قيمة لها مقدار بالمتر واتجاه: إزاحة.' }, { id: 'x3', label: 'صفر', sub: 'إذا عاد إلى البداية', bin: 'x' },
+      { id: 's1', label: 'S = d / t', bin: 'S' }, { id: 's2', label: 'عداد السرعة', sub: 'رقم بلا اتجاه', bin: 'S' }, { id: 's3', label: '72 km/h', sub: 'بلا اتجاه', bin: 'S', why: 'وحدة سرعة بلا اتجاه: انطلاق.' },
+      { id: 'v1', label: 'v = x / t', bin: 'v' }, { id: 'v2', label: '20 m/s شرقاً', bin: 'v', why: 'وحدة سرعة مع اتجاه: سرعة (متجهة).' }, { id: 'v3', label: 'سرعة الرياح', sub: 'يحتاجها الطيار', bin: 'v' },
+      { id: 'a1', label: 'a = Δv / t', bin: 'a' }, { id: 'a2', label: 'm/s²', sub: 'وحدة القياس', bin: 'a' }, { id: 'a3', label: 'البنزين والفرامل', sub: 'والمقود', bin: 'a', why: 'دواسة البنزين والفرامل والمقود تغيّر السرعة مقداراً أو اتجاهاً: تعجيل.' }];
+    const CB = [{ id: 'd', label: 'المسافة', sub: 'مقدارية', col: COL.d }, { id: 'x', label: 'الإزاحة', sub: 'اتجاهية', col: COL.x }, { id: 'S', label: 'الانطلاق', sub: 'مقدارية', col: COL.S }, { id: 'v', label: 'السرعة', sub: 'اتجاهية', col: COL.v }, { id: 'a', label: 'التعجيل', sub: 'اتجاهية', col: COL.a }];
+    const so = Sorter({ items: () => CT, bins: () => CB, cols: 5, ch: 52, top: 84, binCols: 5, bh: 300, chip: it => it.label });
+    P8({
+      id: 'g8_cmp_sort', ch: 21, sec: 'الدرس الثالث: وصف الحركة', page: 19, fig: 'مقارنة', kind: 'نشاط', title: 'رتّب جدول المقارنة',
+      desc: 'نسحب كل بطاقة (تعريف، قانون، جهاز، قيمة، وحدة) إلى عمود الكمية المناسبة فنبني بأنفسنا جدول المقارنة بين المسافة والإزاحة والانطلاق والسرعة والتعجيل.',
+      tags: 'جدول مقارنة بطاقات تصنيف', tools: ['بطاقات'],
+      steps: ['اقرأ البطاقة: هل فيها اتجاه؟ هل هي طول طريق أم خط مستقيم؟ هل فيها تغيّر للسرعة؟', 'اسحبها إلى عمود الكمية المناسبة.', 'أكمل الجدول كله ثم راجع: أي الكميات مقدارية وأيها اتجاهية؟'],
+      concl: ['المسافة والانطلاق كميتان مقداريتان (رقم + وحدة).', 'الإزاحة والسرعة والتعجيل كميات اتجاهية (رقم + وحدة + اتجاه).', 'القوانين: S = d / t ، v = x / t ، a = Δv / t.'],
+      laws: ['g8_speed', 'g8_velocity', 'g8_accel'], fact: ['كلمة «السرعة» في الحياة اليومية تعني غالباً الانطلاق، أما في الفيزياء فالسرعة لها اتجاه دائماً.'],
+      controls: [TG('tip', 'رسالة التصحيح والتلميح', true, null, 'labels'), BT('', [{ t: 'أعد البطاقات', on: S => so.reset(S) }])],
+      setup(S) { so.reset(S); },
+      draw(ctx, w, h, S) { K.bg(ctx, w, h, { benchY: h + 10, bench: false }); H.banner(ctx, w, 'اسحب كل بطاقة إلى عمود الكمية المناسبة', '#0f766e'); T(ctx, 'ابنِ جدول المقارنة بنفسك: تعريف · جهاز · مثال · قانون · وحدة', (64 + w) / 2, 56, { s: 13, w: 800, c: '#334155' }); so.draw(ctx, w, h, S);
+        const Lf = so.left(S); T(ctx, Lf ? 'بقي ' + Lf + ' من ' + CT.length : 'أكملت الجدول! 🎉', 74, h - 50, { s: 13, w: 900, c: '#fff', bg: Lf ? '#475569' : '#16a34a', a: 'left' }); },
+      drags(S) { return so.drags(S); },
+      readings(S) { const s = S.so || {}; return [rd('الصحيح', String(s.ok || 0)), rd('المحاولات الخاطئة', String(s.bad || 0)), rd('المتبقي', String(so.left(S)))]; },
+      explain(S) { const s = S.so || {}; if (s.msg && s.mt > 0) return s.msg; return 'اسأل نفسك عن كل بطاقة: <b>هل فيها اتجاه؟</b> (إزاحة أو سرعة أو تعجيل) — <b>هل هي طول الطريق كله؟</b> (مسافة) — <b>هل هي رقم سرعة فقط؟</b> (انطلاق) — <b>هل فيها تغيّر للسرعة؟</b> (تعجيل).'; },
+      quiz: [
+        { q: 'أيّ الكميات الآتية مقدارية؟', o: ['المسافة والانطلاق', 'الإزاحة والسرعة', 'السرعة والتعجيل'], a: 0, why: 'المسافة والانطلاق يوصفان بالمقدار والوحدة فقط.' },
+        { q: 'وحدة قياس التعجيل:', o: ['m/s²', 'm/s', 'm'], a: 0, why: 'التعجيل = تغير السرعة (m/s) ÷ الزمن (s) = m/s² (ص 18).' }
+      ]
+    });
+  })();
+
+  /* =========================================================================================
      الدمج: 15 نشاطاً صغيراً → 6 تجارب غنية، كل تجربة بأجزاء (لكل جزء شرحه وقراءاته وصفحته)
      ========================================================================================= */
   const MG = (o, n = 2) => { const ids = o.parts.map(q => q.id); M8.merge(Object.assign({ ch: 21,
-    fact: [].concat(...ids.map(id => (M8.P[id].fact || []).slice(0, 1))),
-    quiz: (o.quizX || []).concat(...ids.map(id => (M8.P[id].quiz || []).slice(0, n))) }, o)); };
-  MG({ id: 'g8_measure', sec: 'الدرس الأول: القياس', page: 7, title: 'القياس: الكميات والوحدات وأدوات القياس ودقته',
+    fact: [].concat(...ids.map(id => (M8.P[id].fact || []).slice(0, 1))).concat(o.factX || []),
+    quiz: [].concat(...ids.map(id => (M8.P[id].quiz || []).slice(0, n))).concat(o.quizX || []) }, o)); };
+  /* review questions of the book (مراجعة الدرس، التفكير الناقد، مراجعة الفصل) not already asked by the parts */
+  const RQ = {
+    measure: [
+      { q: 'القياس هو:', o: ['طريقة لوصف الكميات والتعبير عنها بأرقام', 'تحويل الوحدات الكبيرة إلى صغيرة', 'استعمال الميزان فقط'], a: 0, why: 'تعريف القياس ص 7 (مراجعة الدرس 1).' },
+      { q: 'العناصر الثلاثة لأي عملية قياس هي:', o: ['الكميات الفيزيائية، ونظام وحدات القياس، وأدوات القياس', 'الطول والكتلة والزمن', 'المتر والكيلوغرام والثانية'], a: 0, why: 'ص 7: للقياس ثلاثة عناصر أساسية (مراجعة الدرس 3).' },
+      { q: 'الوحدة الأساسية لقياس «كمية المادة» في النظام الدولي:', o: ['mol', 'cd', 'K'], a: 0, why: 'جدول 1: كمية المادة ← المول mol (مراجعة الدرس 5).' },
+      { q: 'كيف أقيس حجم كرة صغيرة؟ (التفكير الناقد)', o: ['أغمرها في مخبار مدرج فيه ماء: حجمها = الفرق بين القراءتين', 'أقيس قطرها بشريط القياس فقط', 'أزنها بالميزان ذي الكفتين'], a: 0, why: 'ارتفاع الماء في المخبار المدرج يساوي حجم الجسم المغمور.' },
+      { q: 'حوّل 4.5 m إلى km (مثال 2):', o: ['4.5 × 10⁻³ km', '4.5 × 10³ km', '45 km'], a: 0, why: '1 km = 1000 m ⇒ 4.5 × 1/1000 = 4.5 × 10⁻³ km.' },
+      { q: 'جهاز الفولتميتر يستعمل لقياس (الفيزياء والمجتمع):', o: ['فرق الجهد الكهربائي', 'ضغط الدم', 'بُعد القمر'], a: 0, why: 'ص 20: الفولتميتر جهاز يستخدم لقياس فرق الجهد الكهربائي.' }],
+    motion: [
+      { q: 'مكان وجود الجسم يحدَّد بالاتجاه والبعد بالنسبة إلى جسم آخر يكون ثابتاً يسمى:', o: ['الموقع', 'الحركة', 'الانطلاق'], a: 0, why: 'مراجعة الفصل س1-1.' },
+      { q: 'لماذا تعدّ الحركة مفهوماً نسبياً؟', o: ['لأنها تعتمد على موقع نقطة الإسناد', 'لأن الأجسام كلها ساكنة', 'لأنها تقاس بالمتر'], a: 0, why: 'سؤال ص 11: الجسم متحرك نسبة إلى نقطة إسناد وساكن نسبة إلى أخرى.' },
+      { q: 'متى أقول إن الجسم تحرك؟', o: ['عندما يتغير موقعه بالنسبة إلى نقطة إسناد ثابتة مع مرور الزمن', 'عندما يكون كبيراً', 'عندما يكون على سطح الأرض'], a: 0, why: 'مراجعة الدرس 2 س7.' },
+      { q: 'في شكل 1 (الشلال) نعدّ سطح الأرض:', o: ['نقطة إسناد ثابتة لحركة الماء الساقط', 'جسماً متحركاً', 'مسار الحركة'], a: 0, why: 'شكل 1 ص 11.' }],
+    kinds: [
+      { q: 'من أمثلة الحركة الدورية الدورانية (س3-هـ):', o: ['مروحة السقف ودولاب الهواء', 'رمية كرة السلة', 'سقوط كرة من شرفة'], a: 0, why: 'تكرر حركتها في مسار مغلق.' },
+      { q: 'الحركة الاهتزازية هي حركة:', o: ['دورية ذهاباً وإياباً حول موضع الاتزان', 'انتقالية على خط مستقيم', 'عشوائية'], a: 0, why: 'مثل بندول الساعة والأرجوحة (مراجعة الدرس 2 س4).' }],
+    displace: [
+      { q: 'الفرق بين المسافة والإزاحة (س3-ب):', o: ['المسافة طول المسار كله (مقدارية)، والإزاحة أقصر خط بين البداية والنهاية مع الاتجاه (اتجاهية)', 'لا فرق بينهما', 'الإزاحة دائماً أكبر من المسافة'], a: 0, why: 'ص 14–15.' },
+      { q: 'سيارة تحركت 50 km شمالاً من a إلى b ثم 20 km شمالاً من b إلى c. الإزاحة المحصلة:', o: ['70 km شمالاً', '30 km شمالاً', '70 km جنوباً'], a: 0, why: 'سؤال ص 17: باتجاه واحد نجمع X_R = 50 + 20 = 70 km شمالاً.' },
+      { q: 'بمقياس رسم 1 cm لكل 10 km: الإزاحتان 30 km غرباً و 40 km جنوباً تمثلان بسهمين طولهما:', o: ['3 cm و 4 cm', '30 cm و 40 cm', '0.3 cm و 0.4 cm'], a: 0, why: 'سؤال ص 16: 30 × 1/10 = 3 cm و 40 × 1/10 = 4 cm.' },
+      { q: 'اتجاه متجه الإزاحة هو:', o: ['اتجاه الإزاحة', 'اتجاه الشمال دائماً', 'عكس اتجاه الحركة'], a: 0, why: 'مميزات متجه الإزاحة ص 15 (مراجعة الدرس 3 س2).' }],
+    speedx: [
+      { q: 'قطعت طائرة 450 km في 1 h. معدل انطلاقها بوحدة m/s:', o: ['125 m/s', '450 m/s', '25 m/s'], a: 0, why: 'مثال 1 ص 15: 450 × 1000 / 3600 = 125 m/s.' },
+      { q: 'سيارة قطعت 30 m في 2 s. انطلاقها:', o: ['15 m/s', '60 m/s', '32 m/s'], a: 0, why: 'ص 14: S = d / t = 30 / 2 = 15 m/s.' },
+      { q: 'مقدار المسافة المقطوعة خلال وحدة الزمن هو (س1-5):', o: ['الانطلاق', 'مسار الحركة', 'الموقع'], a: 0, why: 'مراجعة الفصل س1-5.' }],
+    velacc: [
+      { q: 'قارن بين السرعة والانطلاق (س3-ج):', o: ['السرعة اتجاهية = الإزاحة ÷ الزمن، والانطلاق مقداري = المسافة ÷ الزمن', 'هما الشيء نفسه', 'الانطلاق اتجاهي والسرعة مقدارية'], a: 0, why: 'ص 14 و 18.' },
+      { q: 'عند الضغط على الفرامل تتناقص سرعة السيارة بانتظام، ويكون التعجيل:', o: ['بعكس اتجاه السرعة (تباطئي)', 'باتجاه السرعة (تسارعي)', 'صفراً'], a: 0, why: 'شكل 4 ص 19.' },
+      { q: 'أعبّر عن مفهوم التعجيل بعلاقة رياضية:', o: ['a = Δv / t', 'a = d / t', 'a = x × t'], a: 0, why: 'التعجيل = تغير السرعة ÷ الزمن (مراجعة الدرس 3 س5).' }] };
+  MG({ id: 'g8_measure', quizX: RQ.measure, factX: ['الفيزياء والمجتمع (ص 20): من أجهزة القياس الفولتميتر لقياس فرق الجهد الكهربائي، وجهاز قياس ضغط الدم؛ وتختلف أخطاء القياس بسبب الأداة (دقتها وعمرها) أو الظروف المحيطة (درجة الحرارة وميلان الأسطح) أو قلة مهارة الشخص، لذلك نكرر القياس ونأخذ المتوسط.'], sec: 'الدرس الأول: القياس', page: 7, title: 'القياس: الكميات والوحدات وأدوات القياس ودقته',
     desc: 'تجربة واحدة بأربعة أجزاء: (1) دقة القياس وأين نضع العين، (2) الكميات المقدارية والاتجاهية والوحدات الأساسية، (3) أدوات القياس وأيّها أدق، (4) البادئات وتحويل الوحدات والصيغة العلمية.',
     tags: 'القياس الوحدات الكميات', parts: [{ id: 'g8_accuracy', n: 'دقة القياس: أين أضع عيني؟' }, { id: 'g8_quantities', n: 'الكميات المقدارية والاتجاهية والوحدات' }, { id: 'g8_tools', n: 'أدوات القياس: أيّها أدق؟' }, { id: 'g8_prefixes', n: 'البادئات وتحويل الوحدات' }] });
-  MG({ id: 'g8_motion', sec: 'الدرس الثاني: الحركة وأنواعها', page: 11, title: 'الحركة والسكون ونقطة الإسناد ومسار الحركة',
+  MG({ id: 'g8_motion', quizX: RQ.motion, sec: 'الدرس الثاني: الحركة وأنواعها', page: 11, title: 'الحركة والسكون ونقطة الإسناد ومسار الحركة',
     desc: 'تجربة واحدة بجزأين: (1) الحركة والسكون نسبيان — نختار نقطة الإسناد فنحكم هل الجسم متحرك أم ساكن، (2) مسار الحركة — نصل النقاط التي يمر بها الجسم فيظهر شكل مساره.',
     tags: 'الحركة السكون نقطة الإسناد مسار الحركة', parts: [{ id: 'g8_reference', n: 'الحركة والسكون ونقطة الإسناد' }, { id: 'g8_path', n: 'مسار الحركة' }] }, 3);
   M8.merge({ id: 'g8_kinds', ch: 21, sec: 'الدرس الثاني: الحركة وأنواعها', page: 12, fig: 'شكل 4', title: 'أنواع الحركة: كيف تحدث كل حركة؟',
@@ -1867,16 +2298,23 @@ LW({ id: 'g8_period', cat: 21, name: 'زمن الاهتزازة الواحدة',
       { q: 'رمية كرة السلة من اللاعب إلى السلة حركة انتقالية على مسار:', o: ['منحنٍ', 'مستقيم', 'مغلق'], a: 0, why: 'اتجاه حركة الكرة يتغير باستمرار (التفكير الناقد 1).' },
       { q: 'الحركة التي تكرر نفسها على فترات زمنية متساوية هي الحركة:', o: ['الدورية', 'الانتقالية', 'العشوائية'], a: 0, why: 'تعريف الحركة الدورية (ص 12).' },
       ...M8.P.g8_k_sort.quiz, M8.P.g8_pendulum.quiz[1],
-      { q: 'حركة دقائق الغاز عند تصادمها مع بعضها حركة:', o: ['عشوائية', 'دورية', 'انتقالية'], a: 0, why: 'حقيقة علمية ص 13.' }] });
-  MG({ id: 'g8_displace', sec: 'الدرس الثالث: وصف الحركة', page: 14, title: 'المسافة والإزاحة ومتجه الإزاحة والمحصلة',
+      { q: 'حركة دقائق الغاز عند تصادمها مع بعضها حركة:', o: ['عشوائية', 'دورية', 'انتقالية'], a: 0, why: 'حقيقة علمية ص 13.' }, ...RQ.kinds] });
+  MG({ id: 'g8_displace', quizX: RQ.displace, sec: 'الدرس الثالث: وصف الحركة', page: 14, title: 'المسافة والإزاحة ومتجه الإزاحة والمحصلة',
     desc: 'تجربة واحدة بثلاثة أجزاء: (1) المسافة والإزاحة — طول الطريق أم أقصر خط؟، (2) تمثيل متجه الإزاحة بالرسم بمقياس رسم، (3) حساب محصلة إزاحتين باتجاه واحد وباتجاهين متعاكسين.',
     tags: 'المسافة الإزاحة المتجه المحصلة', parts: [{ id: 'g8_distance', n: 'المسافة والإزاحة' }, { id: 'g8_vecdraw', n: 'تمثيل متجه الإزاحة بالرسم' }, { id: 'g8_resultant', n: 'محصلة إزاحتين' }] });
-  MG({ id: 'g8_speedx', sec: 'نشاط استهلالي + الدرس الثالث', page: 15, title: 'الانطلاق ومعدل الانطلاق',
+  MG({ id: 'g8_speedx', quizX: RQ.speedx, sec: 'نشاط استهلالي + الدرس الثالث', page: 15, title: 'الانطلاق ومعدل الانطلاق',
     desc: 'تجربة واحدة بجزأين: (1) النشاط الاستهلالي — نركل الكرة ونقيس المسافة بالشريط والزمن بساعة التوقيت فنفهم معنى السرعة، (2) الانطلاق ومعدل الانطلاق وتحويل km/h إلى m/s ومخطط (المسافة – الزمن).',
     tags: 'الانطلاق معدل الانطلاق', parts: [{ id: 'g8_speed_intro', n: 'نشاط استهلالي: مفهوم السرعة' }, { id: 'g8_avgspeed', n: 'الانطلاق ومعدل الانطلاق' }] }, 3);
-  MG({ id: 'g8_velacc', sec: 'الدرس الثالث: وصف الحركة', page: 18, title: 'السرعة المنتظمة وغير المنتظمة والتعجيل',
+  MG({ id: 'g8_velacc', quizX: RQ.velacc, sec: 'الدرس الثالث: وصف الحركة', page: 18, title: 'السرعة المنتظمة وغير المنتظمة والتعجيل',
     desc: 'تجربة واحدة بجزأين: (1) السرعة كمية اتجاهية، والسرعة المنتظمة وغير المنتظمة بصورة كل ثانية، (2) التعجيل: سيارة تتسارع وتتباطأ بانتظام مع حساب a = Δv / t.',
     tags: 'السرعة المنتظمة التعجيل', parts: [{ id: 'g8_uniform', n: 'السرعة المنتظمة وغير المنتظمة' }, { id: 'g8_accel', n: 'التعجيل: تسارع وتباطؤ' }] }, 3);
+
+  M8.merge({ id: 'g8_compare', ch: 21, sec: 'الدرس الثالث: وصف الحركة', page: 18, fig: 'مقارنة ص 14–19', title: 'مقارنة: المسافة والإزاحة، الانطلاق والسرعة والتعجيل',
+    desc: 'تجربة مقارنة بثلاثة أجزاء: (1) حركة واحدة نختارها أو نقودها ونرى معاً المسافة والإزاحة والانطلاق والسرعة والتعجيل مع جدول مقارنة حيّ، (2) تحديات A أم B: انطلاق واحد وسرعتان، إزاحة صفر ومسافة 400 m، عداد ثابت وسرعة تتغير، الطيار والرياح، (3) نبني جدول المقارنة بالبطاقات.',
+    tags: 'مقارنة المسافة الإزاحة الانطلاق السرعة التعجيل',
+    parts: [{ id: 'g8_cmp_live', n: 'حركة واحدة وخمس كميات (مباشر)' }, { id: 'g8_cmp_cases', n: 'تحديات المقارنة: A أم B؟' }, { id: 'g8_cmp_sort', n: 'رتّب جدول المقارنة' }],
+    fact: M8.P.g8_cmp_live.fact.concat(M8.P.g8_cmp_cases.fact),
+    quiz: M8.P.g8_cmp_live.quiz.concat(M8.P.g8_cmp_cases.quiz, M8.P.g8_cmp_sort.quiz) });
 
   /*@@END*/
 })();

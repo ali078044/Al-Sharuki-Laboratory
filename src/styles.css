@@ -623,3 +623,10 @@ body[data-dev="mobile"] .simctl{bottom:70px}
   .stage .hud .pill{font-size:10px;padding:2px 7px}
   .exp-head h2,.title-wrap h2{font-size:17px}
 }
+@media (max-width:620px){
+  /* phones: keep the floating toolbar in its own strip under the scene instead of covering it */
+  #view-exp .stage{height:calc(min(80vh,calc(100vw * .9)) + 42px)}
+  #view-exp .stage > canvas{height:calc(100% - 42px)!important;bottom:auto}
+  #view-exp .stage .rail{bottom:3px!important}
+}
+@media (max-width:620px){#view-exp .stage .hud{display:none}}
