@@ -1,7 +1,7 @@
 'use strict';
 /* Grade 8 shared kit — M8.merge: one experiment made of several parts (الجزء 1، 2، 3…).
    Usage: define each part as a plain experiment-like object D {id, page, desc, tags, controls, steps, concl, setup, update, draw, drags, readings, explain, record, cols, graph, laws, tools, fig}
-   register it with M8.P[D.id] = D; then M8.merge({ id, ch, sec, page, title, desc, tags, fact, quiz, parts:[{id, n:'part name'}] }).
+   register it with M8.P[D.id] = D; then M8.merge({ id, ch, reg (X9 for grade 9; default X8), sec, page, title, desc, tags, fact, quiz, parts:[{id, n:'part name'}] }).
    Each part keeps its own sub-state; switching parts swaps controls, info and data panels. Footer on canvas shows the part and its book page. */
 const M8 = { P: {} };
 M8.cur = () => { const S = Runner.S; return S && S._subs ? S._subs[S._part] : null; };
@@ -25,7 +25,7 @@ M8.merge = M => {
     return (P.D.drags(s) || []).map(o => { const n = Object.assign({}, o); ['down', 'drag', 'up', 'click', 'wheel'].forEach(f => { if (o[f]) n[f] = (_S, ...a) => { const r = o[f](s, ...a); mirror(_S, s); return r; }; }); return n; }); };
   E.readings = S => { const s = S._subs && S._subs[S._part]; const P = parts.find(q => q.id === S._part); return s && P.D.readings ? P.D.readings(s) : []; };
   E.explain = S => { const s = S._subs && S._subs[S._part]; const P = parts.find(q => q.id === S._part); if (!s) return ''; return '<div style="font-size:.85em;color:#0f766e;margin-bottom:4px"><b>' + P.n + '</b> (ص ' + P.D.page + ')</div>' + (P.D.explain ? P.D.explain(s) : ''); };
-  X8(E); return E;
+  (M.reg || X8)(E); return E;
 };
 M8.mPart = (E, parts, partCtl, S, id, ui) => {
   const P = parts.find(q => q.id === id) || parts[0]; S._part = P.id;

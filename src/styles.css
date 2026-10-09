@@ -576,6 +576,10 @@ body[data-exp-grade="g7"] .fxi{border-radius:12px}
 body[data-exp-grade="g8"] .fxi{border-radius:12px}
 body[data-exp-grade="g7"] .exp-head .tag{font-size:13px}
 body[data-exp-grade="g8"] .exp-head .tag{font-size:13px}
+body[data-view="exp"][data-exp-grade="g9"] .exp-head h2{font-size:21px}
+body[data-exp-grade="g9"] .fxp .ctl{border-radius:16px}
+body[data-exp-grade="g9"] .fxi{border-radius:12px}
+body[data-exp-grade="g9"] .exp-head .tag{font-size:13px}
 
 /* ===================== devices, smart board, full stage, chart zoom ===================== */
 body.present .exp-grid{--wi:0px;--wd:300px;grid-template-columns:var(--wi) minmax(0,1fr) var(--wd);height:calc(100vh - 70px)!important}
