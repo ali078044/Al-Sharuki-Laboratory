@@ -378,15 +378,44 @@ const Interact = {
 /* ---- hook the runner ---- */
 Runner.controls = function (E, S) { Interact.panel(E, S); };
 Runner.bindPointer = function (E, S) {
-  const cv = this.cv; let down = false;
-  const pos = e => { const r = cv.getBoundingClientRect(), k = cv.__k || 1; return [(e.clientX - r.left) / k, (e.clientY - r.top) / k]; };
-  cv.addEventListener('pointerdown', e => { down = true; cv.setPointerCapture(e.pointerId); const [x, y] = pos(e); if (Interact.down(E, S, x, y)) { S._ia = 1; return; } S._ia = 0; E.pointer && E.pointer(S, 'down', x, y); });
-  cv.addEventListener('pointermove', e => { const [x, y] = pos(e); if (down) { if (S._ia) { Interact.drag(E, S, x, y); return; } E.pointer && E.pointer(S, 'drag', x, y); } else { if (Interact.hover(E, S, x, y)) return; E.pointer && E.pointer(S, 'move', x, y); } });
-  const up = e => { if (!down) return; down = false; const [x, y] = pos(e); if (S._ia) { Interact.up(E, S, x, y); S._ia = 0; return; } E.pointer && E.pointer(S, 'up', x, y); };
+  const cv = this.cv, R = this; let down = false;
+  const Z = R.Z = { s: 1, x: 0, y: 0 }; // view zoom/pan: screen = logical*s + (x,y)
+  const raw = e => { const r = cv.getBoundingClientRect(), k = cv.__k || 1; return [(e.clientX - r.left) / k, (e.clientY - r.top) / k]; };
+  const pos = e => { const [x, y] = raw(e); return [(x - Z.x) / Z.s, (y - Z.y) / Z.s]; };
+  const pts = new Map(); let pin = null, pan = null;
+  const pinchInfo = () => { const a = [...pts.values()]; return { d: Math.hypot(a[0][0] - a[1][0], a[0][1] - a[1][1]) || 1, cx: (a[0][0] + a[1][0]) / 2, cy: (a[0][1] + a[1][1]) / 2 }; };
+  cv.addEventListener('pointerdown', e => {
+    pts.set(e.pointerId, raw(e)); try { cv.setPointerCapture(e.pointerId); } catch (er) { }
+    if (pts.size === 2) { // second finger: cancel any drag and start pinch-zoom
+      if (down) { const [x, y] = pos(e); if (S._ia) Interact.up(E, S, x, y); else E.pointer && E.pointer(S, 'up', x, y); S._ia = 0; down = false; }
+      pan = null; pin = Object.assign(pinchInfo(), { s: Z.s, x: Z.x, y: Z.y }); return;
+    }
+    if (pts.size > 2) return;
+    down = true; const [x, y] = pos(e); if (Interact.down(E, S, x, y)) { S._ia = 1; return; } S._ia = 0;
+    if (Z.s > 1.01 && !E.pointer) { pan = { x0: raw(e)[0], y0: raw(e)[1], x: Z.x, y: Z.y }; cv.style.cursor = 'grabbing'; return; }
+    E.pointer && E.pointer(S, 'down', x, y);
+  });
+  cv.addEventListener('pointermove', e => {
+    if (pts.has(e.pointerId)) pts.set(e.pointerId, raw(e));
+    if (pin && pts.size >= 2) { const p = pinchInfo(); const s2 = Math.max(1, Math.min(4, pin.s * p.d / pin.d)); Z.s = s2; Z.x = p.cx - (pin.cx - pin.x) * s2 / pin.s; Z.y = p.cy - (pin.cy - pin.y) * s2 / pin.s; R.zClamp(); return; }
+    if (pan) { const [x, y] = raw(e); Z.x = pan.x + x - pan.x0; Z.y = pan.y + y - pan.y0; R.zClamp(); return; }
+    const [x, y] = pos(e); if (down) { if (S._ia) { Interact.drag(E, S, x, y); return; } E.pointer && E.pointer(S, 'drag', x, y); } else { if (Interact.hover(E, S, x, y)) return; E.pointer && E.pointer(S, 'move', x, y); }
+  });
+  const up = e => { pts.delete(e.pointerId); if (pin) { if (pts.size < 2) pin = null; return; } if (pan) { pan = null; cv.style.cursor = ''; down = false; return; } if (!down) return; down = false; const [x, y] = pos(e); if (S._ia) { Interact.up(E, S, x, y); S._ia = 0; return; } E.pointer && E.pointer(S, 'up', x, y); };
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
   cv.addEventListener('pointerleave', () => { if (!down) { Interact.hov = null; } });
-  cv.addEventListener('wheel', e => { const [x, y] = pos(e); if (Interact.wheel(E, S, x, y, e.deltaY)) { e.preventDefault(); return; } if (E.wheel) { e.preventDefault(); E.wheel(S, e.deltaY); } }, { passive: false });
+  cv.addEventListener('wheel', e => {
+    if (e.ctrlKey || e.metaKey) { e.preventDefault(); const [x, y] = raw(e); R.zoomAt(Math.exp(-e.deltaY * .0025), x, y); return; } // ctrl+wheel or trackpad pinch
+    const [x, y] = pos(e); if (Interact.wheel(E, S, x, y, e.deltaY)) { e.preventDefault(); return; } if (E.wheel) { e.preventDefault(); E.wheel(S, e.deltaY); } }, { passive: false });
   cv.addEventListener('dblclick', e => { E.pointer && E.pointer(S, 'dbl', ...pos(e)); });
 };
+/* experiment zoom: buttons, wheel and pinch; the view eases toward the target for the buttons */
+Runner.zClamp = function () { const Z = this.Z; if (!Z || !this.S) return; const w = this.S.W || 800, h = this.S.H || 600; Z.s = Math.max(1, Math.min(4, Z.s)); Z.x = Math.min(0, Math.max(w - w * Z.s, Z.x)); Z.y = Math.min(0, Math.max(h - h * Z.s, Z.y)); };
+Runner.zoomAt = function (f, x, y) { const Z = this.Z; if (!Z) return; const s2 = Math.max(1, Math.min(4, Z.s * f)); Z.x = x - (x - Z.x) * s2 / Z.s; Z.y = y - (y - Z.y) * s2 / Z.s; Z.s = s2; this.zClamp(); this.zShow(); };
+Runner.zoomBy = function (f) { const S = this.S; if (!S) return; const Z = this.Z, w = S.W || 800, h = S.H || 600; const t = Z.t || (Z.t = { s: Z.s, x: Z.x, y: Z.y });
+  const cx = w / 2, cy = h / 2, s2 = f === 0 ? 1 : Math.max(1, Math.min(4, t.s * f)); t.x = f === 0 ? 0 : cx - (cx - t.x) * s2 / t.s; t.y = f === 0 ? 0 : cy - (cy - t.y) * s2 / t.s; t.s = s2;
+  t.x = Math.min(0, Math.max(w - w * s2, t.x)); t.y = Math.min(0, Math.max(h - h * s2, t.y)); this.toast(s2 === 1 ? 'الحجم الأصلي' : 'التكبير ' + Math.round(s2 * 100) + '%' + ' — اسحب الفراغ أو بإصبعين للتحريك', 'info'); };
+Runner.zShow = function () { const Z = this.Z; if (Z) Z.t = null; clearTimeout(this._zt); this._zt = setTimeout(() => this.toast(Z.s < 1.01 ? 'الحجم الأصلي' : 'التكبير ' + Math.round(Z.s * 100) + '%', 'info'), 120); };
+Runner.zStep = function (dt) { const Z = this.Z, t = Z && Z.t; if (!t) return; const k = Math.min(1, dt * 10); Z.s += (t.s - Z.s) * k; Z.x += (t.x - Z.x) * k; Z.y += (t.y - Z.y) * k; if (Math.abs(t.s - Z.s) < .002 && Math.abs(t.x - Z.x) < .3 && Math.abs(t.y - Z.y) < .3) { Z.s = t.s; Z.x = t.x; Z.y = t.y; Z.t = null; } };
 /* compass grid sits right above the background: hook G.bg while an experiment draws */
 (() => { const bg0 = G.bg; G.bg = function (ctx, w, h, grid) { bg0.call(G, ctx, w, h, grid); const S = Interact._drawS; if (S && S._tl && S._tl.grid && ctx.canvas === Runner.cv) Interact.grid(ctx, w, h, S); }; })();

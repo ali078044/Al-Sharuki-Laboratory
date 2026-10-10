@@ -26,8 +26,19 @@ const CHAPTERS = [
   { id: 33, g: 'g9', num: 3, name: 'التيار الكهربائي', en: 'Electric current', c: '#ca8a04', hex: '#ca8a04', d: 'التيار الإلكتروني والاصطلاحي، الدائرة الكهربائية، الأميتر والفولطميتر، المقاومة وقانون أوم، ربط المقاومات والمصابيح، الدائرة القصيرة، ربط الأعمدة.', emo: '⚡' },
   { id: 34, g: 'g9', num: 4, name: 'البطارية والقوة الدافعة الكهربائية', en: 'The battery and emf', c: '#15803d', hex: '#15803d', d: 'بطارية الليمون والخلية البسيطة، تصنيف البطاريات، الخلية الكلفانية والجافة، بطارية السيارة وشحنها، أيون–الليثيوم، خلية وقود الهيدروجين، القوة الدافعة الكهربائية.', emo: '🔋' },
   { id: 35, g: 'g9', num: 5, name: 'الطاقة والقدرة الكهربائية', en: 'Energy and electrical power', c: '#ea580c', hex: '#ea580c', d: 'القدرة الكهربائية P = I × V، حساب الطاقة وكلفتها، الكهرباء في بيوتنا، الدوائر المؤرضة والفاصم، تجنب الصعقة الكهربائية.', emo: '💡' },
+  { id: 36, g: 'g9', num: 6, name: 'الكهربائية والمغناطيسية', en: 'Electricity and magnetism', c: '#7c3aed', hex: '#7c3aed', d: 'تجربة أورستد، المجال المغناطيسي حول سلك مستقيم وحلقة دائرية وملف، قاعدة الكف اليمنى، المغناطيس الكهربائي واستعمالاته، الحث الكهرومغناطيسي، المولد والمحرك الكهربائي.', emo: '🧲' },
+  { id: 37, g: 'g9', num: 7, name: 'المحولة الكهربائية', en: 'Electric transformer', c: '#0891b2', hex: '#0891b2', d: 'التيار المحتث، المحولة الرافعة والخافضة، نسبة اللفات والفولطية، المحولة المثالية، خسائر القدرة وكفاءة المحولة.', emo: '🔌' },
+  { id: 38, g: 'g9', num: 8, name: 'تكنولوجيا مصادر الطاقة', en: 'Energy sources technology', c: '#059669', hex: '#059669', d: 'الطاقة في حياتنا، المصادر الأحفورية والمائية والنووية، الطاقة الشمسية وطاقة الرياح والمصادر المتجددة الأخرى.', emo: '☀️' },
+  { id: 39, g: 'g9', num: 9, name: 'فيزياء الجو وتقنية الاتصالات الحديثة', en: 'Atmosphere and communications', c: '#2563eb', hex: '#2563eb', d: 'جو الأرض ومكوناته، طبقات الغلاف الجوي، انتشار الموجات اللاسلكية، الهاتف النقال، الأقمار الصناعية.', emo: '📡' },
+  { id: 41, g: 'g10', num: 1, name: 'معلمات رئيسة في الفيزياء', en: 'Main parameters in physics', c: '#4f46e5', hex: '#4f46e5', d: 'القياس، النظام الدولي للوحدات الأساسية والتكميلية، الراديان والستراديان، البادئات، أخطاء القياس، الرسوم البيانية والميل، التغير الطردي والعكسي، قانون الغاز المثالي.', emo: '📏' },
   { id: 42, g: 'g10', num: 2, name: 'الخصائص الميكانيكية للمادة', en: 'Mechanical Properties of Materials', c: '#0d9488', hex: '#0d9488', d: 'التشوه وعوامله، المرونة وقانون هوك وثابت النابض، الإجهاد والمطاوعة وأنواعهما، معامل يونك، الليونة والهشاشة والقساوة والمتانة والصلادة والعجز، التشوه المرن والبلاستيكي.', emo: '🧱' },
+  { id: 43, g: 'g10', num: 3, name: 'الموائع الساكنة', en: 'Static fluids', c: '#0284c7', hex: '#0284c7', d: 'الضغط وضغط السائل، الضغط الجوي والمرواز، قاعدة باسكال والمكبس الهيدروليكي، قاعدة أرخميدس والطفو، الشد السطحي والخاصية الشعرية، معادلة الاستمرارية، معادلة برنولي وتطبيقاتها، اللزوجة.', emo: '💧' },
+  { id: 44, g: 'g10', num: 4, name: 'الخصائص الحرارية للمادة', en: 'Thermal properties of matter', c: '#dc2626', hex: '#dc2626', d: 'كمية الحرارة والحرارة النوعية والسعة الحرارية، المسعر وقانون حفظ الطاقة الحرارية، تغير الحالة والحرارة الكامنة، التمدد الحراري للأجسام الصلبة والسوائل، شذوذ الماء، انتقال الحرارة بالتوصيل والحمل والإشعاع.', emo: '🔥' },
   { id: 45, g: 'g10', num: 5, name: 'الضوء', en: 'Light', c: '#d97706', hex: '#d97706', d: 'طبيعة الضوء ونظرياته، الطيف الكهرومغناطيسي وطاقة الفوتون، المصدر النقطي ومبدأ هايجنز، قوة الإضاءة والسيل الضوئي وشدة الاستضاءة وقانون التربيع العكسي.', emo: '💡' },
+  { id: 46, g: 'g10', num: 6, name: 'انعكاس وانكسار الضوء', en: 'Reflection and refraction of light', c: '#7c3aed', hex: '#7c3aed', d: 'قانونا الانعكاس، الانعكاس المنتظم وغير المنتظم، انكسار الضوء وقانون سنل ومعامل الانكسار، العمق الحقيقي والظاهري، الزاوية الحرجة والانعكاس الكلي الداخلي، الألياف البصرية والسراب، تفريق الضوء بالموشور.', emo: '🌈' },
+  { id: 47, g: 'g10', num: 7, name: 'المرايا', en: 'Mirrors', c: '#0891b2', hex: '#0891b2', d: 'المرآة المستوية وصفات صورتها، المرايا المتقاطعة، المرايا الكروية المقعرة والمحدبة، البؤرة والبعد البؤري، رسم الأشعة وتكوين الصور، قانون المرايا والتكبير، تطبيقات المرايا.', emo: '🪞' },
+  { id: 48, g: 'g10', num: 8, name: 'العدسات الرقيقة', en: 'Thin lenses', c: '#059669', hex: '#059669', d: 'العدسات المحدبة والمقعرة، البؤرة والبعد البؤري وقوة العدسة، رسم الأشعة وتكوين الصور، قانون العدسات والتكبير، العين وعيوب الإبصار، المكبر والمجهر والتلسكوب والكاميرا.', emo: '🔍' },
+  { id: 49, g: 'g10', num: 9, name: 'الكهرباء الساكنة', en: 'Electrostatics', c: '#2563eb', hex: '#2563eb', d: 'الشحنة الكهربائية وطرائق الشحن، الكشاف الكهربائي، قانون كولوم، المجال الكهربائي وخطوطه، الجهد الكهربائي وفرق الجهد، توزيع الشحنة على الموصلات، المتسعات وسعتها وربطها والطاقة المختزنة فيها.', emo: '⚡' },
 ];
 CHAPTERS.forEach(c => { c.g = c.g || 'g12'; c.num = c.num || c.id; });
 const GRADES = [
@@ -226,6 +237,10 @@ const Runner = {
     this.tick = 0;
     Features.onOpen(E, S);
   },
+  zMini(ctx, w, h, Z) { // small map in the corner showing which part of the scene is zoomed
+    const mw = 110, mh = Math.round(mw * h / w), x0 = 76, y0 = h - mh - 14; ctx.save(); ctx.globalAlpha = .9; ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fillRect(x0, y0, mw, mh); ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1; ctx.strokeRect(x0, y0, mw, mh);
+    ctx.strokeStyle = '#ea580c'; ctx.lineWidth = 2; ctx.strokeRect(x0 + (-Z.x / Z.s) / w * mw, y0 + (-Z.y / Z.s) / h * mh, mw / Z.s, mh / Z.s);
+    ctx.fillStyle = '#ea580c'; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'left'; ctx.fillText(Math.round(Z.s * 100) + '%', x0 + 4, y0 + 13); ctx.restore(); },
   applyBook() { const E = this.cur; const on = THEME.book && !E.dark; const col = $('.stage-col'); if (col) col.classList.toggle('book', on); this.book = on; },
   close() { Features.onClose(); Interact.close(); if (this.stage) { this.stage.destroy(); this.stage = null; } this.cur = null; this.S = null; this.cv = null; },
   bindPointer(E, S) {
@@ -325,8 +340,11 @@ const Runner = {
       this.cv.__book = this.book; const { ctx, w, h } = fitCanvas(this.cv, window.innerWidth < 700 ? 760 : 0); S.W = w; S.H = h;
       if (S.run) { const d = dt * S.speed; S.t += d; E.update && E.update(S, d); }
       else if (S._step) { const d = S._step * S.speed; S._step = 0; S.t += d; E.update && E.update(S, d); }
+      const Z = this.Z; if (Z && this.zStep) this.zStep(dt); const zm = Z && (Z.s > 1.001);
+      if (zm) { ctx.save(); ctx.fillStyle = getComputedStyle(this.cv).backgroundColor || '#fff'; ctx.fillRect(0, 0, w, h); ctx.translate(Z.x, Z.y); ctx.scale(Z.s, Z.s); ctx.beginPath(); ctx.rect(0, 0, w, h); ctx.clip(); }
       Interact._drawS = S; E.draw(ctx, w, h, S); Interact._drawS = null;
       Interact.after(ctx, w, h, S);
+      if (zm) { ctx.restore(); this.zMini(ctx, w, h, Z); }
     }
     this.tick += dt;
     if (this.tick > .1) {

@@ -120,7 +120,7 @@ const Features = {
     const rb = (id, icon, tip, extra = '') => `<button class="rb ${extra}" id="${id}" data-tip="${tip}" aria-label="${tip}">${ico(icon)}</button>`;
     rail.innerHTML = `<div class="rg">${rb('fGuide', 'play', 'ابدأ ' + actN + ': جولة موجهة خطوة بخطوة', 'accent')}${PREDICT[E.id] ? rb('fPred', 'help', 'توقّع قبل أن تجرّب') : ''}</div>
       <div class="rg">${rb('fSnap', 'camera', 'لقطة للمقارنة')}${isC ? rb('fProbe', 'target', 'مجس الجهد بين نقطتين') : ''}</div>
-      <div class="rg">${(!E.dark || isC) ? rb('fView', 'layers', 'مظهر اللوحة') : ''}${isC ? rb('zIn', 'plus', 'تكبير') + rb('zOut', 'minus', 'تصغير') + rb('zFit', 'fit', 'ملاءمة الدائرة للشاشة') : ''}</div>
+      <div class="rg">${(!E.dark || isC) ? rb('fView', 'layers', 'مظهر اللوحة') : ''}${rb('zIn', 'plus', 'تكبير') + rb('zOut', 'minus', 'تصغير') + rb('zFit', 'fit', isC ? 'ملاءمة الدائرة للشاشة' : 'الحجم الأصلي')}</div>
       <div class="rg">${rb('fPen', 'pen', 'قلم للكتابة فوق المحاكاة')}${rb('fPres', 'monitor', 'وضع العرض على السبورة الذكية')}${rb('fFull', 'fit', 'ملء الشاشة بالمحاكاة فقط')}</div>
       <div class="rg">${rb('fSheet', 'print', 'طباعة ورقة عمل')}${rb('fShare', 'share', 'نسخ رابط التجربة بإعداداتها')}</div>
       <div class="pop hidden" id="viewPop">
@@ -136,7 +136,7 @@ const Features = {
     $$('#bookSeg button').forEach(b => b.onclick = () => { THEME.book = b.dataset.b === '1'; try { localStorage.setItem('lab-book', THEME.book ? '1' : '0'); } catch (e) { } $$('#bookSeg button').forEach(x => x.classList.toggle('on', x === b)); Runner.applyBook(); });
     $$('#modeSeg button').forEach(b => b.onclick = () => { $$('#modeSeg button').forEach(x => x.classList.toggle('on', x === b)); Runner.stage.o.mode = b.dataset.m; });
     $$('#flowSeg button').forEach(b => b.onclick = () => { $$('#flowSeg button').forEach(x => x.classList.toggle('on', x === b)); S.C.flow = b.dataset.f; });
-    if (isC) { $('#zIn').onclick = () => Runner.stage.zoom(1.2); $('#zOut').onclick = () => Runner.stage.zoom(1 / 1.2); $('#zFit').onclick = () => Runner.stage.fit(E.pad || 90); }
+    if (isC) { $('#zIn').onclick = () => Runner.stage.zoom(1.2); $('#zOut').onclick = () => Runner.stage.zoom(1 / 1.2); $('#zFit').onclick = () => Runner.stage.fit(E.pad || 90); } else { $('#zIn').onclick = () => Runner.zoomBy(1.4); $('#zOut').onclick = () => Runner.zoomBy(1 / 1.4); $('#zFit').onclick = () => Runner.zoomBy(0); }
     if ($('#fProbe')) $('#fProbe').onclick = () => { const st = Runner.stage; st.probeMode = !st.probeMode; st.probe = null; $('#fProbe').classList.toggle('on', st.probeMode); Runner.toast(st.probeMode ? 'انقر على نقطتين في الدائرة لقياس فرق الجهد بينهما' : 'أُلغي المجس', 'info'); };
     $('#fPen').onclick = () => this.pen();
     $('#fPres').onclick = () => Device.present(!document.body.classList.contains('present'));
