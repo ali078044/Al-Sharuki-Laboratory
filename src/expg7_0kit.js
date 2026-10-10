@@ -201,6 +201,7 @@ const K = {
 };
 /* register a grade-7 experiment (same schema as X, chapter ids 11..15) */
 function X10(def) { def.grade = 'g10'; if (!def.kind) def.kind = 'نشاط'; X(def); }
+function X11(def) { def.grade = 'g11'; if (!def.kind) def.kind = 'نشاط'; X(def); }
 function X9(def) { def.grade = 'g9'; if (!def.kind) def.kind = 'نشاط'; X(def); }
 function X8(def) { def.grade = 'g8'; if (!def.kind) def.kind = 'نشاط'; X(def); }
 function X7(def) { def.grade = 'g7'; if (!def.kind) def.kind = 'نشاط'; X(def); }
