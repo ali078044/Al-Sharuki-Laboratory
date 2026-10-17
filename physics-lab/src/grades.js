@@ -11,13 +11,13 @@ const GradeUI = {
   apply() {
     const g = this.g; document.body.dataset.grade = g;
     $$('#gradeSw button').forEach(b => b.classList.toggle('on', b.dataset.g === g));
-    const hide = KID(g); $$('.nav button[data-v="examples"],.nav button[data-v="lab"]').forEach(b => b.classList.toggle('hidden', hide));
+    const hide = g !== 'g12'; $$('.nav button[data-v="examples"],.nav button[data-v="lab"]').forEach(b => b.classList.toggle('hidden', hide));
     const G = GRADES.find(x => x.id === g); const f = $('footer.credit'); if (f) f.innerHTML = `مختبر الفيزياء التفاعلي — ${G.name} — تم تصميمه للأستاذ <b>علي محمد الشاروكي</b>`;
   },
   mount() {
     const bar = $('.topbar'); if (!bar || $('#gradeSw')) return;
     const d = el('div', { class: 'seg gsw', id: 'gradeSw', role: 'group', 'aria-label': 'اختيار الصف' });
-    d.innerHTML = GRADES.map(g => `<button data-g="${g.id}" title="${g.d}"><span class="ge">${g.emo}</span><span class="gt">${g.name}</span></button>`).join('');
+    d.innerHTML = GRADES.map(g => `<button data-g="${g.id}" title="${g.d}"><span class="ge">${g.emo}</span><span class="gt">${g.short}</span></button>`).join('');
     bar.insertBefore(d, $('#soundBtn'));
     $$('button', d).forEach(b => b.onclick = () => { this.set(b.dataset.g); if (!['home', 'catalog', 'laws', 'maps'].includes(App.view)) App.go('home'); });
     this.apply();
@@ -38,23 +38,24 @@ Home.render = function () {
   const acts = list.filter(e => e.kind === 'نشاط').length; const laws = LAWS.filter(l => chs.some(c => c.id === l.cat) || (g === 'g12' && l.cat === 0)).length;
   const kid = KID(g); const starSum = list.reduce((s, e) => s + Stars.get(e.id), 0);
   $('#view-home').innerHTML = `<div class="wrap">
-    <div class="gpick">${GRADES.map(x => `<button class="gcard ${x.id === g ? 'on' : ''}" data-g="${x.id}"><span class="gemo">${x.emo}</span><b>${x.name}</b><small>${expsOfGrade(x.id).length} تجربة ونشاط</small></button>`).join('')}</div>
+    <div class="gpick2">${[['المرحلة المتوسطة', ['g7', 'g8', 'g9']], ['المرحلة الإعدادية — الفرع العلمي', ['g10', 'g11', 'g12']]].map(([st, ids]) => `<div class="gstage"><h5>${st}</h5><div class="grow">${ids.map(id => { const x = GRADES.find(y => y.id === id), n = GRADES.indexOf(x) + 1, col = ['#0ea5e9', '#f97316', '#2563eb', '#7c3aed', '#16a34a', '#dc2626'][n - 1]; return `<button class="gc gcard ${x.id === g ? 'on' : ''}" data-g="${x.id}" style="--gc:${col}"><span class="gn">${n}</span><span class="gemo">${x.emo}</span><b>${x.name}</b><small>${gradeChs(x.id).length} فصول · ${expsOfGrade(x.id).length} تجربة</small>${typeof Reader !== 'undefined' && Reader.has(x.id) ? '<span class="gread">📖 الكتاب والملخص</span>' : ''}</button>`; }).join('')}</div></div>`).join('')}</div>
+    ${typeof Reader !== 'undefined' && Reader.has(g) ? `<div class="rhome"><div><b>📖 اقرأ ${READ[g] && RD[g].sum ? 'الكتاب أو الملخص' : 'الكتاب'} — الفصل ${chById(READ[g].ch).num}: ${chById(READ[g].ch).name}</b><small>عند كل نشاط اضغط «افتح في المختبر» ثم ارجع إلى المكان نفسه، أو قسّم الشاشة بين الدرس والتجربة</small></div><button class="btn primary" onclick="App.go('read','${g}')">ابدأ القراءة</button></div>` : ''}
     <div class="hero ${kid ? 'kid' : ''}">
       <div>
         <div class="credit-badge">تم تصميمه للأستاذ علي محمد الشاروكي</div>
         ${kid ? `<h2>مختبر العلوم <span>الممتع</span> 🔬<br>فيزياء ${G.name}</h2>
         <p>جرّب بنفسك كل أنشطة كتابك: اسحب، اسكب، سخّن، وزِن… وشاهد ما يحدث للجزيئات! أجب عن أسئلة «اختبر نفسك» واجمع النجوم ⭐</p>`
-      : `<h2>مختبر الفيزياء <span>التفاعلي</span><br>للصف السادس العلمي</h2>
+      : `<h2>مختبر الفيزياء <span>التفاعلي</span><br>للصف ${G.name}</h2>
         <p>جميع أنشطة وتجارب كتاب الفيزياء بتسلسل الكتاب نفسه، بمحاكاة تعتمد على المعادلات الفيزيائية الحقيقية: قراءات أجهزة حية، جداول قراءات، رسوم بيانية، ومحرك دوائر يحل قانوني كيرشوف في كل لحظة.</p>`}
         <div class="hero-cta">
           <button class="btn primary" onclick="App.go('catalog')">${ico('book')} ${kid ? 'ابدأ التجارب' : 'تجارب المنهج'}</button>
-          ${kid ? '' : `<button class="btn" onclick="App.go('lab')">${ico('bolt')} المختبر الحر</button>`}
+          ${g !== 'g12' ? '' : `<button class="btn" onclick="App.go('lab')">${ico('bolt')} المختبر الحر</button>`}
           <button class="btn" onclick="App.go('laws')">${ico('sigma')} القوانين</button>
         </div>
         <div class="stats">
           <div class="stat"><b>${list.length}</b><span>تجربة ونشاط</span></div>
           <div class="stat"><b>${acts}</b><span>نشاطاً من الكتاب</span></div>
-          ${kid ? `<div class="stat"><b>${starSum}</b><span>نجمة جمعتها ⭐</span></div>` : `<div class="stat"><b>${EXAMPLES.length}</b><span>مثالاً محلولاً</span></div>`}
+          ${kid || g !== 'g12' ? `<div class="stat"><b>${starSum}</b><span>نجمة جمعتها ⭐</span></div>` : `<div class="stat"><b>${EXAMPLES.length}</b><span>مثالاً محلولاً</span></div>`}
           <div class="stat"><b>${chs.length}</b><span>فصول</span></div>
           <div class="stat"><b>${laws}</b><span>قانوناً</span></div>
         </div>
@@ -64,7 +65,7 @@ Home.render = function () {
     <div class="sec-title"><h3>فصول الكتاب — ${G.name}</h3><p>اختر فصلاً لعرض تجاربه بالترتيب</p></div>
     <div class="ch-grid">${chs.map(ch => { const L = EXPS.filter(e => e.ch === ch.id); const st = L.reduce((s, e) => s + Stars.get(e.id), 0); return `<div class="ch-card ${kid ? 'kid' : ''}" style="--c:${ch.c}" onclick="Catalog.grade='${g}';Catalog.chap=${ch.id};Catalog.render();App.go('catalog')">
       ${ch.emo ? `<div class="ch-emo">${ch.emo}</div>` : ''}<div class="ch-num">الفصل ${ch.num}</div><h4>${ch.name}</h4><p>${ch.d}</p><div class="cnt">${L.length} تجربة ونشاط${kid ? ` · ⭐ ${st}/${L.length * 3}` : ''}</div></div>`; }).join('')}</div>
-    ${kid ? '' : `<div class="sec-title"><h3>أدوات المختبر</h3><p></p></div>
+    ${g !== 'g12' ? '' : `<div class="sec-title"><h3>أدوات المختبر</h3><p></p></div>
     <div class="feature-row">
       <div class="feature" onclick="App.go('lab')"><div class="fi">${ico('bolt')}</div><div><h4>المختبر الحر</h4><p>ابنِ أي دائرة: بطاريات، مصدر متناوب، مقاومات، متسعات، محاثات، ثنائيات، LED، أجهزة قياس، وراسم إشارة.</p></div></div>
       <div class="feature" onclick="App.go('examples')"><div class="fi">${ico('book')}</div><div><h4>أمثلة الكتاب المحلولة</h4><p>${EXAMPLES.length} مثالاً من الكتاب: اكشف الحل خطوة بخطوة ثم تحقق منه بالمحاكاة بالأرقام نفسها.</p></div></div>

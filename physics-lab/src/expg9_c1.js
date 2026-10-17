@@ -483,43 +483,79 @@ const Q31 = {
 /* ---- E1 part 4: ➕ PhET-style «جون ترافولتاج» ---- */
 (() => {
   const D = { id: 'g9_life_travolta', page: 8, fig: '➕ من المختبرات العالمية',
-    desc: '➕ من المختبرات العالمية (فكرة PhET «جون ترافولتاج»): احكك قدم الشخص بالسجادة فتتجمع الإلكترونات في جسمه، ثم قرّب إصبعه من مقبض الباب المعدني: كلما زادت الشحنة قفزت الشرارة من مسافة أبعد.',
+    desc: '➕ من المختبرات العالمية (فكرة PhET «جون ترافولتاج»): احكك قدم الشخص بالسجادة فتصعد الإلكترونات من قدمه إلى جسمه، ثم حرّك الشخص نحو الباب وأدر ذراعه حتى يقترب إصبعه من المقبض المعدني: كلما زادت الشحنة قفزت الشرارة من مسافة أبعد.',
     tags: 'ترافولتاج سجادة مقبض باب شرارة صعقة إلكترونات تفريغ PhET',
     tools: ['سجادة صوف', 'مقبض باب معدني'],
-    steps: ['اسحب القدم ذهاباً وإياباً على السجادة: تتجمع الإلكترونات في الجسم.', 'اسحب اليد (الإصبع) نحو مقبض الباب.', 'لاحظ: إذا كانت الشحنة كبيرة تحدث الشرارة قبل اللمس (من مسافة أبعد).', 'عدّ الإلكترونات قبل التفريغ وبعده.'],
-    concl: ['الاحتكاك بالسجادة ينقل إلكترونات إلى الجسم فيصبح سالب الشحنة.', 'عند اقتراب الإصبع من المعدن تتفرغ الإلكترونات بشرارة (صعقة طفيفة).', 'كلما زادت الشحنة زادت المسافة التي تقفز منها الشرارة.'],
-    controls: [BT('', [{ t: '🦶 احكك القدم (تلقائي)', on: S => { S.auto = 2; } }, { t: '↺ أعد', on: S => D.reset(S) }]), TG('chg', 'الإلكترونات', true, null, 'electron'), TG('lab', 'التسميات', true, null, 'labels')],
+    steps: ['اسحب القدم ذهاباً وإياباً على السجادة: لاحظ الإلكترونات تصعد من القدم إلى الجسم.', 'اسحب جسم الشخص نحو الباب (يمشي).', 'اسحب اليد لتدور الذراع حتى يقترب الإصبع من المقبض.', 'لاحظ: الإلكترونات تنتقل عبر الذراع وتقفز بشرارة؛ إذا كانت الشحنة كبيرة تحدث الشرارة من مسافة أبعد.'],
+    concl: ['الاحتكاك بالسجادة ينقل إلكترونات من السجادة إلى القدم ثم تنتشر في الجسم فيصبح سالب الشحنة.', 'عند اقتراب الإصبع من المعدن تتفرغ الإلكترونات بشرارة (صعقة طفيفة).', 'كلما زادت الشحنة زادت المسافة التي تقفز منها الشرارة.'],
+    controls: [BT('', [{ t: '🦶 احكك القدم (تلقائي)', on: S => { S.auto = 2; } }, { t: '🚶 قرّبه من الباب', on: S => { S.goTo = D.pxMax(S); } }, { t: '↺ أعد', on: S => D.reset(S) }]), TG('chg', 'الإلكترونات', true, null, 'electron'), TG('lab', 'التسميات', true, null, 'labels')],
     setup(S) { D.reset(S); },
-    reset(S) { S.e = []; S.leg = 0; S.hand = null; S.dis = 0; S.flash = 0; S.max = 0; S.auto = 0; },
-    geo(S) { const w = S.W, h = S.H, u = Q31.sc(w, h) * (w < 600 ? 1 : 1.25), cx = Q31.cx(w), gy = h * .82; return { w, h, u, cx, gy, hip: [cx - 60 * u, gy - 100 * u], knob: [cx + 170 * u, gy - 120 * u] }; },
-    add(S, g) { if (S.e.length >= 60) return; S.e.push({ x: g.hip[0] + (Math.random() - .5) * 26 * g.u, y: g.hip[1] - Math.random() * 70 * g.u, vx: 0, vy: 0 }); if (window.Sound && Sound.tick) Sound.tick(); },
-    update(S, dt) { if (!S.W) return; const g = D.geo(S), u = g.u; if (!S.hand) S.hand = [g.hip[0] + 60 * u, g.hip[1] - 40 * u];
-      if (S.auto > 0) { S.auto -= dt; S.leg = Math.sin(S.t * 14) * 40; S._a = (S._a || 0) + dt; if (S._a > .08) { S._a = 0; D.add(S, g); } }
-      // electrons jiggle inside body
-      S.e.forEach(e => { e.vx += (Math.random() - .5) * 80 * dt; e.vy += (Math.random() - .5) * 80 * dt; e.vx *= .95; e.vy *= .95; e.x += e.vx * dt * 8; e.y += e.vy * dt * 8; e.x = clamp(e.x, g.hip[0] - 16 * u, g.hip[0] + 16 * u); e.y = clamp(e.y, g.hip[1] - 80 * u, g.hip[1] + 10 * u); });
-      S.max = Math.max(S.max, S.e.length); const d = Math.hypot(S.hand[0] - g.knob[0], S.hand[1] - g.knob[1]);
-      if (S.e.length && d < S.e.length * 2.2 * u + 6) S.dis = 1; if (S.dis) { S._d = (S._d || 0) + dt; if (S._d > .03) { S._d = 0; S.e.pop(); S.flash = .15; Q31.fly(S, S.hand[0], S.hand[1], g.knob[0], g.knob[1], .2); } if (!S.e.length) { S.dis = 0; C2.msg(S, 'تفرغت كل الإلكترونات ⚡\nصعقة طفيفة!', 1.8); } }
+    reset(S) { S.e = []; S.leg = 0; S.ang = 1.1; S.px = 0; S.walk = 0; S.goTo = null; S.dis = 0; S.flash = 0; S.max = 0; S.auto = 0; S.sparks = 0; S._fly = []; },
+    pxMax(S) { return 262; },
+    geo(S) { const w = S.W, h = S.H, u = Q31.sc(w, h) * (w < 600 ? 1 : 1.25), cx = Q31.cx(w), gy = h * .82, H = 200 * u;
+      const hip = [cx - 120 * u + (S.px || 0) * u, gy - 100 * u], neck = [hip[0] + 4 * u, hip[1] - H * .33], shp = [neck[0], neck[1] + H * .02];
+      const L = H * .33, hand = [shp[0] + Math.cos(S.ang) * L, shp[1] + Math.sin(S.ang) * L];
+      const ph = Math.sin((S.walk || 0) * .35) * 12 * u;
+      const f1 = [hip[0] - 10 * u + S.leg * u * .6 + ph, gy - 4 + (Math.abs(S.leg) > 5 ? -3 : 0)], f2 = [hip[0] + 16 * u - ph, gy - 4];
+      const knob = [cx + 225 * u, gy - 122 * u];
+      return { w, h, u, cx, gy, H, hip, neck, shp, hand, f1, f2, knob, door: knob[0] - 12 * u }; },
+    /* local (relative to hip, in u units) ↔ screen */
+    toS(g, p) { return [g.hip[0] + p[0] * g.u, g.hip[1] + p[1] * g.u]; },
+    toL(g, p) { return [(p[0] - g.hip[0]) / g.u, (p[1] - g.hip[1]) / g.u]; },
+    add(S, g) { if (S.e.length >= 70) return; const kn = Q24.ik(g.hip, g.f1, g.H * .25, g.H * .24, -1);
+      S.e.push({ m: 'up', k: 0, path: [D.toL(g, [g.f1[0] + 4 * g.u, g.f1[1] - 3 * g.u]), D.toL(g, kn), [(Math.random() - .5) * 18, -4], [(Math.random() - .5) * 22, -10 - Math.random() * 50]], x: 0, y: 0, vx: 0, vy: 0 });
+      if (window.Sound && Sound.tick) Sound.tick(); },
+    move(e, sp, dt) { // advance along e.path (local units); returns true at end
+      let rem = sp * dt; while (rem > 0 && e.k < e.path.length - 1) { const a = e.path[e.k | 0], b = e.path[(e.k | 0) + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1, f = e.k - (e.k | 0), left = L * (1 - f); if (rem >= left) { rem -= left; e.k = (e.k | 0) + 1; } else { e.k += rem / L; rem = 0; } }
+      const i = Math.min(e.k | 0, e.path.length - 2), f = e.k - i, a = e.path[i], b = e.path[i + 1]; e.x = a[0] + (b[0] - a[0]) * f; e.y = a[1] + (b[1] - a[1]) * f; return e.k >= e.path.length - 1; },
+    tip(g) { const a = Math.atan2(g.hand[1] - g.shp[1], g.hand[0] - g.shp[0]); return [g.hand[0] + Math.cos(a) * 9 * g.u, g.hand[1] + Math.sin(a) * 9 * g.u]; },
+    update(S, dt) { if (!S.W) return; let g = D.geo(S), u = g.u;
+      if (S.goTo != null) { const d = S.goTo - S.px, st = Math.sign(d) * Math.min(Math.abs(d), 170 * dt); S.px += st; S.walk += Math.abs(st) * .5; if (Math.abs(d) < .5) S.goTo = null; g = D.geo(S); }
+      if (S.auto > 0) { S.auto -= dt; S.leg = Math.sin(S.t * 14) * 40; S._a = (S._a || 0) + dt; if (S._a > .08) { S._a = 0; D.add(S, g); } } else if (S.auto < 0 || (S.auto <= 0 && !S._legDrag && S.leg)) { S.leg *= .8; if (Math.abs(S.leg) < .5) S.leg = 0; }
+      const hl = D.toL(g, g.shp), hd = D.toL(g, D.tip(g));
+      S.e.forEach(e => {
+        if (e.m === 'up') { if (D.move(e, 120, dt)) e.m = 'body'; }
+        else if (e.m === 'out') { if (D.move(e, 170, dt)) { e.m = 'gone'; const p = D.toS(g, [e.x, e.y]); Q31.fly(S, p[0], p[1], g.knob[0], g.knob[1], .12); S.flash = .14; } }
+        else { e.vx += (Math.random() - .5) * 60 * dt; e.vy += (Math.random() - .5) * 60 * dt; e.vx *= .94; e.vy *= .94; e.x = clamp(e.x + e.vx * dt * 6, -13, 13); e.y = clamp(e.y + e.vy * dt * 6, -62, 6); }
+      });
+      // mutual spreading inside the body (like charges repel)
+      const B = S.e.filter(e => e.m === 'body'); for (let i = 0; i < B.length; i++) for (let j = i + 1; j < B.length; j++) { const a = B[i], b = B[j], dx = a.x - b.x, dy = a.y - b.y, r2 = dx * dx + dy * dy + 4; if (r2 < 120) { const f = 6 * dt / r2 * 10; a.vx += dx * f; a.vy += dy * f; b.vx -= dx * f; b.vy -= dy * f; } }
+      S.e = S.e.filter(e => e.m !== 'gone');
+      const n = S.e.filter(e => e.m !== 'out').length; S.max = Math.max(S.max, S.e.length);
+      const tp = D.tip(g), d = Math.hypot(tp[0] - g.knob[0], tp[1] - g.knob[1]) - 11 * u;
+      S.gap = d; S.reach = (6 + n * .9) * u;
+      if (B.length && d < S.reach && !S.dis) { S.dis = 1; S.sparks++; }
+      if (S.dis) { S._d = (S._d || 0) + dt; if (S._d > .025) { S._d = 0; const e = S.e.find(e => e.m === 'body'); if (e) { e.m = 'out'; e.k = 0; e.path = [[e.x, e.y], hl, hd]; } }
+        if (!S.e.some(e => e.m === 'body') && !S.e.some(e => e.m === 'out')) { S.dis = 0; C2.msg(S, 'تفرغت الإلكترونات ⚡\nصعقة طفيفة!', 1.8); } }
       if (S.flash > 0) S.flash -= dt; },
     draw(ctx, w, h, S) {
-      const g = D.geo(S), u = g.u; if (!S.hand) S.hand = [g.hip[0] + 60 * u, g.hip[1] - 40 * u];
+      const g = D.geo(S), u = g.u;
       Q31.raw(ctx, () => { ctx.fillStyle = '#ecfccb'; ctx.fillRect(0, 0, w, g.gy); ctx.strokeStyle = 'rgba(101,163,13,.18)'; for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, g.gy); ctx.stroke(); }
         const cg = ctx.createLinearGradient(0, g.gy, 0, h); cg.addColorStop(0, '#0e7490'); cg.addColorStop(1, '#164e63'); ctx.fillStyle = cg; ctx.fillRect(0, g.gy, w, h - g.gy); ctx.fillStyle = 'rgba(255,255,255,.08)'; for (let i = 0; i < 200; i++) ctx.fillRect((i * 53) % w, g.gy + (i * 29) % (h - g.gy), 2, 4);
-        const dx = g.knob[0] + 4 * u; const dg = ctx.createLinearGradient(dx, 0, dx + 130 * u, 0); dg.addColorStop(0, '#a16207'); dg.addColorStop(1, '#713f12'); ctx.fillStyle = dg; ctx.fillRect(dx, g.gy - 300 * u, 130 * u, 300 * u); ctx.strokeStyle = '#422006'; ctx.lineWidth = 2; ctx.strokeRect(dx + 14 * u, g.gy - 280 * u, 100 * u, 110 * u); ctx.strokeRect(dx + 14 * u, g.gy - 150 * u, 100 * u, 130 * u);
-        const kg = ctx.createRadialGradient(g.knob[0] + 12 * u, g.knob[1] - 4, 1, g.knob[0] + 14 * u, g.knob[1], 13 * u); kg.addColorStop(0, '#fff'); kg.addColorStop(.5, '#fcd34d'); kg.addColorStop(1, '#a16207'); ctx.fillStyle = kg; ctx.beginPath(); ctx.arc(g.knob[0] + 14 * u, g.knob[1], 12 * u, 0, TAU); ctx.fill(); });
-      const H = 200 * u, hip = g.hip, f1 = [hip[0] - 10 * u + S.leg * u * .6, g.gy - 4 + (Math.abs(S.leg) > 5 ? -3 : 0)];
-      Q31.person(ctx, { H, f: 1, hip, neck: [hip[0] + 4 * u, hip[1] - H * .33], hands: [[hip[0] - 12 * u, hip[1] + 10 * u], S.hand], feet: [f1, [hip[0] + 16 * u, g.gy - 4]], shirt: '#16a34a', pants: '#78350f', hair: '#111827' });
-      if (S.p.chg !== false) S.e.forEach(e => Q31.el(ctx, e.x, e.y, 4.5 * u));
-      Q31.drawFly(ctx, S); if (S.flash > 0) Q31.spark(ctx, S.hand[0], S.hand[1], g.knob[0] + 4 * u, g.knob[1], S.t, 2.4);
-      if (S.p.lab !== false) { Q31.T(ctx, 'سجادة — اسحب القدم ↔', hip[0], g.gy + 26, { s: 11.5, w: 800, c: '#fff', bg: '#155e75' }); Q31.T(ctx, 'مقبض معدني', g.knob[0] + 14 * u, g.knob[1] - 26 * u, { s: 11, w: 800, c: '#fff', bg: '#713f12' });
-        const d = Math.hypot(S.hand[0] - g.knob[0], S.hand[1] - g.knob[1]); Q31.T(ctx, 'طول الشرارة الممكن ≈ ' + Math.max(1, Math.round(S.e.length / 6)) + ' mm', g.knob[0] - 40 * u, g.knob[1] + 40 * u, { s: 11, w: 800, c: '#fff', bg: '#1e3a8a' }); }
-      Q31.card(ctx, S, [{ t: 'إلكترونات في الجسم: ' + S.e.length, c: '#1d4ed8', w: 900 }, { t: 'أكبر عدد وصلت إليه: ' + S.max }], { title: 'عدّاد', y: 46, wd: 220 });
-      Q31.banner(ctx, w, '➕ من المختبرات العالمية: جون ترافولتاج', '#7c3aed'); C2.drawMsg(ctx, S, g.knob[0] - 40 * u, g.knob[1] - 40 * u);
+        const dx = g.door; const dg = ctx.createLinearGradient(dx, 0, dx + 130 * u, 0); dg.addColorStop(0, '#a16207'); dg.addColorStop(1, '#713f12'); ctx.fillStyle = dg; ctx.fillRect(dx, g.gy - 300 * u, w - dx, 300 * u); ctx.strokeStyle = '#422006'; ctx.lineWidth = 2; ctx.strokeRect(dx + 28 * u, g.gy - 280 * u, 100 * u, 110 * u); ctx.strokeRect(dx + 28 * u, g.gy - 150 * u, 100 * u, 130 * u);
+        ctx.fillStyle = '#a8a29e'; ctx.fillRect(g.knob[0] - 4 * u, g.knob[1] - 3 * u, 22 * u, 6 * u);
+        const kg = ctx.createRadialGradient(g.knob[0] - 4 * u, g.knob[1] - 4 * u, 1, g.knob[0], g.knob[1], 12 * u); kg.addColorStop(0, '#fff'); kg.addColorStop(.5, '#fcd34d'); kg.addColorStop(1, '#a16207'); ctx.fillStyle = kg; ctx.beginPath(); ctx.arc(g.knob[0], g.knob[1], 11 * u, 0, TAU); ctx.fill(); });
+      // spark reach ring (how far the spark can jump now)
+      const n = S.e.filter(e => e.m !== 'out').length;
+      if (n && S.p.lab !== false) Q31.raw(ctx, () => { ctx.setLineDash([5, 5]); ctx.strokeStyle = 'rgba(234,179,8,.8)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(g.knob[0], g.knob[1], 11 * u + S.reach, 0, TAU); ctx.stroke(); ctx.setLineDash([]); });
+      Q31.person(ctx, { H: g.H, f: 1, hip: g.hip, neck: g.neck, hands: [[g.hip[0] - 12 * u, g.hip[1] + 10 * u], g.hand], feet: [g.f1, g.f2], shirt: '#16a34a', pants: '#78350f', hair: '#111827' });
+      // pointing finger
+      const tp = D.tip(g); Q31.raw(ctx, () => { ctx.strokeStyle = '#f2c29b'; ctx.lineCap = 'round'; ctx.lineWidth = 4 * u; ctx.beginPath(); ctx.moveTo(g.hand[0], g.hand[1]); ctx.lineTo(tp[0], tp[1]); ctx.stroke(); ctx.lineCap = 'butt'; });
+      if (S.p.chg !== false) S.e.forEach(e => { const p = D.toS(g, [e.x, e.y]); Q31.el(ctx, p[0], p[1], 4.5 * Math.max(.8, u)); });
+      Q31.drawFly(ctx, S); if (S.flash > 0) Q31.spark(ctx, tp[0], tp[1], g.knob[0], g.knob[1], S.t, 2.4);
+      if (S.p.lab !== false) { Q31.T(ctx, 'سجادة — احكك القدم ↔', g.f1[0], g.gy + 26, { s: 11.5, w: 800, c: '#fff', bg: '#155e75' }); Q31.T(ctx, 'مقبض معدني', g.knob[0] + 30 * u, g.knob[1] - 44 * u, { s: 11, w: 800, c: '#fff', bg: '#713f12' });
+        Q31.T(ctx, '⟷ اسحب الجسم ليمشي', g.neck[0], g.neck[1] - 52 * u, { s: 11, w: 800, c: '#fff', bg: '#15803d' });
+        Q31.T(ctx, '↻ اسحب اليد لتدير الذراع', g.hand[0] - 10 * u, g.hand[1] + (S.ang > .3 ? 30 : -24) * u, { s: 11, w: 800, c: '#fff', bg: '#9a3412' });
+        if (n) Q31.T(ctx, 'مدى الشرارة الآن (الدائرة المنقطة)', g.knob[0] - 20 * u, g.knob[1] + 11 * u + S.reach + 14, { s: 11, w: 800, c: '#fff', bg: '#a16207' }); }
+      Q31.card(ctx, S, [{ t: 'إلكترونات في الجسم: ' + n, c: '#1d4ed8', w: 900 }, { t: 'أكبر عدد وصلت إليه: ' + S.max }, { t: 'عدد الشرارات: ' + S.sparks }], { title: 'عدّاد', y: 46, wd: 220 });
+      Q31.banner(ctx, w, '➕ من المختبرات العالمية: جون ترافولتاج', '#7c3aed'); C2.drawMsg(ctx, S, g.knob[0] - 60 * u, g.knob[1] - 50 * u);
     },
-    drags(S) { if (!S.W || !S.hand) return []; const g = D.geo(S), u = g.u; return [
-      { id: 'foot', x: g.hip[0] - 10 * u + S.leg * u * .6, y: g.gy - 14, w: 70, h: 44, axis: 'x', keep: true, tip: 'احكك القدم بالسجادة', idle: 'احكك القدم ↔', drag: (S, d) => { S.leg = clamp((d.x - d.sx) / u / .6, -60, 60); if (Q31.rub(S, d, true, 22)) D.add(S, g); }, up: S => { S.leg = 0; } },
-      { id: 'hand', x: S.hand[0], y: S.hand[1], r: 26, axis: 'xy', keep: true, tip: 'قرّب الإصبع من المقبض', hint: false, drag: (S, d) => { S.hand = [clamp(d.ox + d.x - d.sx, g.hip[0] + 20 * u, g.knob[0] + 4 * u), clamp(d.oy + d.y - d.sy, g.hip[1] - 120 * u, g.hip[1] + 40 * u)]; const ax = S.hand[0] - (g.hip[0] + 4 * u), ay = S.hand[1] - (g.hip[1] - 60 * u), L = Math.hypot(ax, ay), M = 70 * u; if (L > M) S.hand = [g.hip[0] + 4 * u + ax / L * M, g.hip[1] - 60 * u + ay / L * M]; } }]; },
-    readings(S) { return [rd('عدد الإلكترونات في الجسم', String(S.e.length)), rd('أكبر شحنة', String(S.max))]; },
-    explain(S) { return S.e.length ? 'تجمعت <b>' + S.e.length + '</b> إلكترونات في الجسم بالاحتكاك بالسجادة. الإلكترونات تتنافر وتريد الهرب؛ عندما يقترب الإصبع من المعدن تقفز في <b>شرارة</b>. كلما زاد عددها قفزت من مسافة أبعد.' : 'الجسم متعادل. احكك القدم بالسجادة لتجميع الإلكترونات.'; }
+    drags(S) { if (!S.W) return []; const g = D.geo(S), u = g.u; return [
+      { id: 'foot', x: g.f1[0], y: g.gy - 14, w: 70, h: 44, axis: 'x', keep: true, tip: 'احكك القدم بالسجادة', idle: 'احكك القدم ↔', drag: (S, d) => { S._legDrag = 1; S.leg = clamp((d.x - d.sx) / u / .6, -60, 60); if (Q31.rub(S, d, true, 22)) D.add(S, D.geo(S)); }, up: S => { S._legDrag = 0; } },
+      { id: 'hand', x: D.tip(g)[0], y: D.tip(g)[1], r: 30, axis: 'xy', keep: true, tip: 'أدر الذراع: قرّب الإصبع من المقبض', hint: false, drag: (S, d) => { const g2 = D.geo(S); S.ang = clamp(Math.atan2(d.y - g2.shp[1], d.x - g2.shp[0]), -1.45, 2.2); } },
+      { id: 'body', x: g.neck[0], y: g.neck[1] + 30 * u, w: 46 * u, h: 80 * u, axis: 'x', keep: true, tip: 'اسحب الشخص ليمشي نحو الباب', drag: (S, d) => { S.goTo = null; const g0 = D.geo(Object.assign({}, S, { px: 0 })); const np = clamp((d.ox + d.x - d.sx - g0.neck[0]) / u, -60, D.pxMax(S)); S.walk += Math.abs(np - S.px) * .5; S.px = np; } }]; },
+    readings(S) { const n = (S.e || []).filter(e => e.m !== 'out').length; return [rd('عدد الإلكترونات في الجسم', String(n)), rd('أكبر شحنة', String(S.max)), rd('عدد الشرارات', String(S.sparks || 0))]; },
+    explain(S) { const n = (S.e || []).filter(e => e.m !== 'out').length, up = (S.e || []).some(e => e.m === 'up'); return S.dis ? '⚡ <b>شرارة!</b> الإلكترونات تتنافر فتندفع من الجسم عبر الذراع إلى الإصبع ثم تقفز في الهواء إلى المقبض المعدني. هذه هي «الصعقة الطفيفة».' : up ? 'الاحتكاك ينقل <b>إلكترونات من السجادة إلى القدم</b>، فتصعد في الساق وتنتشر في الجسم كله.' : n ? 'تجمعت <b>' + n + '</b> إلكترونات في الجسم فصار سالب الشحنة. الإلكترونات تتنافر وتنتشر في الجسم. اسحب الشخص نحو الباب وقرّب إصبعه من المقبض: عندما يدخل الإصبع الدائرة المنقطة تقفز الشرارة. كلما زاد عددها كبرت الدائرة.' : 'الجسم متعادل. احكك القدم بالسجادة لتجميع الإلكترونات.'; }
   };
   M8.P[D.id] = D;
 })();
@@ -575,34 +611,66 @@ const Q31 = {
 })();
 /* ---- E2 part 2: مقدار الشحنة والكولوم (ص 11، س1-3) ---- */
 (() => {
-  const PR = [['free', 'حر'], ['c1', '1 C (الكولوم الواحد)'], ['uc', '1 μC (مايكروكولوم)'], ['nc', '1 nC (نانوكولوم)'], ['q13', 'س1-3: 1.6×10⁻⁹ C'], ['bad', 'شحنة غير ممكنة؟ 2.4×10⁻¹⁹ C']];
-  const V = { c1: [1, 0], uc: [1, -6], nc: [1, -9], q13: [1.6, -9], bad: [2.4, -19] };
-  const D = { id: 'g9_ch_quant', page: 11, fig: 'ص 11',
-    desc: 'شحنة الإلكترون أو البروتون أصغر وحدة للشحنات، ومقدارها 1.6×10⁻¹⁹ C. شحنة أي جسم مشحون تساوي مضاعفات صحيحة لشحنة الإلكترون: عدد الإلكترونات = شحنة الجسم ÷ شحنة الإلكترون.',
+  const SC = [[1, 'كل نقطة = إلكترون واحد'], [1e9, 'كل نقطة = 10⁹ إلكترون (مليار)'], [1e10, 'كل نقطة = 10¹⁰ إلكترون (مثال الكتاب)']];
+  const NP = 8;
+  const D = { id: 'g9_ch_quant', page: 11, fig: 'ص 11 + س1-3',
+    desc: 'شحنة الإلكترون أصغر شحنة ومقدارها e = 1.6×10⁻¹⁹ C. انزع إلكترونات من الكرة المعدنية بيدك أو أعطها إلكترونات، وشاهد شحنتها تُحسب: الشحنة = عدد الإلكترونات × شحنة الإلكترون (q = n × e). ثم مثال الكتاب (س1-3).',
     tags: 'كولوم شحنة الإلكترون مايكرو نانو تكمية عدد الإلكترونات أسس',
-    tools: ['حاسبة الأسس'],
-    steps: ['اختر شحنة من «أمثلة الكتاب» أو غيّر المقدار والأس بنفسك.', 'تابع خطوات الحل: عدد الإلكترونات n = q ÷ e مع قسمة الأسس (اطرح الأسس).', 'لاحظ أن 1 C يعادل 6.25×10¹⁸ إلكتروناً.', 'جرّب «شحنة غير ممكنة» لترى لماذا يجب أن تكون الشحنة مضاعفاً صحيحاً لشحنة الإلكترون.'],
-    concl: ['e = 1.6×10⁻¹⁹ C وهي أصغر شحنة.', 'شحنة الجسم = عدد الإلكترونات × شحنة الإلكترون (n عدد صحيح).', '1 C = 6.25×10¹⁸ إلكترون ، 1 μC = 10⁻⁶ C ، 1 nC = 10⁻⁹ C.'],
-    controls: [SEL('ex', 'أمثلة الكتاب', PR, 'q13', (v, S) => { if (V[v]) { setParam(S, 'm', V[v][0]); setParam(S, 'ex10', V[v][1]); } }), R('m', 'المقدار (المعامل)', 1, 9.9, 1.6, .1, ''), R('ex10', 'الأس (القوة العشرية)', -19, 0, -9, 1, ''),
-      SEL('sgn', 'نوع الشحنة', [['-', 'سالبة (زيادة إلكترونات)'], ['+', 'موجبة (نقص إلكترونات)']], '+'), TG('zoom', 'التكبير (عدّ الإلكترونات)', true, null, 'electron')],
-    setup(S) { },
-    q(S) { return S.p.m * Math.pow(10, S.p.ex10); },
+    tools: ['كرة معدنية على حامل عازل', 'مخزن إلكترونات'],
+    steps: ['اسحب إلكتروناً (نقطة زرقاء) من الكرة إلى المخزن: الكرة تفقد إلكتروناً فتصبح موجبة.', 'اسحب إلكتروناً من المخزن إلى الكرة: الكرة تكتسب إلكتروناً فتصبح سالبة.', 'تابع البطاقة: الشحنة = عدد الإلكترونات × 1.6×10⁻¹⁹ C.', 'المس شريط «كل نقطة =» لتجعل النقطة الواحدة تمثل مليار إلكترون أو 10¹⁰ إلكترون.', 'المس «مثال الكتاب س1-3» لترى حل السؤال على الكرة نفسها.'],
+    concl: ['الجسم الذي يفقد إلكترونات يصبح موجباً، والذي يكتسبها يصبح سالباً.', 'شحنة الجسم = عدد الإلكترونات المفقودة أو المكتسبة × شحنة الإلكترون (q = n × e)، ولا توجد شحنة أصغر من e.', 'عدد الإلكترونات = شحنة الجسم ÷ شحنة الإلكترون (n = q ÷ e)، وعند القسمة نطرح الأسس.', '1 C = 6.25×10¹⁸ إلكترون ، 1 μC = 10⁻⁶ C ، 1 nC = 10⁻⁹ C.'],
+    laws: ['g9_qe'],
+    controls: [SEL('sc', 'كل نقطة تمثل', SC.map((s, i) => [String(i), s[1]]), '0'), BT('', [{ t: '📘 مثال الكتاب س1-3', on: S => D.ex13(S) }, { t: '↺ أعد', on: S => D.reset(S) }]), TG('zoom', 'التكبير (عدسة)', true, null, 'electron')],
+    setup(S) { D.reset(S); },
+    reset(S) { S.n = 0; S.dr = null; S.ex = 0; S._fly = []; },
+    ex13(S) { setParam(S, 'sc', '2'); S.n = 0; S.ex = 1; const g = D.geo(S); setTimeout(() => { if (S.n === 0) { const q = D.ePos(g, 0, S); Q31.fly(S, q[0], q[1], g.bx, g.by, .8); S.n = 1; } }, 500); },
+    M(S) { return SC[+S.p.sc || 0][0]; },
+    geo(S) { const w = S.W, h = S.H, ph = w < 600, u = Q31.sc(w, h) * (ph ? .85 : 1.1), cx = Q31.cx(w), sx = ph ? w * .32 : 76 + 150 * u, sy = h * .55, R = 92 * u; return { w, h, ph, u, cx, sx, sy, R, yb: h * .88, bx: ph ? w * .78 : sx + R + 92 * u, by: sy + 40 * u }; },
+    pPos(g, i) { const a = i / NP * TAU + .2; return [g.sx + Math.cos(a) * g.R * .55, g.sy + Math.sin(a) * g.R * .55]; },
+    ePos(g, i, S) { const ne = NP - S.n; if (i < NP) { const a = i / NP * TAU + .2 + .3; return [g.sx + Math.cos(a) * g.R * .78, g.sy + Math.sin(a) * g.R * .78]; } const k = i - NP, a = k / Math.max(1, ne - NP) * TAU + .05; return [g.sx + Math.cos(a) * g.R * .32, g.sy + Math.sin(a) * g.R * .32]; },
+    inBox(g, x, y) { return Math.abs(x - g.bx) < 70 * g.u && Math.abs(y - g.by) < 55 * g.u; },
+    update(S, dt) { },
     draw(ctx, w, h, S) {
-      const p = S.p, ph = w < 600, u = Q31.sc(w, h), cx = Q31.cx(w); K.bg(ctx, w, h, { benchY: h * .86 }); const q = D.q(S), n = q / 1.6e-19, nr = Math.round(n), ok = Math.abs(n - nr) < 1e-6 * Math.max(1, n);
-      const sx = ph ? w * .5 : 76 + 170 * u, sy = ph ? h * .64 : h * .5, R = 95 * u * (ph ? .8 : 1);
-      Q31.sphere(ctx, sx, sy, R, h * .86); const sgn = p.sgn === '-' ? -1 : 1; for (let k = 0; k < 10; k++) { const a = k / 10 * TAU; Q31.sg(ctx, sx + Math.cos(a) * R * .78, sy + Math.sin(a) * R * .78, sgn, 7); }
-      Q31.T(ctx, 'q = ' + (p.sgn === '-' ? '−' : '+') + Q31.sci(q, 3, 'C'), sx, sy - R - 22, { s: 15, w: 900, c: '#fff', bg: sgn > 0 ? '#b91c1c' : '#1d4ed8', mono: 1 });
-      if (p.zoom !== false) { const lx = sx + R * .55, ly = sy + R * .5; K.lens(ctx, lx + 60 * u, ly + 10, 46 * u, () => { for (let k = 0; k < 14; k++) Q31.el(ctx, lx + 30 * u + (k % 5) * 14 * u, ly - 18 + (k / 5 | 0) * 16, 5); }); }
-      // steps card
-      const e = p.ex10 + 19, mm = p.m / 1.6; const L = [{ t: 'n = q / e = ' + Q31.sci(q, 3) + ' C ÷ 1.6×10⁻¹⁹ C', mono: 1 }, { t: '= (' + p.m + ' ÷ 1.6) × 10' + Q31.sup('(' + p.ex10 + '+19)'), mono: 1 }, { t: '= ' + (+mm.toPrecision(4)) + ' × 10' + Q31.sup(e), mono: 1 }, { t: 'عند القسمة نطرح الأسس:', c: '#7c3aed' }, { t: '(' + String(p.ex10).replace('-', '−') + ') − (−19) = ' + e, c: '#7c3aed', mono: 1 }, { t: 'n = ' + Q31.sci(n, 4) + ' إلكترون', c: '#1d4ed8', w: 900, mono: 1 },
-        ok ? { t: p.sgn === '-' ? '✓ الجسم اكتسب هذا العدد من الإلكترونات' : '✓ الجسم فقد هذا العدد من الإلكترونات', c: '#15803d', w: 900 } : { t: '✗ n ليس عدداً صحيحاً ⟸ هذه الشحنة غير ممكنة!', c: '#dc2626', w: 900 }];
-      Q31.card(ctx, S, L, { title: 'عدد الإلكترونات = شحنة الجسم ÷ شحنة الإلكترون', y: ph ? 60 : 50, wd: 380 });
-      // ladder of units
-      if (!ph) { const lx = Q31.cx(w) + 40, ly = h * .5; Q31.card(ctx, S, [{ t: '1 C = 6.25×10¹⁸ إلكترون' }, { t: '1 μC = 10⁻⁶ C = 6.25×10¹² إلكترون' }, { t: '1 nC = 10⁻⁹ C = 6.25×10⁹ إلكترون' }, { t: 'e = 1.6×10⁻¹⁹ C (أصغر شحنة)', w: 900 }], { title: 'الكولوم وأجزاؤه', y: h * .5, wd: 330, bd: '#7c3aed' }); }
-      Q31.banner(ctx, w, 'مقدار الشحنة: q = n × e', '#2563eb');
+      const g = D.geo(S), u = g.u, p = S.p, M = D.M(S), ne = NP - S.n, q = S.n * M * 1.6e-19; K.bg(ctx, w, h, { benchY: g.yb });
+      Q31.sphere(ctx, g.sx, g.sy, g.R, g.yb);
+      for (let i = 0; i < NP; i++) { const a = D.pPos(g, i); Q31.sg(ctx, a[0], a[1], 1, 8 * Math.max(.8, u)); }
+      for (let i = 0; i < ne; i++) { if (S.dr && S.dr.from === 's' && i === ne - 1) continue; const a = D.ePos(g, i, S); Q31.el(ctx, a[0], a[1], 8 * Math.max(.8, u)); }
+      const st = S.n === 0 ? ['متعادلة: ' + NP + ' موجبة و' + NP + ' سالبة', '#475569'] : S.n > 0 ? ['فقدت ' + S.n + ' ⟸ موجبة', '#b91c1c'] : ['اكتسبت ' + (-S.n) + ' ⟸ سالبة', '#1d4ed8'];
+      Q31.T(ctx, st[0], g.sx, g.sy - g.R - 22 * u, { s: 14, w: 900, c: '#fff', bg: st[1] });
+      Q31.T(ctx, 'اسحب نقطة زرقاء (إلكتروناً) ✋', g.sx, g.sy + g.R + 18 * u, { s: 11.5, w: 800, c: '#fff', bg: '#1d4ed8' });
+      // electron store
+      Q31.raw(ctx, () => { ctx.fillStyle = 'rgba(219,234,254,.95)'; rr(ctx, g.bx - 58 * u, g.by - 48 * u, 116 * u, 96 * u, 14); ctx.fill(); ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2; ctx.setLineDash([6, 4]); ctx.stroke(); ctx.setLineDash([]); });
+      for (let k = 0; k < 9; k++) Q31.el(ctx, g.bx - 34 * u + (k % 3) * 34 * u, g.by - 24 * u + (k / 3 | 0) * 24 * u, 7 * Math.max(.8, u));
+      Q31.T(ctx, 'مخزن الإلكترونات', g.bx, g.by - 62 * u, { s: 12, w: 900, c: '#fff', bg: '#1d4ed8' });
+      Q31.drawFly(ctx, S);
+      if (S.dr) Q31.el(ctx, S.dr.x, S.dr.y, 9 * Math.max(.8, u));
+      if (p.zoom !== false && M > 1) { const lx = g.sx + g.R * .55, ly = g.sy + g.R * .62; K.lens(ctx, lx + 50 * u, ly + 20 * u, 40 * u, () => { for (let k = 0; k < 14; k++) Q31.el(ctx, lx + 24 * u + (k % 5) * 12 * u, ly + 4 * u + (k / 5 | 0) * 14 * u, 4); }); Q31.T(ctx, 'النقطة الواحدة = ' + Q31.sci(M, 2) + ' إلكترون', lx + 50 * u, ly + 74 * u, { s: 11, w: 800, c: '#fff', bg: '#7c3aed' }); }
+      // scale strip (tap)
+      D.chips(g).forEach((b, i) => Q31.drawBtn(ctx, b, b.t, '#7c3aed', String(i) === String(p.sc)));
+      Q31.drawBtn(ctx, D.exBtn(g), '📘 مثال الكتاب س1-3', '#0f766e', S.ex);
+      // live calculation
+      const cnt = Math.abs(S.n) * M, L = [{ t: 'الشحنة = عدد الإلكترونات × شحنة الإلكترون', w: 900 }, { t: 'q = n × e', mono: 1, c: '#7c3aed' },
+        { t: 'q = ' + Q31.sci(cnt, 3) + ' × 1.6×10⁻¹⁹ C', mono: 1 }, { t: 'q = ' + (S.n < 0 ? '−' : S.n > 0 ? '+' : '') + Q31.sci(Math.abs(q), 3, 'C'), mono: 1, w: 900, c: S.n > 0 ? '#b91c1c' : S.n < 0 ? '#1d4ed8' : '#334155' }];
+      if (M > 1 && S.n) L.push({ t: 'عند الضرب نجمع الأسس:', c: '#7c3aed' }, { t: '10' + Q31.sup(Math.round(Math.log10(M))) + ' × 10⁻¹⁹ = 10' + Q31.sup(Math.round(Math.log10(M)) - 19), c: '#7c3aed', mono: 1 });
+      if (Math.abs(q) >= 1e-12) L.push({ t: '= ' + Q31.sci(Math.abs(q) / 1e-9, 3) + ' nC = ' + Q31.sci(Math.abs(q) / 1e-6, 3) + ' μC', mono: 1 });
+      Q31.card(ctx, S, L, { title: 'احسب الشحنة', y: 96, wd: 300 });
+      if (S.ex) Q31.card(ctx, S, [{ t: 'س1-3: فقد جسم شحنة 1.6×10⁻⁹ C. كم إلكتروناً فقد؟', w: 900 }, { t: 'n = q ÷ e = 1.6×10⁻⁹ ÷ 1.6×10⁻¹⁹', mono: 1 }, { t: '= (1.6 ÷ 1.6) × 10' + Q31.sup('(−9+19)'), mono: 1 }, { t: 'عند القسمة نطرح الأسس: (−9) − (−19) = 10', c: '#7c3aed' }, { t: 'n = 10¹⁰ إلكترون ✓ (النقطة التي نزعتها)', c: '#15803d', w: 900, mono: 1 }], { title: 'مثال الكتاب', y: g.h * .56, wd: 300, bd: '#0f766e' });
+      else Q31.card(ctx, S, [{ t: '1 C = 6.25×10¹⁸ إلكترون' }, { t: '1 μC = 10⁻⁶ C' }, { t: '1 nC = 10⁻⁹ C' }, { t: 'e = 1.6×10⁻¹⁹ C (أصغر شحنة؛ لا يوجد نصف إلكترون)', w: 900 }], { title: 'الكولوم وأجزاؤه', y: g.h * .6, wd: 300, bd: '#7c3aed' });
+      Q31.banner(ctx, w, 'مقدار الشحنة: q = n × e', '#2563eb'); C2.drawMsg(ctx, S, g.sx, g.sy - 40);
     },
-    readings(S) { const q = D.q(S), n = q / 1.6e-19; return [rd('الشحنة q', Q31.sci(q, 3, 'C')), rd('عدد الإلكترونات n', Q31.sci(n, 4)), rd('بالمايكروكولوم', Q31.sci(q / 1e-6, 3, 'μC')), rd('بالنانوكولوم', Q31.sci(q / 1e-9, 3, 'nC'))]; },
-    explain(S) { const q = D.q(S), n = q / 1.6e-19; return 'لحساب عدد الإلكترونات نقسم الشحنة على شحنة الإلكترون: n = q ÷ e. عند قسمة الأسس <b>نطرح</b> الأس السفلي من العلوي. هنا n ≈ <b>' + Q31.sci(n, 4) + '</b> إلكترون. مثال الكتاب (س1-3): 1.6×10⁻⁹ ÷ 1.6×10⁻¹⁹ = 10¹⁰ إلكترون.'; }
+    chips(g) { const bw = g.ph ? 110 : 170; return SC.map((s, i) => ({ x: 76 + bw / 2 + i * (bw + 8) + (g.ph ? -60 : 0), y: 58, w: bw, h: 28, t: ['نقطة = 1', 'نقطة = 10⁹', 'نقطة = 10¹⁰'][i] })); },
+    exBtn(g) { const bw = g.ph ? 110 : 170; return { x: 76 + bw / 2 + 3 * (bw + 8) + (g.ph ? -60 : 0), y: 58, w: bw, h: 28 }; },
+    drags(S) { if (!S.W) return []; const g = D.geo(S), u = g.u, ne = NP - S.n; const L = D.chips(g).map((b, i) => Q31.btn('sc' + i, b, S => { setParam(S, 'sc', String(i)); S.ex = 0; }, { tip: SC[i][1] }));
+      L.push(Q31.btn('ex13', D.exBtn(g), S => D.ex13(S), { tip: 'حل مثال الكتاب على الكرة' }));
+      if (ne > 0) { const a = D.ePos(g, ne - 1, S); L.push({ id: 'eS', x: a[0], y: a[1], r: 22 * Math.max(.8, u), axis: 'xy', keep: true, tip: 'اسحب الإلكترون إلى المخزن', idle: 'انزع إلكتروناً ✋', down: S => { S.dr = { from: 's', x: a[0], y: a[1] }; }, drag: (S, d) => { S.dr = { from: 's', x: d.x, y: d.y }; },
+        up: S => { const r = S.dr; S.dr = null; if (r && Math.hypot(r.x - g.sx, r.y - g.sy) > g.R + 10) { if (S.n >= NP) { C2.msg(S, 'يكفي! لم يبقَ إلكترونات سهلة النزع', 1.6); return; } S.n++; S.ex = 0; Q31.fly(S, r.x, r.y, g.bx, g.by, .35); } } }); }
+      L.push({ id: 'eB', x: g.bx, y: g.by, w: 130 * u, h: 100 * u, axis: 'xy', keep: true, tip: 'اسحب إلكتروناً من المخزن إلى الكرة', down: (S) => { S.dr = { from: 'b', x: g.bx, y: g.by }; }, drag: (S, d) => { S.dr = { from: 'b', x: d.x, y: d.y }; },
+        up: S => { const r = S.dr; S.dr = null; if (r && Math.hypot(r.x - g.sx, r.y - g.sy) < g.R + 20 * u) { if (S.n <= -NP) { C2.msg(S, 'يكفي! جرّب النزع', 1.4); return; } S.n--; S.ex = 0; } } });
+      return L; },
+    readings(S) { const M = D.M(S), q = S.n * M * 1.6e-19; return [rd('عدد الإلكترونات ' + (S.n >= 0 ? 'المفقودة' : 'المكتسبة'), Q31.sci(Math.abs(S.n) * M, 3)), rd('الشحنة q', (S.n < 0 ? '−' : '') + Q31.sci(Math.abs(q), 3, 'C')), rd('بالنانوكولوم', Q31.sci(Math.abs(q) / 1e-9, 3, 'nC')), rd('نوع الشحنة', S.n > 0 ? 'موجبة' : S.n < 0 ? 'سالبة' : 'متعادلة', 1)]; },
+    explain(S) { const M = D.M(S); if (!S.n) return 'الكرة <b>متعادلة</b>: عدد شحناتها الموجبة يساوي عدد إلكتروناتها. اسحب إلكتروناً منها إلى المخزن أو من المخزن إليها.';
+      const t = S.n > 0 ? 'الكرة <b>فقدت</b> ' + Q31.sci(S.n * M, 3) + ' إلكترون فصارت <b>موجبة</b>.' : 'الكرة <b>اكتسبت</b> ' + Q31.sci(-S.n * M, 3) + ' إلكترون فصارت <b>سالبة</b>.';
+      return t + ' شحنتها = العدد × 1.6×10⁻¹⁹ C = <b>' + Q31.sci(Math.abs(S.n) * M * 1.6e-19, 3, 'C') + '</b>.' + (S.ex ? ' وهذا هو مثال الكتاب (س1-3): 10¹⁰ إلكترون ⟸ 1.6×10⁻⁹ C.' : ''); }
   };
   M8.P[D.id] = D;
 })();
@@ -611,62 +679,85 @@ const Q31 = {
   const CASES = { a: ['rubber', 'rubber', 'أولاً: ساقا مطاط تُدلكان بالصوف (13-a)'], b: ['glass', 'glass', 'ثانياً: ساقا زجاج تُدلكان بالحرير (13-b)'], c: ['glass', 'rubber', 'ثالثاً: ساق زجاج بالحرير وساق مطاط بالصوف (13-c)'] };
   const sgnOf = m => m === 'glass' ? 1 : -1, clothOf = m => m === 'glass' ? 'silk' : 'wool';
   const D = { id: 'g9_ch_rods', page: 11, fig: 'الشكل 13 (a, b, c)',
-    desc: 'نشاط الكتاب: نعلّق ساقين أفقياً بخيطين بوساطة حاملين ونجعلهما متقاربتين، ندلك كلاً منهما على انفراد، ثم نتركهما معلقتين بحرية ونلاحظ التنافر أو التجاذب.',
+    desc: 'نشاط الكتاب: نعلّق ساقين أفقياً بخيطين بوساطة حاملين ونجعلهما متقاربتين، ندلك كلاً منهما على انفراد، ثم نتركهما معلقتين بحرية ونلاحظ التنافر (تبتعد الساقان) أو التجاذب (تقتربان). ويمكنك أن تمسك الساق الثانية بيدك وتقرّبها من الأولى.',
     tags: 'نشاط ساق مطاط زجاج صوف حرير فرو تنافر تجاذب شحنات متشابهة مختلفة حاملين خيوط',
     tools: ['ساقان متماثلتان من المطاط الصلب', 'ساقان متماثلتان من الزجاج', 'قطعة صوف (أو فرو)', 'قطعة حرير', 'خيوط من القطن أو الحرير', 'حاملان'],
-    steps: ['اختر الخطوة: أولاً (مطاط + مطاط) / ثانياً (زجاج + زجاج) / ثالثاً (زجاج + مطاط).', 'اسحب قطعة القماش تحت كل ساق ذهاباً وإياباً لتدلكها على انفراد (الصوف للمطاط، الحرير للزجاج) — أو اضغط «ادلك الساقين».', 'لاحظ نوع الشحنة على كل ساق وعلى القماش.', 'اضغط «اترك الساقين» (أو هما حرتان أصلاً) ولاحظ: تتنافران أم تتجاذبان؟', 'سجّل النتيجة في الجدول (📋) لكل خطوة.'],
-    concl: ['نستنتج من النشاط الأول: أن الشحنات المتشابهة (السالبة) تتنافر مع بعضها.', 'نستنتج من النشاط الثاني: أن الشحنات المتشابهة (الموجبة) تتنافر مع بعضها.', 'نستنتج من النشاط الثالث: أن الشحنات المختلفة تتجاذب مع بعضها.', 'تذكّر: الشحنات المختلفة تتجاذب، والمتشابهة تتنافر.'],
+    steps: ['اختر الخطوة بالأزرار أعلى المشهد: أولاً (مطاط + مطاط) / ثانياً (زجاج + زجاج) / ثالثاً (زجاج + مطاط).', 'اسحب قطعة القماش على كل ساق ذهاباً وإياباً لتدلكها (الصوف للمطاط، الحرير للزجاج).', 'لاحظ دوران الساقين المعلقتين: تبتعدان (تنافر) أو تقتربان (تجاذب).', 'أمسك الساق الثانية بيدك (اسحبها من وسطها) وقرّبها من الأولى أو أبعدها، ثم اتركها فتعود إلى خيطها.', 'سجّل النتيجة في الجدول (📋) لكل خطوة.'],
+    concl: ['نستنتج من النشاط الأول: أن الشحنات المتشابهة (السالبة) تتنافر مع بعضها.', 'نستنتج من النشاط الثاني: أن الشحنات المتشابهة (الموجبة) تتنافر مع بعضها.', 'نستنتج من النشاط الثالث: أن الشحنات المختلفة تتجاذب مع بعضها.', 'تذكّر: الشحنات المختلفة تتجاذب، والمتشابهة تتنافر، وكلما اقتربت الشحنتان زادت القوة.'],
     laws: ['g9_rule'],
     controls: [SEL('cs', 'الخطوة', [['a', 'أولاً: مطاط + مطاط'], ['b', 'ثانياً: زجاج + زجاج'], ['c', 'ثالثاً: زجاج + مطاط']], 'a', (v, S) => D.reset(S)),
-      BT('', [{ t: '🧽 ادلك الساقين', on: S => { S.auto = 1.6; } }, { t: '✋ اترك الساقين', on: S => { S.held = 0; } }, { t: '↺ أعد', on: S => D.reset(S) }]),
+      BT('', [{ t: '🧽 ادلك الساقين', on: S => { S.auto = 1.6; } }, { t: '↺ أعد', on: S => D.reset(S) }]),
       TG('chg', 'الشحنات', true, null, 'charges'), TG('fx', 'أسهم قوة التنافر/التجاذب', true, null, 'force'), TG('cl', 'شحنة القماش', true, null, 'charges'), TG('rem', 'بطاقة «تذكّر»', true, null, 'labels')],
     setup(S) { D.reset(S); },
-    reset(S) { S.q = [0, 0]; S.x = [0, 0]; S.v = [0, 0]; S.held = 1; S.auto = 0; S.cl = null; S.res = ''; },
-    geo(S) { const w = S.W, h = S.H, ph = w < 600, u = Q31.sc(w, h) * (ph ? .85 : 1.15), cx = Q31.cx(w), by = h * .8, yt = h * .2, L = 150 * u, rl = Math.min(150 * u, (w - (ph ? 20 : 80)) * .26); return { w, h, ph, u, cx, by, yt, L, rl, gap: 30 * u, sx: [cx - rl - 70 * u, cx + rl + 70 * u] }; },
-    rodX(S, g, i) { const s = i ? 1 : -1; const c = g.cx + s * (g.gap / 2 + g.rl / 2) - s * S.x[i]; return c; },
+    TH0: .38,
+    reset(S) { S.q = [0, 0]; S.th = [D.TH0, -D.TH0]; S.om = [0, 0]; S.auto = 0; S.cl = null; S.res = ''; S.hold = 0; S.hp = null; S.back = 0; },
+    geo(S) { const w = S.W, h = S.H, ph = w < 600, u = Q31.sc(w, h) * (ph ? .85 : 1.15), cx = Q31.cx(w), by = h * .8, yt = h * .24, a = Math.min(105 * u, (w - (ph ? 20 : 80)) * .2), yR = yt + 120 * u; return { w, h, ph, u, cx, by, yt, a, yR, gap: 36 * u, c: [cx - 36 * u / 2 - a, cx + 36 * u / 2 + a] }; },
     mats(S) { return CASES[S.p.cs]; },
-    clothPos(S, g, i) { if (!S.cl) S.cl = [[D.rodX(S, g, 0), g.yt + g.L + 70 * g.u], [D.rodX(S, g, 1), g.yt + g.L + 70 * g.u]]; return S.cl[i]; },
-    rubOne(S, i) { const m = D.mats(S)[i]; if (Math.abs(S.q[i]) >= 6) return; S.q[i] += sgnOf(m); },
-    update(S, dt) { if (!S.W) return; const g = D.geo(S); dt = Math.min(dt, .04);
-      if (S.auto > 0) { S.auto -= dt; S._a = (S._a || 0) + dt; if (S._a > .12) { S._a = 0; D.rubOne(S, 0); D.rubOne(S, 1); } if (S.auto <= 0) S.held = 0; }
-      if (S.held) { S.x = [0, 0]; S.v = [0, 0]; return; }
-      const gap = g.gap + S.x[0] + S.x[1]; // positive x = toward the other rod
-      const F = 9000 * g.u * S.q[0] * S.q[1] / Math.pow(Math.max(gap, 4) + 20 * g.u, 2); // + repel
-      for (let i = 0; i < 2; i++) { const a = -F - 18 * S.x[i] - 3 * S.v[i]; S.v[i] += a * dt; S.x[i] += S.v[i] * dt; }
-      const gp = g.gap + S.x[0] + S.x[1]; if (gp > g.gap * 2.4 + 0) { } if (g.gap - (-S.x[0] - S.x[1]) < 0) { } if (g.gap + S.x[0] + S.x[1] > 0 && false) { }
-      if (g.gap - S.x[0] - S.x[1] < 2) { const ex = (S.x[0] + S.x[1] - g.gap + 2) / 2; S.x[0] -= ex; S.x[1] -= ex; S.v = [Math.min(0, S.v[0]), Math.min(0, S.v[1])]; }
-      S.x = S.x.map(x => clamp(x, -g.L * .55, g.L * .55));
+    /* 3-D centre and direction of rod i (x right, y down, z toward viewer) */
+    pose(S, g, i) { if (i === 1 && S.hp) return { c: [S.hp[0], S.hp[1], 0], d: [1, 0] }; const th = S.th[i]; return { c: [g.c[i], g.yR, 0], d: [Math.cos(th), Math.sin(th)] }; },
+    pt(P, s) { return [P.c[0] + P.d[0] * s, P.c[1], P.c[2] + P.d[1] * s]; },
+    scr(p) { return [p[0], p[1] + p[2] * .3]; },
+    near(S, g, i) { return D.pt(D.pose(S, g, i), (i ? -1 : 1) * g.a); },
+    torque(S, g, i) { const P = D.pose(S, g, i), Q = D.pose(S, g, 1 - i), k = 4.5e5 * g.u * g.u; let tq = 0, fx = 0;
+      for (let m = -2; m <= 2; m++) { const s = m / 2 * g.a * .85, p = D.pt(P, s); for (let n = -2; n <= 2; n++) { const r = D.pt(Q, n / 2 * g.a * .85), dx = p[0] - r[0], dy = p[1] - r[1], dz = p[2] - r[2], d2 = dx * dx + dy * dy + dz * dz + 60 * g.u, dd = Math.sqrt(d2), f = k * (S.q[i] / 5) * (S.q[1 - i] / 5) / d2;
+        const Fx = f * dx / dd, Fz = f * dz / dd; tq += (p[0] - P.c[0]) * Fz - (p[2] - P.c[2]) * Fx; fx += Fx; } } return { tq, fx }; },
+    clothPos(S, g, i) { if (!S.cl) S.cl = [[g.c[0], g.yR + 95 * g.u], [g.c[1], g.yR + 95 * g.u]]; return S.cl[i]; },
+    rubOne(S, i) { const m = D.mats(S)[i]; if (Math.abs(S.q[i]) >= 7) return; S.q[i] += sgnOf(m); },
+    update(S, dt) { if (!S.W) return; const g = D.geo(S); dt = Math.min(dt, .033);
+      if (S.auto > 0) { S.auto -= dt; S._a = (S._a || 0) + dt; if (S._a > .12) { S._a = 0; D.rubOne(S, 0); D.rubOne(S, 1); } }
+      if (S.back && S.hp) { S.hp[0] += (g.c[1] - S.hp[0]) * Math.min(1, dt * 8); S.hp[1] += (g.yR - S.hp[1]) * Math.min(1, dt * 8); if (Math.hypot(S.hp[0] - g.c[1], S.hp[1] - g.yR) < 2) { S.hp = null; S.back = 0; S.th[1] = 0; S.om[1] = 0; } }
+      const I = g.a * g.a * .35, sub = 3; for (let it = 0; it < sub; it++) { const h = dt / sub;
+        for (let i = 0; i < 2; i++) { if (i === 1 && S.hp) continue; const t0 = i ? -D.TH0 : D.TH0, T = D.torque(S, g, i).tq; S.om[i] += (T / I - 3.2 * (S.th[i] - t0) - 2.2 * S.om[i]) * h; const old = S.th[i]; S.th[i] = clamp(S.th[i] + S.om[i] * h, t0 - 1.35, t0 + 1.35);
+          const A = D.near(S, g, 0), B = D.near(S, g, 1); if (Math.hypot(A[0] - B[0], A[1] - B[1], A[2] - B[2]) < 20 * g.u) { S.th[i] = old; S.om[i] = 0; } } }
+      const A = D.near(S, g, 0), B = D.near(S, g, 1); S.dist = Math.hypot(A[0] - B[0], A[1] - B[1], A[2] - B[2]);
       S.res = S.q[0] && S.q[1] ? (S.q[0] * S.q[1] > 0 ? 'تنافر' : 'تجاذب') : '';
     },
+    drawRod(ctx, S, g, i, M) { const P = D.pose(S, g, i), e1 = D.scr(D.pt(P, -g.a)), e2 = D.scr(D.pt(P, g.a)), n = Math.abs(S.q[i]), zs = 1 + (P.d[1] * g.a * (i ? -1 : 1)) / (8 * g.a);
+      Q31.rod(ctx, e1[0], e1[1], e2[0], e2[1], 19 * g.u * zs, M[i], S.p.chg !== false && n ? { n, s: Math.sign(S.q[i]), from: .12, to: .88 } : null); return [e1, e2]; },
     draw(ctx, w, h, S) {
       const g = D.geo(S), u = g.u, p = S.p, M = D.mats(S); K.bg(ctx, w, h, { benchY: g.by });
-      for (let i = 0; i < 2; i++) { const s = i ? 1 : -1; const ax = g.sx[i], tip = g.cx + s * (g.gap / 2 + g.rl / 2); Q31.gallows(ctx, ax, g.by, g.yt, tip - ax);
-        const rc = D.rodX(S, g, i), ry = g.yt + g.L, x1 = rc - g.rl / 2, x2 = rc + g.rl / 2; Q31.thread(ctx, tip, g.yt, x1 + g.rl * .18, ry - 6); Q31.thread(ctx, tip, g.yt, x2 - g.rl * .18, ry - 6);
-        const n = Math.abs(S.q[i]); Q31.rod(ctx, x1, ry, x2, ry, 20 * u, M[i], p.chg !== false && n ? { n, s: Math.sign(S.q[i]), from: i ? .06 : .4, to: i ? .6 : .94 } : null);
-        if (p.lab !== false) Q31.T(ctx, Q31.MAT[M[i]].n + (S.q[i] ? (S.q[i] > 0 ? ' (موجبة)' : ' (سالبة)') : ' (متعادلة)'), rc, ry - 30 * u, { s: 11.5, w: 900, c: '#fff', bg: M[i] === 'glass' ? '#0369a1' : '#1e293b' });
-        // cloth
-        const cp = D.clothPos(S, g, i); Q31.cloth(ctx, cp[0], cp[1], clothOf(M[i]), u * 1.05); if (p.cl !== false && S.q[i]) { const k = Math.abs(S.q[i]); for (let j = 0; j < k; j++) Q31.sg(ctx, cp[0] - 25 * u + j * 10 * u, cp[1] - 4, -Math.sign(S.q[i]), 5); }
-        Q31.T(ctx, clothOf(M[i]) === 'silk' ? 'حرير — اسحبه تحت الساق' : 'صوف — اسحبه تحت الساق', cp[0], cp[1] + 34 * u, { s: 10.5, w: 800, c: '#fff', bg: clothOf(M[i]) === 'silk' ? '#be185d' : '#a16207' });
-      }
-      // force arrows at near ends
-      if (p.fx !== false && S.q[0] && S.q[1]) { const ry = g.yt + g.L, e0 = D.rodX(S, g, 0) + g.rl / 2, e1 = D.rodX(S, g, 1) - g.rl / 2, rep = S.q[0] * S.q[1] > 0, L = 26 + 5 * Math.abs(S.q[0] * S.q[1]) ** .5 * u;
-        K.force(ctx, e0, ry + 26 * u, rep ? -L : L, 0, null, rep ? '#dc2626' : '#16a34a', 4); K.force(ctx, e1, ry + 26 * u, rep ? L : -L, 0, null, rep ? '#dc2626' : '#16a34a', 4);
-        Q31.T(ctx, rep ? 'قوة تنافر' : 'قوة تجاذب', g.cx, ry + 52 * u, { s: 13, w: 900, c: '#fff', bg: rep ? '#dc2626' : '#16a34a' }); }
-      if (S.held && (S.q[0] || S.q[1])) Q31.T(ctx, 'الساقان ممسوكتان — اضغط «اترك الساقين»', g.cx, g.yt - 14, { s: 12, w: 900, c: '#fff', bg: '#b45309' });
+      const hook = i => [g.c[i], g.yt];
+      [0, 1].forEach(i => { const s = i ? 1 : -1, ax = g.c[i] + s * (g.a + 70 * u); Q31.gallows(ctx, ax, g.by, g.yt, g.c[i] - ax); });
+      // rods (far one first so the nearer end overlaps nicely)
+      const order = [0, 1]; order.forEach(i => { const P = D.pose(S, g, i), hk = hook(i);
+        if (!(i === 1 && S.hp)) { const t1 = D.scr(D.pt(P, -g.a * .55)), t2 = D.scr(D.pt(P, g.a * .55)); Q31.thread(ctx, hk[0], hk[1], t1[0], t1[1] - 8 * u); Q31.thread(ctx, hk[0], hk[1], t2[0], t2[1] - 8 * u); }
+        else Q31.thread(ctx, hk[0], hk[1], hk[0], hk[1] + 30 * u);
+        const E = D.drawRod(ctx, S, g, i, M);
+        if (p.lab !== false) Q31.T(ctx, Q31.MAT[M[i]].n + (S.q[i] ? (S.q[i] > 0 ? ' (موجبة)' : ' (سالبة)') : ' (متعادلة)'), (E[0][0] + E[1][0]) / 2, Math.min(E[0][1], E[1][1]) - 26 * u, { s: 11.5, w: 900, c: '#fff', bg: M[i] === 'glass' ? '#0369a1' : '#1e293b' });
+        if (i === 1 && S.hp) { Q31.finger(ctx, S.hp[0] + 8 * u, S.hp[1] + 14 * u, -1, 1.1 * u, -.2); }
+      });
+      // cloths
+      [0, 1].forEach(i => { const cp = D.clothPos(S, g, i); Q31.cloth(ctx, cp[0], cp[1], clothOf(M[i]), u * 1.05); if (p.cl !== false && S.q[i]) { const k = Math.abs(S.q[i]); for (let j = 0; j < k; j++) Q31.sg(ctx, cp[0] - 28 * u + j * 9 * u, cp[1] - 4, -Math.sign(S.q[i]), 5); }
+        Q31.T(ctx, (clothOf(M[i]) === 'silk' ? 'حرير' : 'صوف') + ' — ادلك به الساق ↔', cp[0], cp[1] + 34 * u, { s: 10.5, w: 800, c: '#fff', bg: clothOf(M[i]) === 'silk' ? '#be185d' : '#a16207' }); });
+      // force arrows at the near ends
+      if (p.fx !== false && S.q[0] && S.q[1]) { const A = D.scr(D.near(S, g, 0)), B = D.scr(D.near(S, g, 1)), rep = S.q[0] * S.q[1] > 0, dx = B[0] - A[0], dy = B[1] - A[1], L0 = Math.hypot(dx, dy) || 1, ux = dx / L0, uy = dy / L0;
+        const L = clamp(20 + 2600 * u * Math.abs(S.q[0] * S.q[1]) / Math.pow(Math.max(S.dist, 20 * u), 2) * 9, 18, 90); const sg = rep ? -1 : 1;
+        K.force(ctx, A[0], A[1] - 22 * u, sg * ux * L, sg * uy * L, null, rep ? '#dc2626' : '#16a34a', 4); K.force(ctx, B[0], B[1] - 22 * u, -sg * ux * L, -sg * uy * L, null, rep ? '#dc2626' : '#16a34a', 4);
+        Q31.T(ctx, rep ? '⟵ تنافر: تبتعدان ⟶' : '⟶ تجاذب: تقتربان ⟵', g.cx, g.yR + 58 * u + (S.hp ? 0 : 0), { s: 14, w: 900, c: '#fff', bg: rep ? '#dc2626' : '#16a34a' }); }
+      // step chips (interactive on the board)
+      D.chips(g).forEach(b => Q31.drawBtn(ctx, b, b.t, b.col, p.cs === b.k));
       // remember card
       if (p.rem !== false) { const y = g.by + 34; const pairs = [[1, 1, 'تنافر'], [-1, -1, 'تنافر'], [1, -1, 'تجاذب']]; const x0 = g.ph ? 40 : g.cx - 200 * u;
         pairs.forEach((q, i) => { const x = x0 + i * (g.ph ? 110 : 150 * u); const rep = q[0] * q[1] > 0; Q31.ball(ctx, x, y, 12, q[0]); Q31.ball(ctx, x + 44, y, 12, q[1]); K.force(ctx, x - 14, y, rep ? -16 : 0, 0, null, '#dc2626', 2.5); K.force(ctx, x + 58, y, rep ? 16 : 0, 0, null, '#dc2626', 2.5); if (!rep) { K.force(ctx, x + 14, y, 12, 0, null, '#16a34a', 2.5); K.force(ctx, x + 30, y, -12, 0, null, '#16a34a', 2.5); } Q31.T(ctx, q[2], x + 22, y + 24, { s: 11, w: 900, c: '#fff', bg: rep ? '#dc2626' : '#16a34a' }); });
         if (!g.ph) Q31.T(ctx, 'تذكّر', x0 - 50, y, { s: 13, w: 900, c: '#fff', bg: '#ca8a04' }); }
       Q31.banner(ctx, w, 'نشاط: ' + CASES[p.cs][2], '#16a34a');
     },
-    drags(S) { if (!S.W) return []; const g = D.geo(S); return [0, 1].map(i => { const cp = D.clothPos(S, g, i); return { id: 'cloth' + i, x: cp[0], y: cp[1], r: 38 * g.u, axis: 'xy', keep: true, tip: 'اسحب القماش تحت الساق ذهاباً وإياباً لدلكها', idle: i ? undefined : 'ادلك الساق ✋',
-      drag: (S, d) => { S.cl[i] = [clamp(d.ox + d.x - d.sx, 40, S.W - 30), clamp(d.oy + d.y - d.sy, 60, S.H - 40)]; const rc = D.rodX(S, g, i), ry = g.yt + g.L; const n = Q31.rub(S, d, Math.abs(S.cl[i][0] - rc) < g.rl / 2 && Math.abs(S.cl[i][1] - ry) < 40 * g.u, 30); for (let k = 0; k < n; k++) D.rubOne(S, i); } }; }); },
-    readings(S) { const M = D.mats(S); return [rd('الساق الأولى', Q31.MAT[M[0]].n + ': ' + (S.q[0] > 0 ? '+' : S.q[0] < 0 ? '−' : '') + Math.abs(S.q[0])), rd('الساق الثانية', Q31.MAT[M[1]].n + ': ' + (S.q[1] > 0 ? '+' : S.q[1] < 0 ? '−' : '') + Math.abs(S.q[1])), rd('الملاحظة', S.held ? 'الساقان ممسوكتان' : (S.res || '—'), 1)]; },
-    record(S) { if (!S.res || S.held) { Runner.toast('ادلك الساقين ثم اتركهما أولاً', 'info'); return null; } const M = D.mats(S); return { a: Q31.MAT[M[0]].n + ' (' + (S.q[0] > 0 ? '+' : '−') + ')', b: Q31.MAT[M[1]].n + ' (' + (S.q[1] > 0 ? '+' : '−') + ')', r: S.res }; },
+    chips(g) { const bw = g.ph ? 104 : 150, y = 58, x0 = g.ph ? g.w / 2 : g.cx; return [['a', 'أولاً: مطاط + مطاط', '#334155'], ['b', 'ثانياً: زجاج + زجاج', '#0369a1'], ['c', 'ثالثاً: زجاج + مطاط', '#7c3aed']].map(([k, t, col], i) => ({ k, t, col, x: x0 + (1 - i) * (bw + 10), y, w: bw, h: 30 })); },
+    drags(S) { if (!S.W) return []; const g = D.geo(S), u = g.u; const L = D.chips(g).map(b => Q31.btn('cs_' + b.k, b, S => { setParam(S, 'cs', b.k); D.reset(S); }, { tip: b.t }));
+      [0, 1].forEach(i => { const cp = D.clothPos(S, g, i); L.push({ id: 'cloth' + i, x: cp[0], y: cp[1], r: 38 * u, axis: 'xy', keep: true, tip: 'اسحب القماش على الساق ذهاباً وإياباً لدلكها', idle: i ? undefined : 'ادلك الساق ✋',
+        drag: (S, d) => { S.cl[i] = [clamp(d.ox + d.x - d.sx, 40, S.W - 30), clamp(d.oy + d.y - d.sy, 60, S.H - 40)]; const P = D.pose(S, g, i), c = D.scr(P.c); const n = Q31.rub(S, d, Math.abs(S.cl[i][0] - c[0]) < g.a && Math.abs(S.cl[i][1] - c[1]) < 44 * u, 30); for (let k = 0; k < n; k++) D.rubOne(S, i); } }); });
+      const P1 = D.pose(S, g, 1), c1 = D.scr(P1.c);
+      L.push({ id: 'grab', x: c1[0] + g.a * .35, y: c1[1], w: g.a * .9, h: 40 * u, axis: 'xy', keep: true, tip: 'أمسك الساق الثانية بيدك وقرّبها من الأولى', idle: 'أمسك الساق ✋',
+        down: S => { S.back = 0; if (!S.hp) S.hp = [g.c[1], g.yR]; S._h0 = S.hp.slice(); }, drag: (S, d) => { S.back = 0; S.hp = [clamp(S._h0[0] + d.x - d.sx, g.cx - g.a * .2, S.W - 30), clamp(S._h0[1] + d.y - d.sy, g.yt + 30 * u, g.by - 30 * u)]; const A = D.scr(D.near(S, g, 0)); if (S.hp[0] - g.a < A[0] + 10 * u && Math.abs(S.hp[1] - A[1]) < 25 * u) S.hp[0] = A[0] + 10 * u + g.a; }, up: S => { S.back = 1; } });
+      [0].forEach(i => { const A = D.scr(D.near(S, g, 0)); L.push({ id: 'twist0', x: g.c[0] - g.a * .6, y: g.yR, r: 26 * u, axis: 'xy', keep: true, tip: 'أدر الساق الأولى بيدك', drag: (S, d) => { const dx = d.x - g.c[0], dz = (d.y - g.yR) / .3; S.th[0] = clamp(Math.atan2(-dz, -dx), D.TH0 - 1.35, D.TH0 + 1.35); S.om[0] = 0; } }); });
+      return L; },
+    readings(S) { const M = D.mats(S); return [rd('الساق الأولى', Q31.MAT[M[0]].n + ': ' + (S.q[0] > 0 ? '+' : S.q[0] < 0 ? '−' : '') + Math.abs(S.q[0])), rd('الساق الثانية', Q31.MAT[M[1]].n + ': ' + (S.q[1] > 0 ? '+' : S.q[1] < 0 ? '−' : '') + Math.abs(S.q[1])), rd('دوران الساق الأولى', Math.round((S.th[0] - D.TH0) * 57.3) + '°'), rd('الملاحظة', S.res || '—', 1)]; },
+    record(S) { if (!S.res) { Runner.toast('ادلك الساقين أولاً', 'info'); return null; } const M = D.mats(S); return { a: Q31.MAT[M[0]].n + ' (' + (S.q[0] > 0 ? '+' : '−') + ')', b: Q31.MAT[M[1]].n + ' (' + (S.q[1] > 0 ? '+' : '−') + ')', r: S.res }; },
     cols: [['a', 'الساق الأولى (الشحنة)'], ['b', 'الساق الثانية (الشحنة)'], ['r', 'الملاحظة']],
-    explain(S) { const M = D.mats(S); if (!S.q[0] && !S.q[1]) return 'الساقان متعادلتان فلا تؤثر إحداهما في الأخرى. ادلك كل ساق على انفراد.';
+    explain(S) { const M = D.mats(S); if (!S.q[0] && !S.q[1]) return 'الساقان متعادلتان فلا تؤثر إحداهما في الأخرى. ادلك كل ساق بقطعة القماش.'; if (!S.q[0] || !S.q[1]) return 'شُحنت ساق واحدة فقط. ادلك الساق الأخرى أيضاً لترى التنافر أو التجاذب.';
       let t = ''; if (M.includes('rubber')) t += 'المطاط المدلوك بالصوف يكتسب إلكترونات من الصوف فيُشحن <b>بالسالبة</b> (والصوف بالموجبة). '; if (M.includes('glass')) t += 'الزجاج المدلوك بالحرير يفقد إلكترونات للحرير فيُشحن <b>بالموجبة</b> (والحرير بالسالبة). ';
-      if (S.res) t += S.res === 'تنافر' ? '<br>الشحنتان <b>متشابهتان فتتنافران</b>.' : '<br>الشحنتان <b>مختلفتان فتتجاذبان</b>.'; return t; }
+      t += S.res === 'تنافر' ? '<br>الشحنتان <b>متشابهتان فتتنافران</b>: تدور الساقان المعلقتان فتبتعد إحداهما عن الأخرى.' : '<br>الشحنتان <b>مختلفتان فتتجاذبان</b>: تدور الساقان فتقترب إحداهما من الأخرى.';
+      if (S.hp) t += '<br>✋ كلما قرّبت الساق بيدك زادت القوة فزاد دوران الساق المعلقة.'; return t; }
   };
   M8.P[D.id] = D;
 })();
@@ -674,36 +765,65 @@ const Q31 = {
 (() => {
   const SER = [['fur', 'الفرو', '#d97706'], ['glass', 'الزجاج', '#7dd3fc'], ['hair', 'الشعر الجاف', '#7c2d12'], ['wool', 'الصوف', '#eab308'], ['silk', 'الحرير', '#f9a8d4'], ['paper', 'الورق', '#f5f5f4'], ['cotton', 'القطن', '#e5e7eb'], ['amber', 'الكهرمان', '#f59e0b'], ['rubber', 'المطاط الصلب', '#1e293b'], ['balloon', 'البالون', '#ef4444'], ['comb', 'المشط البلاستيكي', '#7c3aed'], ['pvc', 'أنبوب PVC', '#94a3b8']];
   const D = { id: 'g9_ch_tribo', page: 13, fig: '➕ من المختبرات العالمية',
-    desc: '➕ من المختبرات العالمية: «السلسلة الكهربائية الاحتكاكية» ترتّب المواد حسب ميلها لفقد الإلكترونات. عند دلك مادتين، المادة الأعلى في السلسلة تفقد إلكترونات (تصبح موجبة) والأدنى تكتسبها (تصبح سالبة). تتفق مع الكتاب: الزجاج بالحرير موجب، المطاط بالصوف سالب، البالون بالصوف سالب، المشط بالشعر سالب.',
+    desc: '➕ من المختبرات العالمية: «السلسلة الكهربائية الاحتكاكية» ترتّب المواد حسب ميلها لفقد الإلكترونات. اختر المادتين بلمسهما في السلسلة، ادلك القطعة التي في يدك على القطعة المعلقة، ثم أبعدها وقرّبها: تتجاذبان لأن شحنتيهما مختلفتان. وجرّب ساقَي الاختبار (زجاج موجب ومطاط سالب) لترى التنافر والتجاذب.',
     tags: 'سلسلة احتكاكية ترايبو مواد دلك موجب سالب',
-    tools: ['مواد مختلفة'],
-    steps: ['اختر المادة الأولى والمادة الثانية.', 'اسحب قطعة المادة الأولى فوق الثانية ذهاباً وإياباً (أو اضغط «ادلك»).', 'لاحظ أين تقع كل مادة في السلسلة، ومن يفقد الإلكترونات ومن يكتسبها.'],
-    concl: ['المادة الأعلى في السلسلة تُشحن بالموجبة، والأدنى بالسالبة.', 'كلما تباعدت المادتان في السلسلة كان الشحن أقوى.', 'مادتان من النوع نفسه لا تُشحنان بالدلك.'],
-    controls: [SEL('a', 'المادة الأولى', SER.map(s => [s[0], s[1]]), 'glass', (v, S) => { S.q = 0; }), SEL('b', 'المادة الثانية', SER.map(s => [s[0], s[1]]), 'silk', (v, S) => { S.q = 0; }), BT('', [{ t: '🧽 ادلك', on: S => { S.auto = 1.2; } }, { t: '↺ أعد', on: S => { S.q = 0; } }])],
-    setup(S) { S.q = 0; S.off = 0; },
+    tools: ['مواد مختلفة', 'حامل وخيط عازل', 'ساق زجاج مشحونة (+)', 'ساق مطاط مشحونة (−)'],
+    steps: ['المس مادة في السلسلة (يمين المشهد) لتضعها في يدك، ثم المس مادة أخرى لتعلّقها بالخيط. (المس القطعة أولاً لتختار أيّهما تبدّل.)', 'اسحب القطعة التي في يدك فوق القطعة المعلقة ذهاباً وإياباً لتدلكها.', 'أبعد القطعة ثم قرّبها من القطعة المعلقة: هل تنجذب أم تبتعد؟', 'قرّب ساق الزجاج (+) أو ساق المطاط (−) من القطعة المعلقة لتعرف نوع شحنتها.'],
+    concl: ['المادة الأعلى في السلسلة تُشحن بالموجبة، والأدنى بالسالبة.', 'المادتان بعد الدلك تحملان شحنتين مختلفتين فتتجاذبان.', 'كلما تباعدت المادتان في السلسلة كان الشحن أقوى، ومادتان من النوع نفسه لا تُشحنان بالدلك.', 'نعرف نوع شحنة جسم بتقريب جسم معلوم الشحنة منه: التنافر دليل على تشابه الشحنتين.'],
+    controls: [SEL('a', 'المادة في يدك', SER.map(s => [s[0], s[1]]), 'glass', (v, S) => { D.clear(S); }), SEL('b', 'المادة المعلقة', SER.map(s => [s[0], s[1]]), 'silk', (v, S) => { D.clear(S); }), BT('', [{ t: '🧽 ادلك', on: S => { S.auto = 1.2; } }, { t: '↺ أعد', on: S => D.reset(S) }]), TG('chg', 'الشحنات', true, null, 'charges'), TG('fx', 'أسهم القوة', true, null, 'force')],
+    setup(S) { D.reset(S); },
+    reset(S) { S.q = 0; S.ph = 0; S.om = 0; S.ta = null; S.tr = null; S.slot = 'a'; S.auto = 0; },
+    clear(S) { S.q = 0; },
     idx(k) { return SER.findIndex(s => s[0] === k); },
-    rub(S) { const d = D.idx(S.p.b) - D.idx(S.p.a); if (!d) return; S.q = clamp(S.q + Math.sign(d), -Math.min(8, Math.abs(d) * 2), Math.min(8, Math.abs(d) * 2)); },
-    update(S, dt) { if (S.auto > 0) { S.auto -= dt; S.off = Math.sin(S.t * 18) * 30; S._a = (S._a || 0) + dt; if (S._a > .1) { S._a = 0; D.rub(S); } } },
-    draw(ctx, w, h, S) {
-      const ph = w < 600, u = Q31.sc(w, h), cx = Q31.cx(w); K.bg(ctx, w, h, { benchY: h * .82 });
-      // ladder
-      const lx = ph ? w - 120 : w - 190, ly = 60, lh = (h * (ph ? .5 : .74)) / SER.length;
-      Q31.T(ctx, '(+) يفقد إلكترونات', lx + 60, ly - 10, { s: 11, w: 900, c: '#fff', bg: '#dc2626' });
-      SER.forEach((s, i) => { const y = ly + 10 + i * lh, on = s[0] === S.p.a || s[0] === S.p.b; Q31.raw(ctx, () => { ctx.fillStyle = on ? 'rgba(250,204,21,.5)' : 'rgba(255,255,255,.85)'; rr(ctx, lx, y, 120, lh - 3, 6); ctx.fill(); ctx.fillStyle = s[2]; ctx.beginPath(); ctx.arc(lx + 108, y + lh / 2 - 1, 6, 0, TAU); ctx.fill(); }); Q31.T(ctx, s[1], lx + 94, y + lh / 2 - 1, { s: 11, w: on ? 900 : 700, a: 'right' }); });
-      Q31.T(ctx, '(−) يكتسب إلكترونات', lx + 60, ly + 18 + SER.length * lh, { s: 11, w: 900, c: '#fff', bg: '#2563eb' });
-      Q31.raw(ctx, () => { G.arrow(ctx, lx - 14, ly + 10, lx - 14, ly + SER.length * lh, '#64748b', 2.5, 9); });
-      // two blocks
-      const A = SER[D.idx(S.p.a)], B = SER[D.idx(S.p.b)], bx = ph ? w * .4 : cx - 90 * u, by = h * .6, bw = 180 * u;
-      Q31.raw(ctx, () => { const gb = ctx.createLinearGradient(0, by, 0, by + 50 * u); gb.addColorStop(0, shade(B[2], 20)); gb.addColorStop(1, shade(B[2], -25)); ctx.fillStyle = gb; rr(ctx, bx - bw / 2, by, bw, 50 * u, 8); ctx.fill(); const ga = ctx.createLinearGradient(0, by - 50 * u, 0, by); ga.addColorStop(0, shade(A[2], 25)); ga.addColorStop(1, shade(A[2], -20)); ctx.fillStyle = ga; rr(ctx, bx - 60 * u + (S.off || 0), by - 46 * u, 120 * u, 44 * u, 8); ctx.fill(); });
-      Q31.T(ctx, A[1], bx + (S.off || 0), by - 24 * u, { s: 13, w: 900, c: '#fff', bg: 'rgba(15,23,42,.6)' }); Q31.T(ctx, B[1], bx, by + 25 * u, { s: 13, w: 900, c: '#fff', bg: 'rgba(15,23,42,.6)' });
-      const n = Math.abs(S.q); for (let k = 0; k < n; k++) { Q31.sg(ctx, bx - 50 * u + k * 13 * u + (S.off || 0), by - 42 * u + 10, S.q > 0 ? 1 : -1, 5.5); Q31.sg(ctx, bx - 70 * u + k * 17 * u, by + 44 * u, S.q > 0 ? -1 : 1, 5.5); }
-      const d = D.idx(S.p.b) - D.idx(S.p.a);
-      Q31.card(ctx, S, [d === 0 ? { t: 'المادتان متماثلتان: لا يحدث شحن', w: 900 } : { t: (d > 0 ? A[1] : B[1]) + ' أعلى في السلسلة ⟸ يفقد إلكترونات ⟸ موجب', c: '#b91c1c' }, d ? { t: (d > 0 ? B[1] : A[1]) + ' أدنى ⟸ يكتسب إلكترونات ⟸ سالب', c: '#1d4ed8' } : { t: '' }, { t: 'البعد في السلسلة: ' + Math.abs(d) + ' درجة', w: 800 }], { title: 'النتيجة', y: 50, x: ph ? null : lx - 20, wd: ph ? 340 : 330 });
-      Q31.banner(ctx, w, '➕ من المختبرات العالمية: السلسلة الاحتكاكية', '#7c3aed');
+    rub(S) { const d = D.idx(S.p.b) - D.idx(S.p.a); if (!d) { if (!S._same) { S._same = 1; C2.msg(S, 'مادتان متماثلتان: لا تنتقل إلكترونات', 1.8); } return; } const cap = Math.min(8, 2 + Math.abs(d)); S.q = clamp(S.q + Math.sign(d), -cap, cap); },
+    geo(S) { const w = S.W, h = S.H, ph = w < 600, u = Q31.sc(w, h) * (ph ? .85 : 1.1), lx = ph ? w - 112 : w - 196, lw = ph ? 104 : 140, sx = ph ? w * .3 : Math.max(120, (lx - 40) * .38), py = h * .16, L = h * .34;
+      const bob = [sx + Math.sin(S.ph || 0) * L, py + Math.cos(S.ph || 0) * L]; return { w, h, ph, u, lx, lw, ly: 70, lh: (h * (ph ? .55 : .7)) / SER.length, sx, py, L, bob, bw: 110 * u, bh: 40 * u, tray: h * .86 }; },
+    others(S, g) { const L = []; if (S.ta) L.push({ x: S.ta[0], y: S.ta[1], q: S.q, k: 'a' }); (S.tr || []).forEach(t => L.push({ x: t.x, y: t.y, q: t.q * 4, k: t.k })); return L; },
+    update(S, dt) { if (!S.W) return; const g = D.geo(S), u = g.u; dt = Math.min(dt, .033);
+      if (!S.ta) S.ta = [g.bob[0] + 190 * u, g.bob[1] - 10 * u]; if (!S.tr) S.tr = [{ k: 'glass', q: 1, x: g.sx + 30 * u, y: g.tray }, { k: 'rubber', q: -1, x: g.sx + 200 * u, y: g.tray }];
+      if (S.auto > 0) { S.auto -= dt; S.ta = [g.bob[0] + Math.sin(S.t * 18) * 30 * u, g.bob[1] - g.bh * .9]; S._a = (S._a || 0) + dt; if (S._a > .1) { S._a = 0; D.rub(S); } if (S.auto <= 0) S.ta = [g.bob[0] + 190 * u, g.bob[1] - 10 * u]; }
+      // hanging piece (charge −q) feels the hand piece (+q) and the test rods
+      const qb = -S.q; let Ft = 0; if (qb) D.others(S, g).forEach(o => { const dx = g.bob[0] - o.x, dy = g.bob[1] - o.y, r2 = dx * dx + dy * dy + 900 * u * u, r = Math.sqrt(r2), f = 5.5e5 * u * u * qb * o.q / r2 / 30; Ft += f * (dx / r * Math.cos(S.ph) - dy / r * Math.sin(S.ph)); });
+      const old = S.ph; S.om += (-6 * Math.sin(S.ph) + Ft / (g.L / 100) / 60 - 2.4 * S.om) * dt; S.ph = clamp(S.ph + S.om * dt, -1.1, 1.1);
+      const g2 = D.geo(S); if (D.others(S, g2).some(o => Math.abs(g2.bob[0] - o.x) < g.bw * .5 + 50 * u && Math.abs(g2.bob[1] - o.y) < g.bh * .5 + 14 * u) && !(S.auto > 0) && !S._rubbing) { S.ph = old; S.om = 0; }
     },
-    drags(S) { if (!S.W) return []; const u = Q31.sc(S.W, S.H), bx = S.W < 600 ? S.W * .4 : Q31.cx(S.W) - 90 * u, by = S.H * .6; return [{ id: 'top', x: bx + (S.off || 0), y: by - 24 * u, w: 120 * u, h: 44 * u, axis: 'x', keep: true, tip: 'ادلك المادة الأولى فوق الثانية', idle: 'ادلك ↔', drag: (S, d) => { S.off = clamp(d.x - d.sx, -60, 60); if (Q31.rub(S, d, true, 30)) D.rub(S); }, up: S => { S.off = 0; } }]; },
-    readings(S) { const d = D.idx(S.p.b) - D.idx(S.p.a); return [rd('شحنة المادة الأولى', (S.q > 0 ? '+' : S.q < 0 ? '−' : '') + Math.abs(S.q)), rd('شحنة المادة الثانية', (S.q > 0 ? '−' : S.q < 0 ? '+' : '') + Math.abs(S.q)), rd('المجموع', '0')]; },
-    explain(S) { return 'الإلكترونات تنتقل من المادة التي تمسك إلكتروناتها بقوة أقل (أعلى السلسلة) إلى المادة التي تمسكها بقوة أكبر (أسفل السلسلة). الشحنتان متساويتان مقداراً ومختلفتان نوعاً: مجموعهما صفر.'; }
+    block(ctx, x, y, w, h, s, lab, on) { Q31.raw(ctx, () => { ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = 6; ctx.shadowOffsetY = 3; const gb = ctx.createLinearGradient(0, y - h / 2, 0, y + h / 2); gb.addColorStop(0, shade(s[2], 30)); gb.addColorStop(1, shade(s[2], -25)); ctx.fillStyle = gb; rr(ctx, x - w / 2, y - h / 2, w, h, 9); ctx.fill(); ctx.restore(); if (on) { ctx.strokeStyle = '#facc15'; ctx.lineWidth = 3; rr(ctx, x - w / 2 - 3, y - h / 2 - 3, w + 6, h + 6, 11); ctx.stroke(); } }); Q31.T(ctx, lab, x, y, { s: 12.5, w: 900, c: '#fff', bg: 'rgba(15,23,42,.6)' }); },
+    draw(ctx, w, h, S) {
+      const g = D.geo(S), u = g.u, p = S.p; K.bg(ctx, w, h, { benchY: h * .8 }); if (!S.ta) D.update(S, 0);
+      // series ladder (tap to choose)
+      Q31.T(ctx, '(+) يفقد إلكترونات', g.lx + g.lw / 2, g.ly - 12, { s: 11, w: 900, c: '#fff', bg: '#dc2626' });
+      SER.forEach((s, i) => { const y = g.ly + i * g.lh, on = s[0] === p.a || s[0] === p.b; Q31.raw(ctx, () => { ctx.fillStyle = s[0] === p.a ? 'rgba(250,204,21,.55)' : s[0] === p.b ? 'rgba(125,211,252,.55)' : 'rgba(255,255,255,.88)'; rr(ctx, g.lx, y, g.lw, g.lh - 3, 6); ctx.fill(); ctx.fillStyle = s[2]; ctx.beginPath(); ctx.arc(g.lx + g.lw - 12, y + g.lh / 2 - 1, 6, 0, TAU); ctx.fill(); });
+        Q31.T(ctx, s[1] + (s[0] === p.a ? ' ✋' : s[0] === p.b ? ' 🧵' : ''), g.lx + g.lw - 24, y + g.lh / 2 - 1, { s: 11, w: on ? 900 : 700, a: 'right' }); });
+      Q31.T(ctx, '(−) يكتسب إلكترونات', g.lx + g.lw / 2, g.ly + SER.length * g.lh + 8, { s: 11, w: 900, c: '#fff', bg: '#2563eb' });
+      Q31.T(ctx, 'المس مادة لتضعها في ' + (S.slot === 'a' ? 'يدك ✋' : 'الخيط 🧵'), g.lx + g.lw / 2, g.ly + SER.length * g.lh + 32, { s: 11, w: 900, c: '#fff', bg: S.slot === 'a' ? '#ca8a04' : '#0369a1' });
+      Q31.raw(ctx, () => { G.arrow(ctx, g.lx - 12, g.ly, g.lx - 12, g.ly + SER.length * g.lh, '#64748b', 2.5, 9); });
+      // stand + hanging piece
+      Q31.gallows(ctx, g.sx - 90 * u, h * .8, g.py, 90 * u); Q31.thread(ctx, g.sx, g.py, g.bob[0], g.bob[1] - g.bh / 2);
+      const A = SER[D.idx(p.a)], B = SER[D.idx(p.b)];
+      D.block(ctx, g.bob[0], g.bob[1], g.bw, g.bh, B, B[1] + ' 🧵', S.slot === 'b');
+      if (p.chg !== false && S.q) for (let k = 0; k < Math.abs(S.q); k++) Q31.sg(ctx, g.bob[0] - g.bw * .4 + k * g.bw * .8 / 7, g.bob[1] - g.bh * .5 + 6, -Math.sign(S.q), 5.5);
+      // test rods
+      S.tr.forEach(t => { Q31.rod(ctx, t.x - 60 * u, t.y, t.x + 60 * u, t.y, 15 * u, t.k, p.chg !== false ? { n: 4, s: t.q, from: .1, to: .9 } : null); Q31.T(ctx, t.q > 0 ? 'ساق زجاج (+) للاختبار' : 'ساق مطاط (−) للاختبار', t.x, t.y + 22 * u, { s: 10.5, w: 800, c: '#fff', bg: t.q > 0 ? '#b91c1c' : '#1d4ed8' }); });
+      // piece in hand
+      D.block(ctx, S.ta[0], S.ta[1], g.bw * .85, g.bh * 1.05, A, A[1] + ' ✋', S.slot === 'a'); Q31.finger(ctx, S.ta[0] + g.bw * .45, S.ta[1] + 4, -1, u, 0);
+      if (p.chg !== false && S.q) for (let k = 0; k < Math.abs(S.q); k++) Q31.sg(ctx, S.ta[0] - g.bw * .36 + k * g.bw * .72 / 7, S.ta[1] + g.bh * .5 - 6, Math.sign(S.q), 5.5);
+      // result arrow on the hanging piece
+      if (p.fx !== false && S.q) { const near = D.others(S, g).map(o => ({ o, d: Math.hypot(o.x - g.bob[0], o.y - g.bob[1]) })).sort((a, b) => a.d - b.d)[0]; if (near && near.d < 320 * u) { const at = near.o.q * -S.q < 0, dx = (near.o.x - g.bob[0]) / near.d, dy = (near.o.y - g.bob[1]) / near.d, L = clamp(9000 * u / near.d, 18, 70);
+        K.force(ctx, g.bob[0], g.bob[1], (at ? 1 : -1) * dx * L, (at ? 1 : -1) * dy * L, null, at ? '#16a34a' : '#dc2626', 4); Q31.T(ctx, at ? 'تجاذب ⟸ شحنتان مختلفتان' : 'تنافر ⟸ شحنتان متشابهتان', g.bob[0], g.bob[1] + g.bh + 18, { s: 13, w: 900, c: '#fff', bg: at ? '#16a34a' : '#dc2626' }); } }
+      const d = D.idx(p.b) - D.idx(p.a);
+      Q31.card(ctx, S, [d === 0 ? { t: 'المادتان متماثلتان: لا يحدث شحن', w: 900 } : { t: (d > 0 ? A[1] : B[1]) + ' أعلى في السلسلة ⟸ يفقد إلكترونات ⟸ موجب', c: '#b91c1c' }, d ? { t: (d > 0 ? B[1] : A[1]) + ' أدنى ⟸ يكتسب إلكترونات ⟸ سالب', c: '#1d4ed8' } : { t: '' }, { t: S.q ? 'بعد الدلك: قرّبهما ⟸ تتجاذبان' : 'ادلك القطعة التي في يدك على المعلقة', w: 800 }], { title: 'النتيجة', y: 50, x: g.ph ? null : g.lx - 16, wd: g.ph ? 340 : 300 });
+      Q31.banner(ctx, w, '➕ من المختبرات العالمية: السلسلة الاحتكاكية', '#7c3aed'); C2.drawMsg(ctx, S, g.bob[0], g.bob[1] - 60);
+    },
+    drags(S) { if (!S.W || !S.ta) return []; const g = D.geo(S), u = g.u;
+      const L = SER.map((s, i) => Q31.btn('m_' + s[0], { x: g.lx + g.lw / 2, y: g.ly + i * g.lh + g.lh / 2 - 1, w: g.lw, h: g.lh - 3 }, S => { setParam(S, S.slot, s[0]); D.clear(S); S.slot = S.slot === 'a' ? 'b' : 'a'; }, { tip: s[1] }));
+      L.push({ id: 'hand', x: S.ta[0], y: S.ta[1], w: g.bw, h: g.bh + 10, axis: 'xy', keep: true, tip: 'ادلك القطعة على المعلقة ثم أبعدها وقرّبها', idle: 'ادلك ↔',
+        click: S => { S.slot = 'a'; }, drag: (S, d) => { S.slot = 'a'; S.ta = [clamp(d.ox + d.x - d.sx, 40, g.lx - 40), clamp(d.oy + d.y - d.sy, 60, S.H - 40)]; const g2 = D.geo(S); const ov = Math.abs(S.ta[0] - g2.bob[0]) < g.bw && Math.abs(S.ta[1] - g2.bob[1]) < g.bh * 1.2; S._rubbing = ov; if (Q31.rub(S, d, ov, 26)) D.rub(S); }, up: S => { S._rubbing = 0; } });
+      L.push(Q31.btn('bob', { x: g.bob[0], y: g.bob[1], w: g.bw, h: g.bh }, S => { S.slot = 'b'; }, { tip: 'المس القطعة المعلقة ثم اختر مادتها من السلسلة' }));
+      S.tr.forEach((t, i) => L.push({ id: 'test' + i, x: t.x, y: t.y, w: 120 * u, h: 28 * u, axis: 'xy', keep: true, tip: 'قرّب ساق الاختبار من القطعة المعلقة', drag: (S, d) => { t.x = clamp(d.ox + d.x - d.sx, 60, g.lx - 60); t.y = clamp(d.oy + d.y - d.sy, 60, S.H - 30); } }));
+      return L; },
+    readings(S) { const d = D.idx(S.p.b) - D.idx(S.p.a); return [rd('شحنة القطعة التي في يدك', (S.q > 0 ? '+' : S.q < 0 ? '−' : '') + Math.abs(S.q)), rd('شحنة القطعة المعلقة', (S.q > 0 ? '−' : S.q < 0 ? '+' : '') + Math.abs(S.q)), rd('البعد في السلسلة', Math.abs(d) + ' درجة'), rd('المجموع', '0')]; },
+    explain(S) { if (!S.q) return 'اختر مادتين من السلسلة، ثم ادلك القطعة التي في يدك على القطعة المعلقة. الإلكترونات تنتقل من المادة الأعلى في السلسلة إلى الأدنى.';
+      const A = SER[D.idx(S.p.a)][1], B = SER[D.idx(S.p.b)][1]; return 'بعد الدلك صار <b>' + A + '</b> ' + (S.q > 0 ? 'موجباً' : 'سالباً') + ' و<b>' + B + '</b> ' + (S.q > 0 ? 'سالباً' : 'موجباً') + '. الشحنتان متساويتان مقداراً ومختلفتان نوعاً (مجموعهما صفر)، لذلك <b>تتجاذب</b> القطعتان. قرّب ساق اختبار معلومة الشحنة: إذا تنافرت مع القطعة المعلقة فشحنتهما متشابهة.'; }
   };
   M8.P[D.id] = D;
 })();
@@ -713,12 +833,12 @@ const Q31 = {
     desc: 'الشحن بطريقة الدلك: إذا دلكت بالوناً بقطعة من الصوف تظهر شحنة موجبة على الصوف (لفقده بعض إلكتروناته) وشحنة سالبة على البالون (لاكتسابه تلك الإلكترونات). البالون المعلق بخيط عازل تجذبه قطعة الصوف.',
     tags: 'شحن بالدلك بالون صوف خيط عازل تجاذب حفظ الشحنة',
     tools: ['بالون', 'قطعة صوف', 'خيط من مادة عازلة', 'حامل'],
-    steps: ['اسحب قطعة الصوف فوق البالون المعلق ذهاباً وإياباً (دلك).', 'شاهد الإلكترونات تنتقل من الصوف إلى البالون، ولاحظ عدّاد الشحنات.', 'أبعد قطعة الصوف قليلاً ثم قرّبها من البالون دون لمسه: ينجذب البالون نحوها (قوة تجاذب).'],
+    steps: ['اسحب قطعة الصوف فوق البالون المعلق ذهاباً وإياباً (دلك).', 'شاهد الإلكترونات تنتقل من الصوف إلى البالون وتبقى في المكان الذي دلكته (البالون عازل). جرّب الدلك من الجهة الأخرى أيضاً.', 'أبعد قطعة الصوف ثم قرّبها من البالون من أي جهة دون لمسه: ينجذب البالون نحوها (قوة تجاذب).'],
     concl: ['في الشحن بالدلك يُشحن الجسمان بشحنتين مختلفتين في النوع ومتساويتين في المقدار.', 'تنتقل الإلكترونات من جسم إلى آخر (هنا من الصوف إلى البالون).', 'الجسمان المدلوكان يتجاذبان لأن شحنتيهما مختلفتان.'],
     laws: ['g9_rule'],
     controls: [BT('', [{ t: '🧽 ادلك (تلقائي)', on: S => { S.auto = 1.5; } }, { t: '↺ أعد', on: S => D.reset(S) }]), SEL('show', 'عرض الشحنات', [['all', 'كل الشحنات'], ['diff', 'الفرق فقط'], ['none', 'لا شيء']], 'all'), TG('fx', 'سهم قوة التجاذب', true, null, 'force')],
     setup(S) { D.reset(S); },
-    reset(S) { S.n = 0; S.th = 0; S.om = 0; S.w = null; S.auto = 0; S._fly = []; },
+    reset(S) { S.n = 0; S.th = 0; S.om = 0; S.w = null; S.auto = 0; S._fly = []; S.ea = []; },
     geo(S) { const w = S.W, h = S.H, u = Q31.sc(w, h) * (w < 600 ? 1 : 1.25), cx = Q31.cx(w), by = h * .84, top = h * .14, L = h * .38; return { w, h, u, cx, by, top, L, px: cx - 40 * u, r: 52 * u }; },
     bpos(S, g) { return [g.px + Math.sin(S.th) * g.L, g.top + Math.cos(S.th) * g.L + g.r]; },
     update(S, dt) { if (!S.W) return; const g = D.geo(S); dt = Math.min(dt, .04); if (!S.w) S.w = [g.px + 190 * g.u, g.top + g.L + g.r]; const B = D.bpos(S, g);
@@ -726,12 +846,12 @@ const Q31 = {
       const dx = S.w[0] - B[0], dy = S.w[1] - B[1], d = Math.hypot(dx, dy); let F = 0; if (S.n && d > g.r * 1.2) F = 2.2e5 * S.n * S.n / (d * d) * (dx / d) / g.L;
       S.om += (-9.8 / (g.L / 300) * Math.sin(S.th) * .05 + F * .02 - 1.5 * S.om) * dt * 8; S.th = clamp(S.th + S.om * dt, -.55, .55);
       const B2 = D.bpos(S, g); if (Math.hypot(S.w[0] - B2[0], S.w[1] - B2[1]) < g.r * 1.1 && S.n && !S.drag && S.auto <= 0) { S.om = 0; } },
-    tr(S, g) { if (S.n >= 10) return; S.n++; const B = D.bpos(S, g); Q31.fly(S, S.w[0], S.w[1], B[0], B[1], .4); if (window.Sound && Sound.tick) Sound.tick(); },
+    tr(S, g) { if (S.n >= 10) return; S.n++; const B = D.bpos(S, g), a = Math.atan2(S.w[1] - B[1], S.w[0] - B[0]) + (Math.random() - .5) * 1.1; (S.ea = S.ea || []).push(a); Q31.fly(S, S.w[0], S.w[1], B[0] + Math.cos(a) * g.r * .78, B[1] + Math.sin(a) * g.r * .85, .4); if (window.Sound && Sound.tick) Sound.tick(); },
     draw(ctx, w, h, S) {
       const g = D.geo(S), u = g.u, mode = S.p.show; K.bg(ctx, w, h, { benchY: g.by }); if (!S.w) S.w = [g.px + 190 * u, g.top + g.L + g.r];
       Q31.gallows(ctx, g.px - 160 * u, g.by, g.top, 160 * u); const B = D.bpos(S, g);
       Q31.thread(ctx, g.px, g.top, B[0], B[1] - g.r * 1.15); Q31.balloon(ctx, B[0], B[1], g.r, '#f97316');
-      if (mode !== 'none') { const pts = [[-.35, -.4], [.3, -.45], [-.45, .1], [.4, .05], [0, .45], [-.1, -.1]]; if (mode === 'all') pts.forEach(q => { Q31.sg(ctx, B[0] + q[0] * g.r - 5, B[1] + q[1] * g.r, 1, 5.5); Q31.sg(ctx, B[0] + q[0] * g.r + 6, B[1] + q[1] * g.r + 3, -1, 5.5); }); for (let k = 0; k < S.n; k++) { const a = -1.4 + k * .3; Q31.sg(ctx, B[0] + Math.cos(a) * g.r * .78, B[1] + Math.sin(a) * g.r * .92, -1, 5.5); } }
+      if (mode !== 'none') { const pts = [[-.35, -.4], [.3, -.45], [-.45, .1], [.4, .05], [0, .45], [-.1, -.1]]; if (mode === 'all') pts.forEach(q => { Q31.sg(ctx, B[0] + q[0] * g.r - 5, B[1] + q[1] * g.r, 1, 5.5); Q31.sg(ctx, B[0] + q[0] * g.r + 6, B[1] + q[1] * g.r + 3, -1, 5.5); }); (S.ea || []).forEach(a => Q31.sg(ctx, B[0] + Math.cos(a) * g.r * .78, B[1] + Math.sin(a) * g.r * .85, -1, 5.5)); }
       Q31.cloth(ctx, S.w[0], S.w[1], 'wool', 1.3 * u); if (mode !== 'none') { const tot = mode === 'all' ? 8 : 0; for (let k = 0; k < tot; k++) { Q31.sg(ctx, S.w[0] - 30 * u + (k % 4) * 18 * u, S.w[1] - 12 * u + (k / 4 | 0) * 18 * u, 1, 5); if (k >= S.n) Q31.sg(ctx, S.w[0] - 22 * u + (k % 4) * 18 * u, S.w[1] - 8 * u + (k / 4 | 0) * 18 * u, -1, 5); } if (mode === 'diff') for (let k = 0; k < S.n; k++) Q31.sg(ctx, S.w[0] - 30 * u + (k % 5) * 14 * u, S.w[1] - 8 * u + (k / 5 | 0) * 14 * u, 1, 5); }
       Q31.T(ctx, 'قطعة صوف — اسحبها', S.w[0], S.w[1] + 40 * u, { s: 11, w: 800, c: '#fff', bg: '#a16207' }); Q31.T(ctx, 'خيط عازل', g.px + 30 * u, g.top + 40, { s: 10.5, w: 800, c: '#fff', bg: '#57534e' });
       Q31.drawFly(ctx, S);
@@ -752,17 +872,20 @@ const Q31 = {
     desc: 'الشحن بطريقة التماس: نعلّق كرتين من نخاع البيلسان بخيطين عازلين من نقطة واحدة، نشحن إحداهما بملامستها لساق زجاج مدلوكة بالحرير ثم نتركها تلامس الكرة الأخرى غير المشحونة، فتبتعد الكرتان: الكرة الثانية اكتسبت قسماً من شحنة الأولى بالتماس.',
     tags: 'شحن بالتماس كرات نخاع البيلسان ساق زجاج حرير تنافر رطوبة',
     tools: ['كرتان من نخاع البيلسان', 'خيطان عازلان', 'ساق زجاج', 'قطعة حرير', 'حامل'],
-    steps: ['اضغط «ادلك الساق بالحرير»: تُشحن ساق الزجاج بالموجبة.', 'اسحب الساق حتى تلمس الكرة الأولى (اليسرى): تنتقل إلكترونات من الكرة إلى الساق فتُشحن الكرة بالموجبة (15-a).', 'أبعد الساق، واسحب الكرة الأولى لتلامس الكرة الثانية ثم اتركها.', 'لاحظ ابتعاد الكرتين عن بعضهما (تنافر) لأن كلاً منهما صارت موجبة (15-b).', 'هل تعلم: اجعل الجو رطباً ولاحظ تسرّب الشحنة مع الوقت.'],
+    steps: ['اسحب قطعة الحرير على ساق الزجاج ذهاباً وإياباً (دلك): تُشحن الساق بالموجبة والحرير بالسالبة.', 'اسحب الساق حتى تلمس الكرة الأولى (اليسرى): تنتقل إلكترونات من الكرة إلى الساق فتُشحن الكرة بالموجبة (15-a).', 'أبعد الساق، واسحب الكرة الأولى لتلامس الكرة الثانية ثم اتركها.', 'لاحظ ابتعاد الكرتين عن بعضهما (تنافر) لأن كلاً منهما صارت موجبة (15-b).', 'لتفريغ كرة: المسها بإصبعك (تأريض) فتعود متعادلة.', 'هل تعلم: اجعل الجو رطباً ولاحظ تسرّب الشحنة مع الوقت.'],
     concl: ['في الشحن بالتماس يكتسب الجسم شحنة من النوع نفسه لشحنة الجسم الملامس.', 'الكرة الثانية اكتسبت قسماً من شحنة الكرة الأولى بالتماس، فتنافرتا.', 'الجسم المشحون المعزول يفقد شحنته عند تركه في الهواء، وتزداد سرعة التفريغ بزيادة رطوبة الجو.'],
     laws: ['g9_rule'],
-    controls: [BT('', [{ t: '🧽 ادلك الساق بالحرير', on: S => { S.rq = 8; } }, { t: '↺ أعد', on: S => D.reset(S) }]), SEL('air', 'الجو', [['dry', 'جاف'], ['wet', 'رطب (هل تعلم)']], 'dry'), TG('chg', 'الشحنات', true, null, 'charges'), TG('fx', 'أسهم القوى', true, null, 'force'), TG('ang', 'زاوية الانفراج', true, null, 'labels')],
+    controls: [BT('', [{ t: '🧽 ادلك الساق بالحرير', on: S => { S.rq = 8; S.sq = 8; } }, { t: '↺ أعد', on: S => D.reset(S) }]), SEL('air', 'الجو', [['dry', 'جاف'], ['wet', 'رطب (هل تعلم)']], 'dry'), TG('chg', 'الشحنات', true, null, 'charges'), TG('fx', 'أسهم القوى', true, null, 'force'), TG('ang', 'زاوية الانفراج', true, null, 'labels')],
     setup(S) { D.reset(S); },
-    reset(S) { S.q = [0, 0]; S.th = [-.03, .03]; S.om = [0, 0]; S.rq = 0; S.rod = null; S.hold = -1; S._fly = []; S.touch = 0; },
+    reset(S) { S.q = [0, 0]; S.th = [-.03, .03]; S.om = [0, 0]; S.rq = 0; S.rod = null; S.hold = -1; S._fly = []; S.touch = 0; S.silk = null; S.gt = Q31G.mk({ wire: false }); },
+    gT(S, g) { const u = g.u, B = [0, 1].map(i => D.bp(S, g, i)); return { ex: 0, ey: 0, u, hit: (x, y) => B.some(P => Math.hypot(x - P[0], y - P[1]) < g.r + 12 * u), snap: (x, y) => { const P = B.slice().sort((p, q) => Math.hypot(x - p[0], y - p[1]) - Math.hypot(x - q[0], y - q[1]))[0]; return [P[0], P[1] - g.r]; }, fin0: [g.cx - 170 * u, g.top + g.L - 120 * u] }; },
+    onRod(S, g, x, y) { const T = D.tip(S, g), ax = 220 * g.u, ay = 70 * g.u, L2 = ax * ax + ay * ay, t = clamp(((x - T[0]) * ax + (y - T[1]) * ay) / L2, 0, 1); return Math.hypot(x - T[0] - ax * t, y - T[1] - ay * t) < 34 * g.u; },
     geo(S) { const w = S.W, h = S.H, u = Q31.sc(w, h) * (w < 600 ? 1 : 1.2), cx = Q31.cx(w), by = h * .84, top = h * .14, L = h * .44, r = 17 * u; return { w, h, u, cx, by, top, L, r }; },
     bp(S, g, i) { return [g.cx + Math.sin(S.th[i]) * g.L, g.top + Math.cos(S.th[i]) * g.L]; },
     tip(S, g) { if (!S.rod) S.rod = [g.cx + 130 * g.u, g.top + g.L - 60 * g.u]; return S.rod; },
     update(S, dt) { if (!S.W) return; const g = D.geo(S); dt = Math.min(dt, .03); const T = D.tip(S, g);
       if (S.p.air === 'wet') { S.q = S.q.map(q => q * (1 - .25 * dt)); S.rq *= (1 - .25 * dt); }
+      if (!S.silk) S.silk = [T[0] + 120 * g.u, T[1] + 90 * g.u]; const GT = D.gT(S, g); Q31G.init(S.gt, GT); if (Q31G.state(S.gt, GT).finger) { for (let i = 0; i < 2; i++) { const P = D.bp(S, g, i); if (Math.hypot(S.gt.fin[0] - P[0], S.gt.fin[1] - P[1]) < g.r + 14 * g.u && S.q[i] > .05) { const dq = Math.min(S.q[i], dt * 6); S.q[i] -= dq; S._dch = (S._dch || 0) + dq; if (S._dch > .5) { S._dch = 0; Q31.fly(S, S.gt.fin[0] - 20 * g.u, S.gt.fin[1] - 100 * g.u, P[0], P[1], .4); } } } }
       const P = [D.bp(S, g, 0), D.bp(S, g, 1)];
       for (let i = 0; i < 2; i++) { if (S.hold === i) { S.om[i] = 0; continue; } let fx = 0; const j = 1 - i, dx = P[i][0] - P[j][0], dy = P[i][1] - P[j][1], d = Math.max(Math.hypot(dx, dy), g.r * 2);
         fx += 5e5 * g.u * S.q[i] * S.q[j] / (d * d) * dx / d;
@@ -785,12 +908,17 @@ const Q31 = {
       Q31.rod(ctx, T[0], T[1], T[0] + 220 * u, T[1] + 70 * u, 18 * u, 'glass', p.chg !== false && S.rq > .3 ? { n: Math.round(S.rq), s: 1, from: .05, to: .55 } : null);
       C2.hand(ctx, T[0] + 210 * u, T[1] + 66 * u, -1, 1.1 * u);
       Q31.T(ctx, 'ساق زجاج' + (S.rq > .3 ? ' (+)' : ''), T[0] + 120 * u, T[1] + 10 * u, { s: 11.5, w: 900, c: '#fff', bg: '#0369a1' });
+      if (!S.silk) S.silk = [T[0] + 120 * u, T[1] + 90 * u]; Q31.cloth(ctx, S.silk[0], S.silk[1], 'silk', u * .9); if (p.chg !== false && S.sq) for (let k = 0; k < Math.min(8, Math.round(S.sq)); k++) Q31.sg(ctx, S.silk[0] - 24 * u + k * 7 * u, S.silk[1] + 2, -1, 4.5); Q31.T(ctx, 'حرير — ادلك به الساق ↔', S.silk[0], S.silk[1] + 30 * u, { s: 10.5, w: 800, c: '#fff', bg: '#be185d' });
+      Q31G.draw(ctx, S.gt, D.gT(S, g), { to: 'الكرة لتفرغها', flx: 110 });
+      { const near = [0, 1].map(i => ({ i, d: Math.hypot(D.bp(S, g, i)[0] - T[0], D.bp(S, g, i)[1] - T[1]) })).sort((a, b) => a.d - b.d)[0]; if (S.rq > .3 && S.q[near.i] > .3 && near.d < 120 * u && p.fx !== false) Q31.T(ctx, 'تنافر: الساق (+) والكرة (+) شحنتان متشابهتان', (T[0] + D.bp(S, g, near.i)[0]) / 2, T[1] - 40 * u, { s: 12, w: 900, c: '#fff', bg: '#dc2626' }); }
       Q31.drawFly(ctx, S); Q31.T(ctx, 'كرتا نخاع البيلسان', g.cx, g.by - 14, { s: 11, w: 800, c: '#fff', bg: '#a16207' });
       Q31.banner(ctx, w, 'b — الشحن بطريقة التماس', '#ea580c');
-      const st = S.q[0] > .3 && S.q[1] > .3 ? '15-b: الكرتان موجبتان فتتنافران' : S.q[0] > .3 || S.q[1] > .3 ? '15-a: كرة واحدة مشحونة — اتركها تلامس الأخرى' : S.rq > .3 ? 'المس كرة بالساق المشحونة' : 'ادلك الساق بالحرير أولاً'; Q31.T(ctx, st, g.cx, 62, { s: 12.5, w: 900, c: '#fff', bg: '#0f766e' });
+      const st = S.q[0] > .3 && S.q[1] > .3 ? '15-b: الكرتان موجبتان فتتنافران' : S.q[0] > .3 || S.q[1] > .3 ? '15-a: كرة واحدة مشحونة — اتركها تلامس الأخرى' : S.rq > .3 ? 'المس كرة بالساق المشحونة' : 'اسحب الحرير على الساق لتدلكها أولاً'; Q31.T(ctx, st, g.cx, 62, { s: 12.5, w: 900, c: '#fff', bg: '#0f766e' });
     },
     drags(S) { if (!S.W) return []; const g = D.geo(S), T = D.tip(S, g); const L = [{ id: 'rod', x: T[0] + 80 * g.u, y: T[1] + 26 * g.u, w: 170 * g.u, h: 50 * g.u, axis: 'xy', keep: true, tip: 'اسحب ساق الزجاج لتلمس الكرة', idle: 'المس الكرة بالساق ✋', drag: (S, d) => { S.rod = [clamp(d.ox - 80 * g.u + d.x - d.sx, 60, S.W - 60), clamp(d.oy - 26 * g.u + d.y - d.sy, 60, g.by - 60)]; } }];
       for (let i = 0; i < 2; i++) { const P = D.bp(S, g, i); L.push({ id: 'ball' + i, x: P[0], y: P[1], r: 26, axis: 'x', keep: true, hint: false, tip: 'اسحب الكرة (بالخيط العازل) ثم اتركها', down: S => { S.hold = i; }, up: S => { S.hold = -1; }, drag: (S, d) => { S.th[i] = clamp(Math.asin(clamp((d.x - g.cx) / g.L, -.9, .9)), -1, 1); } }); }
+      if (S.silk) L.push({ id: 'silk', x: S.silk[0], y: S.silk[1], r: 34 * g.u, axis: 'xy', keep: true, tip: 'ادلك ساق الزجاج بالحرير', idle: S.rq < .3 ? 'ادلك الساق بالحرير ✋' : undefined, drag: (S2, d) => { S.silk = [clamp(d.ox + d.x - d.sx, 40, S.W - 30), clamp(d.oy + d.y - d.sy, 60, g.by - 20)]; if (Q31.rub(S, d, D.onRod(S, g, S.silk[0], S.silk[1]), 28) && S.rq < 8) { S.rq += 1; S.sq = (S.sq || 0) + 1; } } });
+      L.push(...Q31G.drags(S.gt, D.gT(S, g), S));
       return L; },
     readings(S) { return [rd('شحنة الكرة الأولى', '+' + fmt(S.q[0], 2)), rd('شحنة الكرة الثانية', '+' + fmt(S.q[1], 2)), rd('شحنة الساق', '+' + fmt(S.rq, 2)), rd('زاوية الانفراج', Math.round(Math.abs(S.th[1] - S.th[0]) * 57.3) + '°')]; },
     explain(S) { if (S.q[0] > .3 && S.q[1] > .3) return 'الكرة الثانية <b>اكتسبت قسماً من شحنة الكرة الأولى بالتماس</b> (انتقلت إلكترونات منها إلى الكرة الأولى)، فصارت الكرتان موجبتين ف<b>تتنافران</b>.' + (S.p.air === 'wet' ? ' في الجو الرطب تتسرب الشحنة بسرعة فتقترب الكرتان تدريجياً.' : '');
@@ -799,6 +927,28 @@ const Q31 = {
   };
   M8.P[D.id] = D;
 })();
+/* ---- shared «earthing» tool: a real wire with a clip the student drags to the conductor, and a finger to touch it ---- */
+const Q31G = {
+  mk(o) { return Object.assign({ clip: null, fin: null, wire: true, finger: true }, o || {}); },
+  /* T = { ex, ey (earth post base), u, hit(x,y) → true if (x,y) touches the conductor, snap(x,y) → contact point, fin0, clip0 } */
+  init(st, T) { if (!st.clip && T.clip0) st.clip = T.clip0.slice(); if (!st.fin && T.fin0) st.fin = T.fin0.slice(); },
+  state(st, T) { const c = st.wire && st.clip && T.hit(st.clip[0], st.clip[1]), f = st.finger && st.fin && T.hit(st.fin[0], st.fin[1]); return { wire: !!c, finger: !!f, on: !!(c || f) }; },
+  path(st, T) { const s = Q31G.state(st, T); if (s.wire) return [st.clip[0], st.clip[1], T.ex, T.ey]; if (s.finger) return [st.fin[0], st.fin[1], st.fin[0] - 30 * T.u, st.fin[1] - 140 * T.u]; return null; },
+  draw(ctx, st, T, o = {}) { const u = T.u, s = Q31G.state(st, T);
+    if (st.wire) { const px = T.ex, py = T.ey - 34 * u, c = st.clip;
+      Q31.raw(ctx, () => { ctx.fillStyle = '#475569'; rr(ctx, px - 5 * u, py, 10 * u, 34 * u, 3); ctx.fill();
+        ctx.strokeStyle = '#b45309'; ctx.lineWidth = 3.4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(px, py); const mx = (px + c[0]) / 2, my = Math.max(py, c[1]) + 50 * u; ctx.quadraticCurveTo(mx, my, c[0], c[1]); ctx.stroke(); ctx.lineCap = 'butt';
+        const a = Math.atan2(c[1] - my, c[0] - mx); ctx.save(); ctx.translate(c[0], c[1]); ctx.rotate(a); ctx.fillStyle = s.wire ? '#16a34a' : '#dc2626'; rr(ctx, -22 * u, -6 * u, 18 * u, 12 * u, 3); ctx.fill(); ctx.fillStyle = '#9ca3af'; ctx.beginPath(); ctx.moveTo(-5 * u, -6 * u); ctx.lineTo(4 * u, -2 * u); ctx.lineTo(4 * u, 2 * u); ctx.lineTo(-5 * u, 6 * u); ctx.fill(); ctx.restore(); });
+      Q31.earth(ctx, px, T.ey + 2, u * 1.1);
+      if (o.lab !== false) Q31.T(ctx, s.wire ? 'سلك التأريض موصول ⏚ (اسحبه لتقطعه)' : 'سلك تأريض — اسحب الملقط إلى ' + (o.to || 'الجسم'), c[0] + (o.lx || 0), c[1] + 26 * u, { s: 10.5, w: 900, c: '#fff', bg: s.wire ? '#15803d' : '#b45309' }); }
+    if (st.finger) { const f = st.fin; C2.hand(ctx, f[0], f[1], 1, 1.05 * u, { rot: Math.PI / 2 + .25, sleeve: s.finger ? '#16a34a' : '#64748b' });
+      if (o.lab !== false) Q31.T(ctx, s.finger ? 'الإصبع يلمس ⏚ (اسحبه لترفعه)' : 'إصبعك ☝ — المس به ' + (o.to || 'الجسم'), f[0] + (o.flx || -95) * u, f[1] - 40 * u, { s: 10.5, w: 900, c: '#fff', bg: s.finger ? '#15803d' : '#475569' }); } },
+  drags(st, T, S, o = {}) { const L = [], u = T.u; const lim = (x, y) => [clamp(x, 30, S.W - 30), clamp(y, 40, S.H - 20)];
+    const fix = (k, p) => { if (T.hit(p[0], p[1])) { const q = T.snap(p[0], p[1]); return q; } return p; };
+    if (st.wire) L.push({ id: (o.id || 'g') + 'clip', x: st.clip[0], y: st.clip[1], r: 26, axis: 'xy', keep: true, tip: 'اسحب ملقط سلك التأريض وصِله بالجسم أو أبعده لتقطع التأريض', idle: o.idleWire, drag: (S2, d) => { st.clip = fix('c', lim(d.ox + d.x - d.sx, d.oy + d.y - d.sy)); }, click: S2 => { st.clip = T.hit(st.clip[0], st.clip[1]) ? T.clip0.slice() : T.snap(T.clip0[0], T.clip0[1], 1); } });
+    if (st.finger) L.push({ id: (o.id || 'g') + 'fin', x: st.fin[0], y: st.fin[1] - 20 * u, r: 32, axis: 'xy', keep: true, tip: 'اسحب الإصبع ليلمس الجسم (تأريض) أو ارفعه', idle: o.idleFin, drag: (S2, d) => { const p = fix('f', lim(d.ox + d.x - d.sx, d.oy + 20 * u + d.y - d.sy)); st.fin = p; }, click: S2 => { st.fin = T.hit(st.fin[0], st.fin[1]) ? T.fin0.slice() : T.snap(T.fin0[0], T.fin0[1], 1); } });
+    return L; }
+};
 /* ---- E3 part 3: الشحن بالحث — الكرة المعدنية (الشكل 16 a–e) ---- */
 const Q31I = { // shared sphere + rod induction apparatus (also used by س5)
   KAP: 3.2, F0: 230,
@@ -808,7 +958,7 @@ const Q31I = { // shared sphere + rod induction apparatus (also used by س5)
     if (S.gnd) { const tgt = -2 * p; const dq = tgt - S.Q; if (Math.abs(dq) > .05) { const st = Math.sign(dq) * Math.min(Math.abs(dq), dt * 9); S.Q += st; S._acc = (S._acc || 0) + Math.abs(st); while (S._acc > .5) { S._acc -= .5; const gp = Q31I.gp(S, g); if (dq > 0) Q31.fly(S, gp[0], gp[1], gp[2], gp[3], .45); else Q31.fly(S, gp[2], gp[3], gp[0], gp[1], .45); } } }
     if (S.touch && S.contact) { if (!S._did) { const dq = S.qi * .45; S.Q += dq; S.qi -= dq; S._did = 1; for (let k = 0; k < Math.abs(Math.round(dq)); k++) { const a = [g.sx + g.R, g.sy]; if (dq > 0) Q31.fly(S, a[0], a[1], S.rx + 30, g.sy, .4); else Q31.fly(S, S.rx + 30, g.sy, a[0], a[1], .4); } } }
   },
-  gp(S, g) { return S.gmode === 'wire' ? [g.sx, g.sy - g.R, g.sx - g.R - 60 * g.u, g.by + 6] : [g.sx - g.R * .2, g.sy - g.R, g.sx - g.R * .2 - 20 * g.u, g.sy - g.R - 120 * g.u]; },
+  gp(S, g) { if (S._gp) return S._gp; return S.gmode === 'wire' ? [g.sx, g.sy - g.R, g.sx - g.R - 60 * g.u, g.by + 6] : [g.sx - g.R * .2, g.sy - g.R, g.sx - g.R * .2 - 20 * g.u, g.sy - g.R - 120 * g.u]; },
   drawApp(ctx, S, g, o = {}) {
     const u = g.u, mode = o.mode || 'diff', rod = S.qi >= 0 ? 'glass' : 'rubber';
     Q31.sphere(ctx, g.sx, g.sy, g.R, g.by);
@@ -818,7 +968,7 @@ const Q31I = { // shared sphere + rod induction apparatus (also used by س5)
     C2.hand(ctx, rx + 222 * u, ry - 48 * u, -1, 1.1 * u, { sleeve: '#64748b' });
     if (o.lab !== false) Q31.T(ctx, (rod === 'glass' ? 'ساق زجاج (+)' : 'ساق مطاط مشحونة (−)'), rx + 130 * u, ry - 54 * u, { s: 11, w: 900, c: '#fff', bg: rod === 'glass' ? '#0369a1' : '#1e293b' });
     // earth
-    if (S.gnd) { const gp = Q31I.gp(S, g); if (S.gmode === 'wire') { Q31.raw(ctx, () => { ctx.strokeStyle = '#b45309'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(gp[0], gp[1]); ctx.quadraticCurveTo(gp[2], gp[1] - 30 * u, gp[2], gp[3] - 10); ctx.stroke(); }); Q31.earth(ctx, gp[2], gp[3] - 10); }
+    if (S.gnd && !o.noEarth) { const gp = Q31I.gp(S, g); if (S.gmode === 'wire') { Q31.raw(ctx, () => { ctx.strokeStyle = '#b45309'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(gp[0], gp[1]); ctx.quadraticCurveTo(gp[2], gp[1] - 30 * u, gp[2], gp[3] - 10); ctx.stroke(); }); Q31.earth(ctx, gp[2], gp[3] - 10); }
       else { C2.hand(ctx, gp[0] - 6 * u, gp[1] - 4, 1, 1.1 * u, { rot: -Math.PI / 2 - .25, sleeve: '#16a34a' }); } }
     Q31.drawFly(ctx, S);
   }
@@ -829,20 +979,21 @@ const Q31I = { // shared sphere + rod induction apparatus (also used by س5)
     desc: 'الشحن بطريقة الحث: نقرّب ساق مطاط مشحونة بالسالبة من كرة معدنية متعادلة معزولة دون تماس، نوصل الكرة بالأرض ثم نقطع الاتصال مع بقاء الساق قريبة، وأخيراً نبعد الساق فتتوزع الشحنة الموجبة (المقيدة) بانتظام على سطح الكرة.',
     tags: 'شحن بالحث كرة معدنية معزولة ساق مطاط تأريض شحنات طليقة مقيدة',
     tools: ['كرة معدنية على حامل عازل', 'ساق مطاط صلب', 'قطعة صوف', 'سلك موصول بالأرض أو إصبع اليد'],
-    steps: ['(a) الكرة المعدنية معزولة ومتعادلة.', '(b) اسحب ساق المطاط المشحونة بالسالبة قرب الكرة دون أن تلمسها: تتنافر إلكترونات الكرة مع الساق وتتجه إلى الجهة البعيدة (شحنات طليقة) وتظهر شحنة موجبة في الجهة القريبة (شحنات مقيدة).', '(c) اسحب اليد لتلمس الكرة (أو اضغط «وصّل بالأرض»): تتسرب الشحنات الطليقة إلى الأرض.', '(d) ارفع الإصبع (اقطع الأرض) مع بقاء الساق قريبة: تبقى الشحنة المقيدة في موضعها.', '(e) أبعد الساق: تتوزع الشحنة الموجبة بانتظام على السطح الخارجي للكرة.'],
+    steps: ['(a) الكرة المعدنية معزولة ومتعادلة.', '(b) اسحب ساق المطاط المشحونة بالسالبة قرب الكرة دون أن تلمسها: تتنافر إلكترونات الكرة مع الساق وتتجه إلى الجهة البعيدة (شحنات طليقة) وتظهر شحنة موجبة في الجهة القريبة (شحنات مقيدة).', '(c) اسحب ملقط سلك التأريض إلى الكرة (أو اسحب الإصبع ليلمسها): تتسرب الشحنات الطليقة إلى الأرض عبر السلك.', '(d) اسحب الملقط بعيداً (اقطع السلك) أو ارفع الإصبع مع بقاء الساق قريبة: تبقى الشحنة المقيدة في موضعها.', '(e) أبعد الساق: تتوزع الشحنة الموجبة بانتظام على السطح الخارجي للكرة.'],
     concl: ['في الشحن بالحث يُشحن الجسم دون تماس، بشحنة مخالفة لشحنة الجسم المؤثر.', 'الشحنات الطليقة: الإلكترونات التي تُدفع إلى الجهة البعيدة وتتسرب إلى الأرض. الشحنات المقيدة: الشحنة المخالفة في الجهة القريبة.', 'يجب قطع الاتصال بالأرض قبل إبعاد الساق، وإلا عادت الكرة متعادلة.', 'شحنة الساق لا تتغير لأنها لم تلمس الكرة.'],
     laws: ['g9_rule'],
-    controls: [SEL('rod', 'الساق المؤثرة', [['rubber', 'مطاط (−) كالكتاب'], ['glass', 'زجاج (+)']], 'rubber', (v, S) => { S.qi = v === 'glass' ? 6 : -6; }), SEL('gm', 'التأريض', [['finger', 'إصبع اليد'], ['wire', 'سلك موصول بالأرض']], 'finger', (v, S) => { S.gmode = v; }),
-      BT('', [{ t: '⏚ وصّل/اقطع الأرض', on: S => { S.gnd = !S.gnd; } }, { t: '↺ أعد', on: S => D.reset(S) }]),
+    controls: [SEL('rod', 'الساق المؤثرة', [['rubber', 'مطاط (−) كالكتاب'], ['glass', 'زجاج (+)']], 'rubber', (v, S) => { S.qi = v === 'glass' ? 6 : -6; }), BT('', [{ t: '⏚ وصّل/اقطع سلك الأرض', on: S => { const g = D.geo(S), T = D.T(S, g); S.gt.clip = Q31G.state(S.gt, T).wire ? T.clip0.slice() : T.snap(T.clip0[0], T.clip0[1]); } }, { t: '↺ أعد', on: S => D.reset(S) }]),
       SEL('show', 'عرض الشحنات', [['diff', 'الفائض فقط'], ['all', 'كل الشحنات'], ['none', 'لا شيء']], 'diff'), TG('lab', 'التسميات (طليقة/مقيدة)', true, null, 'labels'), TG('fl', 'حركة الإلكترونات', true, null, 'electron')],
     setup(S) { D.reset(S); },
-    reset(S) { S.Q = 0; S.qi = S.p.rod === 'glass' ? 6 : -6; S.gnd = false; S.gmode = S.p.gm || 'finger'; S.rx = null; S._fly = []; S.touch = 0; S.hist = 0; },
+    reset(S) { S.Q = 0; S.qi = S.p.rod === 'glass' ? 6 : -6; S.gnd = false; S.gmode = 'wire'; S.rx = null; S._fly = []; S.touch = 0; S.hist = 0; S.gt = Q31G.mk(); },
+    T(S, g) { const u = g.u, ex = g.sx - g.R - 120 * u; return { ex, ey: g.by, u, hit: (x, y) => Math.hypot(x - g.sx, y - g.sy) < g.R + 16 * u, snap: (x, y) => { const a = Math.atan2(y - g.sy, x - g.sx); return [g.sx + Math.cos(a) * (g.R + 3), g.sy + Math.sin(a) * (g.R + 3)]; }, clip0: [ex + 30 * u, g.by - 60 * u], fin0: [g.sx - g.R * .55, g.sy - g.R - 70 * u] }; },
+    rx0(S, g) { return Math.min(g.sx + g.R + 260 * g.u, S.W - 250 * g.u); },
     geo(S) { const w = S.W, h = S.H, ph = w < 600, u = Q31.sc(w, h) * (ph ? .85 : 1.15), cx = Q31.cx(w), by = h * .8, R = 80 * u; return { w, h, ph, u, cx, by, R, sx: ph ? w * .3 : cx - 120 * u, sy: by - 150 * u - R }; },
     stage(S, g) { const f = Q31I.f(S, g); if (S.gnd) return 2; if (Math.abs(S.Q) > .3) return f > .15 ? 3 : 4; return f > .15 ? 1 : 0; },
-    update(S, dt) { if (!S.W) return; const g = D.geo(S); if (S.rx == null) S.rx = g.sx + g.R + 260 * g.u; S.gmode = S.p.gm; S.touch = 0; Q31I.step(S, g, dt); if (S.p.fl === false) S._fly = []; S.hist = Math.max(S.hist, D.stage(S, g)); },
+    update(S, dt) { if (!S.W) return; const g = D.geo(S); if (S.rx == null) S.rx = D.rx0(S, g); const T = D.T(S, g); Q31G.init(S.gt, T); const gs = Q31G.state(S.gt, T); S.gnd = gs.on; S.gmode = gs.wire ? 'wire' : 'finger'; S._gp = Q31G.path(S.gt, T); S.touch = 0; Q31I.step(S, g, dt); if (S.p.fl === false) S._fly = []; S.hist = Math.max(S.hist, D.stage(S, g)); },
     draw(ctx, w, h, S) {
-      const g = D.geo(S), u = g.u; K.bg(ctx, w, h, { benchY: g.by }); if (S.rx == null) S.rx = g.sx + g.R + 260 * u;
-      Q31I.drawApp(ctx, S, g, { mode: S.p.show, lab: S.p.lab });
+      const g = D.geo(S), u = g.u; K.bg(ctx, w, h, { benchY: g.by }); if (S.rx == null) S.rx = D.rx0(S, g); const T = D.T(S, g); Q31G.init(S.gt, T);
+      Q31I.drawApp(ctx, S, g, { mode: S.p.show, lab: S.p.lab, noEarth: true }); Q31G.draw(ctx, S.gt, T, { to: 'الكرة', lab: S.p.lab });
       const st = D.stage(S, g); Q31.strip(ctx, w, g.ph ? h - 92 : 50, STG, st, '#ea580c');
       if (S.p.lab !== false) { const p = S.p_ || 0; if (Math.abs(p) > .4) { Q31.T(ctx, 'شحنات مقيدة', g.sx + g.R * .6, g.sy + g.R + 20, { s: 11, w: 900, c: '#fff', bg: p < 0 ? '#b91c1c' : '#1d4ed8' }); if (!S.gnd) Q31.T(ctx, 'شحنات طليقة', g.sx - g.R * .7, g.sy + g.R + 20, { s: 11, w: 900, c: '#fff', bg: p < 0 ? '#1d4ed8' : '#b91c1c' }); }
         Q31.T(ctx, 'كرة معدنية على حامل عازل', g.sx, g.by + 18, { s: 11, w: 800, c: '#fff', bg: '#334155' }); if (S.gnd) Q31.T(ctx, 'متصلة بالأرض ⏚', g.sx - g.R, g.sy - g.R - 30 * u, { s: 12, w: 900, c: '#fff', bg: '#15803d' }); }
@@ -851,7 +1002,7 @@ const Q31I = { // shared sphere + rod induction apparatus (also used by س5)
     },
     drags(S) { if (!S.W || S.rx == null) return []; const g = D.geo(S), u = g.u; const gp = Q31I.gp(S, g);
       return [{ id: 'rod', x: S.rx + 110 * u, y: g.sy - 24 * u, w: 200 * u, h: 60 * u, axis: 'x', keep: true, tip: 'اسحب الساق نحو الكرة أو بعيداً عنها (دون لمس)', idle: 'قرّب الساق ✋', drag: (S, d) => { S.rx = clamp(d.ox - 110 * u + d.x - d.sx, g.sx + g.R + 14 * u, S.W - 40); } },
-        { id: 'earth', x: g.sx - g.R * .25, y: g.sy - g.R - 50 * u, r: 34, tip: 'اضغط لتلمس الكرة بإصبعك (توصيل بالأرض) أو لرفعه', click: S => { S.gnd = !S.gnd; } }]; },
+        ...Q31G.drags(S.gt, D.T(S, g), S, { idleWire: 'صِل سلك الأرض ✋' })]; },
     readings(S) { const g = D.geo(S); return [rd('المرحلة', STG[D.stage(S, g)], 1), rd('شحنة الكرة', Math.abs(S.Q) < .3 ? '0' : (S.Q > 0 ? '+' : '−') + fmt(Math.abs(S.Q), 2)), rd('الاتصال بالأرض', S.gnd ? 'موصولة' : 'معزولة'), rd('شحنة الساق', (S.qi > 0 ? '+' : '−') + fmt(Math.abs(S.qi), 2))]; },
     explain(S) { const g = D.geo(S), st = D.stage(S, g), neg = S.qi < 0;
       return ['الكرة المعدنية متعادلة كهربائياً ومعزولة: عدد شحناتها الموجبة يساوي عدد السالبة.',
@@ -896,30 +1047,47 @@ const Q31I = { // shared sphere + rod induction apparatus (also used by س5)
 /* ---- E3 part 5: مقارنة الطرائق الثلاث جنباً إلى جنب (س4) ---- */
 (() => {
   const D = { id: 'g9_chg_compare', page: 13, fig: 'س4 — مقارنة',
-    desc: 'مقارنة طرائق شحن الأجسام بالكهربائية الساكنة الثلاث (الدلك، التماس، الحث) على المشهد نفسه وفي الوقت نفسه: هل يحدث تلامس؟ ما نوع الشحنة الناتجة مقارنة بالمؤثر؟ ما الذي ينتقل؟',
+    desc: 'مقارنة طرائق شحن الأجسام بالكهربائية الساكنة الثلاث (الدلك، التماس، الحث) جنباً إلى جنب، وكل طريقة تنفذها بيدك: تدلك البالون، وتلمس الكرة بالساق، وتقرّب الساق من الكرة المعدنية وتلمسها بإصبعك. ثم يكتمل جدول المقارنة.',
     tags: 'مقارنة طرائق الشحن دلك تماس حث سؤال 4',
-    tools: ['بالون وصوف', 'ساق زجاج وكرة', 'ساق مطاط وكرة معدنية'],
-    steps: ['اضغط «▶ شغّل المقارنة» وشاهد الطرائق الثلاث تحدث معاً خطوة بخطوة.', 'استعمل «الخطوة» لإيقافها عند أي مرحلة.', 'اقرأ جدول المقارنة أسفل المشهد.'],
-    concl: ['الدلك: جسمان عازلان يتلامسان ويحتكان ⟸ شحنتان مختلفتان متساويتان.', 'التماس: الجسم يكتسب شحنة من نوع شحنة الجسم الملامس.', 'الحث: دون تماس، مع تأريض ⟸ شحنة مخالفة لشحنة المؤثر.', 'في جميع الطرائق تنتقل الإلكترونات فقط، والشحنة الكلية محفوظة.'],
-    controls: [R('k', 'الخطوة', 0, 4, 0, 1, ''), BT('', [{ t: '▶ شغّل المقارنة', on: S => { S.play = 1; S.tt = 0; setParam(S, 'k', 0); } }]), TG('tab', 'جدول المقارنة', true, null, 'labels')],
-    setup(S) { S.play = 0; S.tt = 0; },
-    update(S, dt) { if (S.play) { S.tt += dt; const k = Math.min(4, Math.floor(S.tt / 1.6)); if (k !== S.p.k) setParam(S, 'k', k); if (S.tt > 8) S.play = 0; } },
+    tools: ['بالون وصوف', 'ساق زجاج وكرة معلقة', 'ساق مطاط وكرة معدنية وإصبع'],
+    steps: ['الدلك: اسحب الصوف على البالون ذهاباً وإياباً ثم أبعده.', 'التماس: اسحب ساق الزجاج (+) حتى تلمس الكرة المعلقة ثم أبعدها.', 'الحث: قرّب ساق المطاط (−) من الكرة المعدنية دون لمس، المسها بإصبعك، ارفع الإصبع، ثم أبعد الساق.', 'اقرأ جدول المقارنة: تظهر ✓ عند كل طريقة تكملها.'],
+    concl: ['الدلك: جسمان يتلامسان ويحتكان ⟸ شحنتان مختلفتان متساويتان.', 'التماس: الجسم يكتسب شحنة من نوع شحنة الجسم الملامس.', 'الحث: دون تماس، مع تأريض ⟸ شحنة مخالفة لشحنة المؤثر.', 'في جميع الطرائق تنتقل الإلكترونات فقط، والشحنة الكلية محفوظة.'],
+    controls: [BT('', [{ t: '↺ أعد', on: S => D.reset(S) }]), TG('tab', 'جدول المقارنة', true, null, 'labels')],
+    setup(S) { D.reset(S); },
+    reset(S) { S.A = { n: 0, w: null }; S.B = { q: 0, rq: 4, rt: null }; S.C = { Q: 0, qi: -6, gnd: false, rx: null, _fly: [], touch: 0, gmode: 'finger' }; S.gt = Q31G.mk({ wire: false }); S._fly = []; S.done = [0, 0, 0]; },
+    L(S) { const w = S.W, h = S.H, ph = w < 600, x0 = ph ? 6 : 68, cw = (w - x0 - 8) / 3, u = clamp(cw / 260, .42, 1), top = ph ? 70 : 56, ph2 = h * (S.p.tab !== false ? .55 : .82); return { w, h, ph, x0, cw, u, top, ph2, cy: top + ph2 * .52, by: top + ph2 - 26, cx: i => x0 + cw * (2 - i) + cw / 2 }; },
+    gC(S, l) { const u = l.u, L0 = l.cx(2) - l.cw / 2; return { sx: L0 + 58 * u, sy: l.cy, R: 32 * u, u: u * .38, by: l.by }; },
+    gT(S, l) { const g = D.gC(S, l), u = l.u; return { ex: 0, ey: 0, u, hit: (x, y) => Math.hypot(x - g.sx, y - g.sy) < g.R + 12 * u, snap: (x, y) => { const a = Math.atan2(y - g.sy, x - g.sx); return [g.sx + Math.cos(a) * g.R, g.sy + Math.sin(a) * g.R]; }, fin0: [g.sx - 10 * u, g.sy - g.R - 70 * u] }; },
+    update(S, dt) { if (!S.W) return; const l = D.L(S), u = l.u;
+      if (!S.A.w) S.A.w = [l.cx(0) - 60 * u, l.cy + 40 * u]; if (!S.B.rt) S.B.rt = [l.cx(1) + 20 * u, l.cy - 70 * u];
+      const g = D.gC(S, l); if (S.C.rx == null) S.C.rx = l.cx(2) + l.cw / 2 - 95 * u; const T = D.gT(S, l); Q31G.init(S.gt, T); S.C.gnd = Q31G.state(S.gt, T).on; S.C._gp = Q31G.path(S.gt, T); Q31I.step(S.C, g, dt);
+      const bx = l.cx(1) - 30 * u; if (S.B.q === 0 && Math.hypot(S.B.rt[0] - bx, S.B.rt[1] - l.cy) < 22 * u) { S.B.q = 2; S.B.rq = 2; for (let k = 0; k < 2; k++) Q31.fly(S, bx, l.cy, S.B.rt[0] + 20 * u, S.B.rt[1] - 6 * u, .4); }
+      const bal = [l.cx(0) + 30 * u, l.cy]; S.done = [S.A.n >= 3 && Math.hypot(S.A.w[0] - bal[0], S.A.w[1] - bal[1]) > 80 * u ? 1 : 0, S.B.q > 0 && Math.hypot(S.B.rt[0] - bx, S.B.rt[1] - l.cy) > 60 * u ? 1 : 0, Math.abs(S.C.Q) > .3 && !S.C.gnd && Q31I.f(S.C, g) < .15 ? 1 : 0]; },
     draw(ctx, w, h, S) {
-      const ph = w < 600, x0 = ph ? 6 : 68, cw = (w - x0 - 8) / 3, u = clamp(cw / 260, .45, 1), k = S.p.k, top = ph ? 70 : 56, ph2 = h * (S.p.tab !== false ? .52 : .82); K.bg(ctx, w, h, { benchY: top + ph2 - 30, tiles: false });
+      const l = D.L(S), u = l.u; K.bg(ctx, w, h, { benchY: l.by + 14, tiles: false }); if (!S.A.w) D.update(S, 0);
       const titles = ['الدلك', 'التماس', 'الحث'];
-      for (let i = 0; i < 3; i++) { const cx = x0 + cw * (2 - i) + cw / 2, cy = top + ph2 * .5; Q31.raw(ctx, () => { ctx.fillStyle = 'rgba(255,255,255,.5)'; rr(ctx, cx - cw / 2 + 4, top, cw - 8, ph2, 12); ctx.fill(); ctx.strokeStyle = '#fdba74'; ctx.lineWidth = 2; ctx.stroke(); }); Q31.T(ctx, titles[i], cx, top + 16, { s: 14, w: 900, c: '#fff', bg: '#ea580c' });
-        if (i === 0) { const n = [0, 2, 4, 4, 4][k], off = k >= 1 && k <= 2 ? Math.sin(S.t * 14) * 14 * u : 0; Q31.balloon(ctx, cx + 30 * u, cy, 44 * u, '#f97316'); Q31.cloth(ctx, cx - 40 * u + (k >= 3 ? -30 * u : 0) + off, cy + 10 * u, 'wool', u); for (let j = 0; j < n; j++) { Q31.sg(ctx, cx + 22 * u + (j % 2) * 16 * u, cy - 14 * u + (j >> 1) * 16 * u, -1, 5); Q31.sg(ctx, cx - 56 * u + (j % 2) * 16 * u + (k >= 3 ? -30 * u : 0), cy + 4 * u + (j >> 1) * 12 * u, 1, 5); } }
-        if (i === 1) { const near = k >= 1, touch = k >= 2 && k < 4; const bx = cx - 30 * u, rx = touch ? bx + 22 * u : bx + 70 * u; Q31.raw(ctx, () => { ctx.strokeStyle = '#78716c'; ctx.beginPath(); ctx.moveTo(bx, top + 40); ctx.lineTo(bx, cy); ctx.stroke(); }); Q31.ball(ctx, bx, cy, 18 * u, k >= 2 ? 1 : 0); if (near) Q31.rod(ctx, rx, cy, rx + 110 * u, cy - 40 * u, 16 * u, 'glass', { n: k >= 2 ? 2 : 4, s: 1, from: .05, to: .5 }); }
-        if (i === 2) { const near = k >= 1 && k <= 3, gnd = k === 2; const sx = cx - 30 * u, R = 34 * u; Q31.sphere(ctx, sx, cy, R, cy + 70 * u); const Q = k >= 2 ? 3 : 0, p = near ? -1.5 : 0; Q31.sphereCharges(ctx, sx, cy, R, Q / 2 - p * -1 * -1, Q / 2 + p * -1 * -1, 0, 'diff');
-          if (near) Q31.rod(ctx, sx + R + 14 * u, cy, sx + R + 120 * u, cy - 40 * u, 16 * u, 'rubber', { n: 4, s: -1, from: .05, to: .5 }); if (gnd) { C2.hand(ctx, sx - 6, cy - R - 2, 1, .8 * u, { rot: -Math.PI / 2 - .2, sleeve: '#16a34a' }); } }
-      }
-      const tl = ['البداية: كل الأجسام متعادلة', 'الخطوة 1: دلك / تقريب الساق', 'الخطوة 2: انتقال الإلكترونات (تلامس أو تأريض)', 'الخطوة 3: فصل الجسمين / قطع الأرض', 'النتيجة النهائية'][k]; Q31.T(ctx, tl, Q31.cx(w), top + ph2 + 14, { s: 13, w: 900, c: '#fff', bg: '#0f766e' });
-      if (S.p.tab !== false) { const ty = top + ph2 + 34, rows = [['', 'الدلك', 'التماس', 'الحث'], ['هل يحدث تلامس؟', 'نعم (احتكاك)', 'نعم', 'لا'], ['نوع الشحنة الناتجة', 'مختلفتان', 'مماثلة للملامس', 'مخالفة للمؤثر'], ['ما الذي ينتقل؟', 'إلكترونات', 'إلكترونات', 'إلكترونات (مع الأرض)'], ['المواد', 'عازلة غالباً', 'موصلة/عازلة', 'موصلة']];
-        const rh = Math.min(30, (h - ty - 30) / rows.length); rows.forEach((r, j) => r.forEach((c, i) => { const cx = x0 + (w - x0 - 8) * (1 - (i + .5) / 4); Q31.raw(ctx, () => { ctx.fillStyle = j === 0 ? 'rgba(234,88,12,.85)' : j % 2 ? 'rgba(255,255,255,.92)' : 'rgba(255,237,213,.92)'; ctx.fillRect(cx - (w - x0 - 8) / 8, ty + j * rh, (w - x0 - 8) / 4 - 2, rh - 2); }); Q31.T(ctx, c, cx, ty + j * rh + rh / 2 - 1, { s: ph ? 9.5 : 12, w: j === 0 || i === 0 ? 900 : 700, c: j === 0 ? '#fff' : '#1e293b' }); })); }
-      Q31.banner(ctx, w, 'مقارنة: طرائق الشحن الثلاث معاً (س4)', '#ea580c');
+      for (let i = 0; i < 3; i++) { const cx = l.cx(i); Q31.raw(ctx, () => { ctx.fillStyle = S.done[i] ? 'rgba(220,252,231,.7)' : 'rgba(255,255,255,.55)'; rr(ctx, cx - l.cw / 2 + 4, l.top, l.cw - 8, l.ph2, 12); ctx.fill(); ctx.strokeStyle = S.done[i] ? '#16a34a' : '#fdba74'; ctx.lineWidth = 2; ctx.stroke(); }); Q31.T(ctx, titles[i] + (S.done[i] ? ' ✓' : ''), cx, l.top + 16, { s: 14, w: 900, c: '#fff', bg: S.done[i] ? '#16a34a' : '#ea580c' }); }
+      // 1) rubbing
+      { const cx = l.cx(0), A = S.A, bal = [cx + 30 * u, l.cy]; Q31.balloon(ctx, bal[0], bal[1], 42 * u, '#f97316'); for (let j = 0; j < A.n; j++) Q31.sg(ctx, bal[0] - 14 * u + (j % 2) * 18 * u, bal[1] - 10 * u + (j >> 1) * 16 * u, -1, 5); Q31.cloth(ctx, A.w[0], A.w[1], 'wool', u * .95); for (let j = 0; j < A.n; j++) Q31.sg(ctx, A.w[0] - 18 * u + j * 12 * u, A.w[1] - 4, 1, 5);
+        Q31.T(ctx, A.n ? 'البالون (−) والصوف (+)' : 'ادلك البالون بالصوف', cx, l.by - 8, { s: 11, w: 900, c: '#fff', bg: A.n ? '#7c3aed' : '#a16207' }); }
+      // 2) contact
+      { const cx = l.cx(1), B = S.B, bx = cx - 30 * u; Q31.raw(ctx, () => { ctx.strokeStyle = '#78716c'; ctx.beginPath(); ctx.moveTo(bx, l.top + 34); ctx.lineTo(bx, l.cy - 16 * u); ctx.stroke(); }); Q31.ball(ctx, bx, l.cy, 16 * u, B.q > 0 ? 1 : 0); Q31.rod(ctx, B.rt[0], B.rt[1], B.rt[0] + 110 * u, B.rt[1] - 40 * u, 15 * u, 'glass', { n: B.rq, s: 1, from: .05, to: .55 }); C2.hand(ctx, B.rt[0] + 108 * u, B.rt[1] - 40 * u, -1, .8 * u, { rot: -.35 });
+        Q31.T(ctx, B.q ? 'الكرة (+) مماثلة للساق' : 'المس الكرة بالساق (+)', cx, l.by - 8, { s: 11, w: 900, c: '#fff', bg: B.q ? '#b91c1c' : '#0369a1' }); }
+      // 3) induction
+      { const cx = l.cx(2), g = D.gC(S, l); Q31I.drawApp(ctx, S.C, g, { mode: 'diff', lab: false, noEarth: true }); Q31G.draw(ctx, S.gt, D.gT(S, l), { lab: false }); const f = Q31I.f(S.C, g);
+        const t = S.C.gnd ? 'أرّضتها: ارفع الإصبع الآن' : Math.abs(S.C.Q) > .3 ? (f > .15 ? 'أبعد الساق الآن' : 'الكرة (+) مخالفة للساق') : f > .15 ? 'المس الكرة بإصبعك ☝' : 'قرّب الساق (−) دون لمس'; Q31.T(ctx, t, cx, l.by - 8, { s: 11, w: 900, c: '#fff', bg: Math.abs(S.C.Q) > .3 && !S.C.gnd && f <= .15 ? '#b91c1c' : '#334155' }); }
+      Q31.drawFly(ctx, S);
+      if (S.p.tab !== false) { const ty = l.top + l.ph2 + 14, rows = [['', 'الدلك', 'التماس', 'الحث'], ['هل يحدث تلامس؟', 'نعم (احتكاك)', 'نعم', 'لا'], ['نوع الشحنة الناتجة', 'مختلفتان', 'مماثلة للملامس', 'مخالفة للمؤثر'], ['ما الذي ينتقل؟', 'إلكترونات', 'إلكترونات', 'إلكترونات (مع الأرض)'], ['المواد', 'عازلة غالباً', 'موصلة/عازلة', 'موصلة']];
+        const W = w - l.x0 - 8, rh = Math.min(30, (h - ty - 30) / rows.length); rows.forEach((r, j) => r.forEach((c, i) => { const cx = l.x0 + W * (1 - (i + .5) / 4), hid = j > 0 && i > 0 && !S.done[i - 1]; Q31.raw(ctx, () => { ctx.fillStyle = j === 0 ? 'rgba(234,88,12,.85)' : hid ? 'rgba(226,232,240,.9)' : j % 2 ? 'rgba(255,255,255,.92)' : 'rgba(255,237,213,.92)'; ctx.fillRect(cx - W / 8, ty + j * rh, W / 4 - 2, rh - 2); }); Q31.T(ctx, hid ? '؟ نفّذها أولاً' : c, cx, ty + j * rh + rh / 2 - 1, { s: l.ph ? 9.5 : 12, w: j === 0 || i === 0 ? 900 : 700, c: j === 0 ? '#fff' : hid ? '#94a3b8' : '#1e293b' }); })); }
+      Q31.banner(ctx, w, 'مقارنة: نفّذ الطرائق الثلاث بيدك (س4)', '#ea580c');
     },
-    readings(S) { return [rd('الخطوة', String(S.p.k))]; },
-    explain(S) { return 'س4: طرائق شحن الأجسام بالكهربائية الساكنة ثلاث: <b>الدلك</b> (الجسمان يُشحنان بشحنتين مختلفتين)، <b>التماس</b> (شحنة مماثلة لشحنة الجسم الملامس)، <b>الحث</b> (دون تماس، شحنة مخالفة لشحنة الجسم المؤثر). في كلها تنتقل <b>الإلكترونات</b> فقط.'; }
+    drags(S) { if (!S.W || !S.A.w) return []; const l = D.L(S), u = l.u, g = D.gC(S, l); return [
+      { id: 'wool', x: S.A.w[0], y: S.A.w[1], r: 34 * u, axis: 'xy', keep: true, tip: 'ادلك البالون بالصوف', idle: S.A.n ? undefined : 'ادلك ✋', drag: (S2, d) => { S.A.w = [clamp(d.ox + d.x - d.sx, l.cx(0) - l.cw / 2 + 20, l.cx(0) + l.cw / 2 - 20), clamp(d.oy + d.y - d.sy, l.top + 30, l.by)]; if (Q31.rub(S, d, Math.hypot(S.A.w[0] - l.cx(0) - 30 * u, S.A.w[1] - l.cy) < 50 * u, 30) && S.A.n < 4) S.A.n++; } },
+      { id: 'grod', x: S.B.rt[0] + 50 * u, y: S.B.rt[1] - 18 * u, w: 110 * u, h: 40 * u, axis: 'xy', keep: true, tip: 'المس الكرة بساق الزجاج ثم أبعدها', drag: (S2, d) => { S.B.rt = [clamp(d.ox - 50 * u + d.x - d.sx, l.cx(1) - l.cw / 2 + 10, l.cx(1) + l.cw / 2 - 60 * u), clamp(d.oy + 18 * u + d.y - d.sy, l.top + 40, l.by - 10)]; } },
+      { id: 'rrod', x: S.C.rx + 45 * u, y: g.sy - 10 * u, w: 90 * u, h: 40 * u, axis: 'x', keep: true, tip: 'قرّب ساق المطاط من الكرة دون لمس أو أبعدها', drag: (S2, d) => { S.C.rx = clamp(d.ox - 45 * u + d.x - d.sx, g.sx + g.R + 8 * u, l.cx(2) + l.cw / 2 - 95 * u); } },
+      ...Q31G.drags(S.gt, D.gT(S, l), S)]; },
+    readings(S) { return [rd('الدلك', S.done[0] ? 'تم ✓' : '—'), rd('التماس', S.done[1] ? 'تم ✓' : '—'), rd('الحث', S.done[2] ? 'تم ✓' : '—')]; },
+    explain(S) { return 'س4: طرائق شحن الأجسام بالكهربائية الساكنة ثلاث: <b>الدلك</b> (الجسمان يُشحنان بشحنتين مختلفتين)، <b>التماس</b> (شحنة مماثلة لشحنة الجسم الملامس)، <b>الحث</b> (دون تماس، شحنة مخالفة لشحنة الجسم المؤثر). في كلها تنتقل <b>الإلكترونات</b> فقط.' + (S.done.every(x => x) ? '<br>✓ أكملت الطرائق الثلاث!' : ''); }
   };
   M8.P[D.id] = D;
 })();
@@ -931,17 +1099,20 @@ const Q31E = { // electroscope physics + rod handling shared by all electroscope
   f(E, G) { if (!E.tip || !E.rq) return 0; const d = Math.hypot(E.tip[0] - G.x, E.tip[1] - (G.discY - 4 * G.s)); return clamp(1 - (d - 24 * G.s) / (210 * G.s), 0, 1) ** 1.5; },
   touching(E, G) { return E.tip && Math.hypot(E.tip[0] - G.x, E.tip[1] - (G.discY - 4 * G.s)) < 30 * G.s; },
   step(E, G, dt, S) { const p = Q31E.KAP * E.rq * Q31E.f(E, G); E.p = p;
-    if (E.gnd) { const tgt = -2 * p, dq = tgt - E.Q; if (Math.abs(dq) > .04) { const st = Math.sign(dq) * Math.min(Math.abs(dq), dt * 7); E.Q += st; E._acc = (E._acc || 0) + Math.abs(st); while (E._acc > .5) { E._acc -= .5; const a = [G.x - 16 * G.s, G.discY - 40 * G.s], b = [G.x - 4 * G.s, G.discY - 6 * G.s]; if (dq > 0) Q31.fly(E, b[0], b[1], a[0] - 40 * G.s, a[1] - 60 * G.s, .45); else Q31.fly(E, a[0] - 40 * G.s, a[1] - 60 * G.s, b[0], b[1], .45); } } }
+    if (E.gnd) { const tgt = -2 * p, dq = tgt - E.Q; if (Math.abs(dq) > .04) { const st = Math.sign(dq) * Math.min(Math.abs(dq), dt * 7); E.Q += st; E._acc = (E._acc || 0) + Math.abs(st); while (E._acc > .5) { E._acc -= .5; if (E._gp) { const P = E._gp; if (dq > 0) Q31.fly(E, P[0], P[1], P[2], P[3], .5); else Q31.fly(E, P[2], P[3], P[0], P[1], .5); continue; } const a = [G.x - 16 * G.s, G.discY - 40 * G.s], b = [G.x - 4 * G.s, G.discY - 6 * G.s]; if (dq > 0) Q31.fly(E, b[0], b[1], a[0] - 40 * G.s, a[1] - 60 * G.s, .45); else Q31.fly(E, a[0] - 40 * G.s, a[1] - 60 * G.s, b[0], b[1], .45); } } }
     const t = Q31E.touching(E, G); if (t && !E.tc && Math.abs(E.rq) > .3) { const dq = E.rq * .45; E.Q += dq; E.rq -= dq; E.tc = 1; for (let k = 0; k < Math.min(5, Math.abs(Math.round(dq))); k++) { const a = [G.x, G.discY - 6 * G.s]; if (dq > 0) Q31.fly(E, a[0], a[1], E.tip[0] + 20, E.tip[1] - 10, .4); else Q31.fly(E, E.tip[0] + 20, E.tip[1] - 10, a[0], a[1], .4); } if (window.Sound && Sound.tick) Sound.tick(); } if (!t) E.tc = 0;
     E.leaf = E.Q / 2 + p; E.disc = E.Q / 2 - p; const ta = Q31.leafAng(E.leaf); E.ang += (ta - E.ang) * Math.min(1, dt * 6); },
   draw(ctx, E, G, o = {}) {
     Q31.scope(ctx, G.x, G.yb, G.s, E.ang, Object.assign({ qDisc: E.disc || 0, qLeaf: E.leaf || 0, mode: o.mode || 'diff' }, o));
-    if (E.gnd) { C2.hand(ctx, G.x - 8 * G.s, G.discY - 10 * G.s, 1, 1.05 * G.s, { rot: -Math.PI / 2 - .35, sleeve: '#16a34a' }); Q31.T(ctx, 'إصبع على القرص (تأريض)', G.x - 70 * G.s, G.discY - 74 * G.s, { s: 10.5, w: 900, c: '#fff', bg: '#15803d' }); }
+    if (E.gnd && !E.noHand) { C2.hand(ctx, G.x - 8 * G.s, G.discY - 10 * G.s, 1, 1.05 * G.s, { rot: -Math.PI / 2 - .35, sleeve: '#16a34a' }); Q31.T(ctx, 'إصبع على القرص (تأريض)', G.x - 70 * G.s, G.discY - 74 * G.s, { s: 10.5, w: 900, c: '#fff', bg: '#15803d' }); }
     if (E.tip && E.rodShow !== false) { const T = E.tip; Q31.rod(ctx, T[0], T[1], T[0] + 200 * G.s, T[1] - 80 * G.s, 17 * G.s, E.rod, o.mode !== 'none' && Math.abs(E.rq) > .3 ? { n: Math.min(7, Math.round(Math.abs(E.rq))), s: Math.sign(E.rq), from: .05, to: .55 } : null); C2.hand(ctx, T[0] + 192 * G.s, T[1] - 77 * G.s, -1, 1.05 * G.s, { rot: -.35, sleeve: '#64748b' }); }
     Q31.drawFly(ctx, E);
   },
   rodDrag(E, G, S, o = {}) { if (!E.tip) return null; return { id: o.id || 'rod', x: E.tip[0] + 90 * G.s, y: E.tip[1] - 36 * G.s, w: 160 * G.s, h: 60 * G.s, axis: 'xy', keep: true, tip: o.tip || 'اسحب الساق نحو قرص الكشاف (أو المسه)', idle: o.idle, hint: o.hint,
     drag: (S2, d) => { E.tip = [clamp(d.ox - 90 * G.s + d.x - d.sx, G.x - 40 * G.s, S.W - 60), clamp(d.oy + 36 * G.s + d.y - d.sy, 80, G.yb - 40)]; } }; },
+  gT(G) { const s = G.s, ex = G.x - 150 * s; return { ex, ey: G.yb, u: s, hit: (x, y) => Math.abs(x - G.x) < 42 * s && Math.abs(y - (G.discY - 4 * s)) < 24 * s, snap: (x, y) => [clamp(x, G.x - 26 * s, G.x + 26 * s), G.discY - 8 * s], clip0: [ex + 26 * s, G.yb - 46 * s], fin0: [G.x - 30 * s, G.discY - 95 * s] }; },
+  gUse(E, st, G) { const T = Q31E.gT(G); Q31G.init(st, T); const gs = Q31G.state(st, T); E.gnd = gs.on; E._gp = Q31G.path(st, T); E.noHand = true; return gs; },
+  gToggle(st, G) { const T = Q31E.gT(G); Q31G.init(st, T); st.fin = Q31G.state(st, T).finger ? T.fin0.slice() : T.snap(G.x, G.discY); },
   far(G, S) { return [Math.min(S.W - 230 * G.s, G.x + 230 * G.s), G.discY - 60 * G.s]; },
   sgn(q) { return Math.abs(q) < .3 ? '0' : (q > 0 ? '+' : '−') + fmt(Math.abs(q), 2); }
 };
@@ -1013,28 +1184,28 @@ const Q31E = { // electroscope physics + rod handling shared by all electroscope
     desc: 'نشاط (b): شحن الكشاف الكهربائي بطريقة الحث بساق زجاج مدلوكة بالحرير، كشاف بورقة ألمنيوم واحدة على ساقه كما في الشكل 19.',
     tags: 'نشاط شحن الكشاف بالحث ساق زجاج حرير ورقة ألمنيوم تأريض شحنة مقيدة طليقة',
     tools: ['كشاف كهربائي (ورقة ألمنيوم)', 'ساق من الزجاج', 'قطعة من الحرير'],
-    steps: ['ادلك ساق الزجاج بقطعة الحرير: اسحب الحرير فوق الساق (تظهر على الساق شحنة موجبة) — الشكل 19-a.', 'قرّب الساق المشحونة من قرص الكشاف المتعادل (دون لمس): تتنافر ورقة الألمنيوم مع ساق الكشاف — الشكل 19-b.', 'صِل القرص بالأرض بوضع إصبعك عليه (اضغط اليد) مع بقاء الساق قريبة: تنطبق الورقة على الساق — الشكل 19-c.', 'ارفع إصبعك مع بقاء الساق قريبة: تبقى الورقة منطبقة.', 'أخيراً أبعد الساق: تتنافر الورقة مع ساق الكشاف — الشكل 19-d.'],
+    steps: ['ادلك ساق الزجاج بقطعة الحرير: اسحب الحرير فوق الساق (تظهر على الساق شحنة موجبة) — الشكل 19-a.', 'قرّب الساق المشحونة من قرص الكشاف المتعادل (دون لمس): تتنافر ورقة الألمنيوم مع ساق الكشاف — الشكل 19-b.', 'صِل القرص بالأرض: اسحب الإصبع ليلمس القرص (أو صِل ملقط سلك التأريض) مع بقاء الساق قريبة: تنطبق الورقة على الساق — الشكل 19-c.', 'ارفع إصبعك (أو أبعد ملقط السلك) مع بقاء الساق قريبة: تبقى الورقة منطبقة.', 'أخيراً أبعد الساق: تتنافر الورقة مع ساق الكشاف — الشكل 19-d.'],
     concl: ['عند تقريب الساق الموجبة: ينشحن القرص بالسالبة (شحنة مقيدة) والورقة بالموجبة (شحنة طليقة).', 'دائماً ينشحن القرص بالشحنة المخالفة لشحنة المؤثر، والورقة والساق بالشحنة المشابهة.', 'عند التأريض يكتسب الكشاف إلكترونات من الأرض فتنطبق الورقة.', 'بعد قطع الأرض وإبعاد الساق تتوزع الشحنات الباقية (التي كانت مقيدة) على القرص والساق والورقة: الكشاف مشحون بالسالبة (مخالفة لشحنة الساق).'],
     laws: ['g9_rule'],
-    controls: [BT('', [{ t: '🧽 ادلك الساق بالحرير', on: S => { S.auto = 1.2; } }, { t: '☝ إصبع على القرص / ارفعه', on: S => { S.E.gnd = !S.E.gnd; } }, { t: '↺ أعد', on: S => D.reset(S) }]),
+    controls: [BT('', [{ t: '🧽 ادلك الساق بالحرير', on: S => { S.auto = 1.2; } }, { t: '☝ إصبع على القرص / ارفعه', on: S => Q31E.gToggle(S.gt, D.G(S)) }, { t: '↺ أعد', on: S => D.reset(S) }]),
       SEL('show', 'عرض الشحنات', [['diff', 'الفائض فقط'], ['none', 'لا شيء']], 'diff'), TG('lab', 'تسميات (مقيدة/طليقة)', true, null, 'labels')],
     setup(S) { D.reset(S); },
-    reset(S) { S.E = Q31E.mk({ rod: 'glass', rq: 0 }); S.auto = 0; S.silk = null; S.hist = 0; },
+    reset(S) { S.E = Q31E.mk({ rod: 'glass', rq: 0 }); S.auto = 0; S.silk = null; S.hist = 0; S.gt = Q31G.mk(); },
     G(S) { const w = S.W, h = S.H, ph = w < 600, s = Q31.sc(w, h) * (ph ? .95 : 1.45); return Q31E.geo(S, ph ? w * .4 : Q31.cx(w) - 70 * s, h * .88, s); },
     stage(S, G) { const E = S.E, f = Q31E.f(E, G); if (Math.abs(E.rq) < .3) return 0; if (E.gnd) return 2; if (Math.abs(E.Q) > .3) return f > .12 ? 3 : 4; return 1; },
     update(S, dt) { if (!S.W) return; const G = D.G(S), E = S.E; if (!E.tip) E.tip = Q31E.far(G, S); if (!S.silk) S.silk = [E.tip[0] + 110 * G.s, E.tip[1] - 10 * G.s];
       if (S.auto > 0) { S.auto -= dt; S._a = (S._a || 0) + dt; S.silk = [E.tip[0] + 100 * G.s + Math.sin(S.t * 16) * 30 * G.s, E.tip[1] - 42 * G.s]; if (S._a > .12) { S._a = 0; E.rq = Math.min(7, E.rq + 1); } }
-      Q31E.step(E, G, dt, S); S.hist = Math.max(S.hist, D.stage(S, G)); },
+      Q31E.gUse(E, S.gt, G); Q31E.step(E, G, dt, S); S.hist = Math.max(S.hist, D.stage(S, G)); },
     draw(ctx, w, h, S) {
       const G = D.G(S), s = G.s, E = S.E; K.bg(ctx, w, h, { benchY: h * .88 }); if (!E.tip) E.tip = Q31E.far(G, S);
-      Q31E.draw(ctx, E, G, { one: true, mode: S.p.show });
+      Q31E.gUse(E, S.gt, G); Q31E.draw(ctx, E, G, { one: true, mode: S.p.show }); Q31G.draw(ctx, S.gt, Q31E.gT(G), { to: 'القرص' });
       if (S.silk) { Q31.cloth(ctx, S.silk[0], S.silk[1], 'silk', s * .85); if (S.p.show !== 'none' && E.rq > .3) for (let k = 0; k < Math.round(E.rq); k++) Q31.sg(ctx, S.silk[0] - 22 * s + k * 7 * s, S.silk[1] + 4, -1, 4.5); Q31.T(ctx, 'حرير', S.silk[0], S.silk[1] + 28 * s, { s: 10.5, w: 800, c: '#fff', bg: '#be185d' }); }
       if (S.p.lab !== false && Math.abs(E.p || 0) > .3 && !E.gnd) { Q31.T(ctx, 'القرص: شحنة مقيدة (−)', G.x - 110 * s, G.discY - 8 * s, { s: 11, w: 900, c: '#fff', bg: '#1d4ed8' }); Q31.T(ctx, 'الورقة: شحنة طليقة (+)', G.x + 110 * s, G.piv + 50 * s, { s: 11, w: 900, c: '#fff', bg: '#b91c1c' }); }
       const st = D.stage(S, G); Q31.strip(ctx, w, w < 600 ? h - 92 : 50, STG, st, '#0891b2');
       Q31.card(ctx, S, [{ t: 'شحنة الساق: ' + Q31E.sgn(E.rq) }, { t: 'شحنة الكشاف: ' + Q31E.sgn(E.Q), w: 900, c: E.Q < -.3 ? '#1d4ed8' : '#334155' }, { t: 'الورقة: ' + (E.ang > .2 ? 'متنافرة مع الساق' : 'منطبقة على الساق') }], { title: 'العدّاد', y: w < 600 ? 58 : 92, wd: 240 });
       Q31.banner(ctx, w, 'نشاط (b): شحن الكشاف بطريقة الحث', '#0891b2');
     },
-    drags(S) { if (!S.W || !S.E.tip) return []; const G = D.G(S), s = G.s, E = S.E; const L = [Q31E.rodDrag(E, G, S, { idle: 'قرّب الساق ✋', hint: Math.abs(E.rq) > .3 }), { id: 'finger', x: G.x, y: G.discY - 34 * s, r: 30 * s, tip: 'اضغط لتضع إصبعك على القرص (تأريض) أو ترفعه', click: S => { E.gnd = !E.gnd; } }];
+    drags(S) { if (!S.W || !S.E.tip) return []; const G = D.G(S), s = G.s, E = S.E; const L = [Q31E.rodDrag(E, G, S, { idle: 'قرّب الساق ✋', hint: Math.abs(E.rq) > .3 }), ...Q31G.drags(S.gt, Q31E.gT(G), S, { idleFin: Math.abs(E.p || 0) > .3 && !E.gnd ? 'المس القرص بإصبعك ☝' : undefined })];
       if (S.silk) L.push({ id: 'silk', x: S.silk[0], y: S.silk[1], r: 32 * s, axis: 'xy', keep: true, tip: 'ادلك الساق بالحرير', idle: 'ادلك الساق بالحرير ✋', drag: (S2, d) => { S.silk = [clamp(d.ox + d.x - d.sx, 40, S.W - 30), clamp(d.oy + d.y - d.sy, 60, G.yb)]; const mx = E.tip[0] + 100 * s, my = E.tip[1] - 40 * s; if (Q31.rub(S, d, Math.hypot(S.silk[0] - mx, S.silk[1] - my) < 90 * s, 30)) E.rq = Math.min(7, E.rq + 1); } });
       return L; },
     readings(S) { const G = D.G(S); return [rd('المرحلة', STG[D.stage(S, G)], 1), rd('شحنة الساق', Q31E.sgn(S.E.rq)), rd('شحنة الكشاف', Q31E.sgn(S.E.Q)), rd('القرص متصل بالأرض', S.E.gnd ? 'نعم' : 'لا')]; },
@@ -1056,25 +1227,25 @@ const Q31E = { // electroscope physics + rod handling shared by all electroscope
     desc: 'مختبر الكشاف: الجهاز نفسه لكل أسئلة الكتاب عن الكشاف (س1-8، س1-9، س2-3، س3، س6) ولاستعماله في معرفة نوع شحنة جسم.',
     tags: 'كشاف أسئلة انفراج انطباق تأريض نوع الشحنة سؤال 8 سؤال 9 سؤال 6',
     tools: ['كشاف كهربائي', 'ساق زجاج (+)', 'ساق مطاط (−)', 'إصبع للتأريض'],
-    steps: ['اختر السؤال من «حالة الكتاب»: يُحضَّر الكشاف والساق كما في السؤال.', 'نفّذ: اسحب الساق نحو القرص (أو المسه)، اضغط القرص لتضع إصبعك (تأريض) أو ترفعه.', 'لاحظ انفراج الورقتين وتوزّع الشحنات، ثم اقرأ الجواب في البطاقة.'],
+    steps: ['اختر السؤال من «حالة الكتاب»: يُحضَّر الكشاف والساق كما في السؤال.', 'نفّذ: اسحب الساق نحو القرص (أو المسه)، واسحب الإصبع أو ملقط سلك التأريض إلى القرص (تأريض) أو أبعده.', 'لاحظ انفراج الورقتين وتوزّع الشحنات، ثم اقرأ الجواب في البطاقة.'],
     concl: ['جسم مشحون قرب كشاف مشحون بالنوع نفسه ⟸ يزداد الانفراج؛ وبنوع مخالف ⟸ يقل الانفراج.', 'كشاف متصل بالأرض لا تنفرج ورقتاه مهما قرّبنا منه، لكن تظهر على قرصه شحنة مخالفة.', 'للشحن بالحث يجب رفع الإصبع قبل إبعاد الساق.', 'التأريض يعادل شحنة الجسم لأن الأرض مستودع كبير تنتقل منه وإليه الشحنات بسهولة.'],
     laws: ['g9_rule'],
     controls: [SEL('pr', 'حالة الكتاب', Object.keys(PR).map(k => [k, PR[k][0]]), 'q18', (v, S) => D.load(S)), SEL('rd', 'الساق', [['glass', 'زجاج (+)'], ['rubber', 'مطاط (−)']], 'glass', (v, S, init) => { if (!init && S.E) { S.E.rod = v; S.E.rq = v === 'glass' ? 6 : -6; } }),
-      BT('', [{ t: '☝ إصبع على القرص / ارفعه', on: S => { S.E.gnd = !S.E.gnd; } }, { t: '↺ حضّر الحالة', on: S => D.load(S) }]), SEL('show', 'عرض الشحنات', [['diff', 'الفائض فقط'], ['all', 'كل الشحنات'], ['none', 'لا شيء']], 'diff'), TG('ans', 'بطاقة السؤال والجواب', true, null, 'labels')],
+      BT('', [{ t: '☝ إصبع على القرص / ارفعه', on: S => Q31E.gToggle(S.gt, D.G(S)) }, { t: '↺ حضّر الحالة', on: S => D.load(S) }]), SEL('show', 'عرض الشحنات', [['diff', 'الفائض فقط'], ['all', 'كل الشحنات'], ['none', 'لا شيء']], 'diff'), TG('ans', 'بطاقة السؤال والجواب', true, null, 'labels')],
     setup(S) { D.load(S); },
-    load(S) { const P = PR[S.p.pr || 'q18']; let rod = P[2], rq; if (rod === 'unknown') { rq = Math.random() < .5 ? 6 : -6; rod = 'amber'; } else rq = rod === 'glass' ? 6 : -6; S.E = Q31E.mk({ Q: P[1], rod, rq, gnd: !!P[4] }); S.E.tip = null; S.unk = P[2] === 'unknown' ? rq : 0; S.ang0 = null; },
+    load(S) { const P = PR[S.p.pr || 'q18']; let rod = P[2], rq; if (rod === 'unknown') { rq = Math.random() < .5 ? 6 : -6; rod = 'amber'; } else rq = rod === 'glass' ? 6 : -6; S.E = Q31E.mk({ Q: P[1], rod, rq, gnd: !!P[4] }); S.E.tip = null; S.unk = P[2] === 'unknown' ? rq : 0; S.ang0 = null; S.gt = Q31G.mk(); if (P[4] && S.W) { const G = D.G(S), T = Q31E.gT(G); Q31G.init(S.gt, T); S.gt.fin = T.snap(G.x, G.discY); } S._gpre = !!P[4]; },
     G(S) { const w = S.W, h = S.H, ph = w < 600, s = Q31.sc(w, h) * (ph ? .95 : 1.4); return Q31E.geo(S, ph ? w * .4 : Q31.cx(w) - 110 * s, h * .88, s); },
-    update(S, dt) { if (!S.W) return; const G = D.G(S); if (!S.E.tip) S.E.tip = Q31E.far(G, S); Q31E.step(S.E, G, dt, S); if (S.ang0 == null && S.t > .2) S.ang0 = S.E.ang; },
+    update(S, dt) { if (!S.W) return; const G = D.G(S); if (!S.E.tip) S.E.tip = Q31E.far(G, S); if (S._gpre) { S._gpre = 0; const T = Q31E.gT(G); Q31G.init(S.gt, T); S.gt.fin = T.snap(G.x, G.discY); } Q31E.gUse(S.E, S.gt, G); Q31E.step(S.E, G, dt, S); if (S.ang0 == null && S.t > .2) S.ang0 = S.E.ang; },
     draw(ctx, w, h, S) {
       const G = D.G(S), s = G.s, E = S.E; K.bg(ctx, w, h, { benchY: h * .88 }); if (!E.tip) E.tip = Q31E.far(G, S);
-      Q31E.draw(ctx, E, G, { mode: S.p.show });
+      Q31E.gUse(E, S.gt, G); Q31E.draw(ctx, E, G, { mode: S.p.show }); Q31G.draw(ctx, S.gt, Q31E.gT(G), { to: 'القرص' });
       if (S.unk) Q31.T(ctx, 'جسم مجهول الشحنة ؟', E.tip[0] + 110 * s, E.tip[1] - 70 * s, { s: 12, w: 900, c: '#fff', bg: '#a16207' });
       const d = S.ang0 != null ? E.ang - S.ang0 : 0; const tr = Math.abs(d) < .02 ? 'الانفراج لم يتغير' : d > 0 ? 'الانفراج يزداد ↑' : 'الانفراج يقل ↓';
       Q31.T(ctx, 'انفراج الورقتين: ' + Math.round(E.ang * 2 * 57.3) + '° — ' + tr, G.x, G.yb + 16, { s: 12, w: 900, c: '#fff', bg: '#0e7490' });
       if (S.p.ans !== false) { const P = PR[S.p.pr]; Q31.card(ctx, S, [{ t: P[0], w: 900, c: '#0e7490' }, { t: P[3] }, { t: 'شحنة الكشاف: ' + Q31E.sgn(E.Q) + ' ، القرص: ' + Q31E.sgn(E.disc) + ' ، الورقتان: ' + Q31E.sgn(E.leaf), c: '#334155' }].concat(S.unk && Math.abs(d) > .05 ? [{ t: 'الجسم المجهول شحنته ' + (d > 0 ? 'سالبة (مشابهة)' : 'موجبة (مخالفة)') + ' ✓', c: '#15803d', w: 900 }] : []), { title: 'حالة الكتاب', y: 46, wd: 360 }); }
       Q31.banner(ctx, w, 'مختبر الكشاف: أسئلة الكتاب على الجهاز نفسه', '#0891b2');
     },
-    drags(S) { if (!S.W || !S.E.tip) return []; const G = D.G(S), E = S.E; return [Q31E.rodDrag(E, G, S, { idle: 'قرّب الساق ✋' }), { id: 'finger', x: G.x, y: G.discY - 34 * G.s, r: 30 * G.s, tip: 'اضغط لتضع إصبعك على القرص أو ترفعه', click: S => { E.gnd = !E.gnd; } }]; },
+    drags(S) { if (!S.W || !S.E.tip) return []; const G = D.G(S), E = S.E; return [Q31E.rodDrag(E, G, S, { idle: 'قرّب الساق ✋' }), ...Q31G.drags(S.gt, Q31E.gT(G), S)]; },
     readings(S) { const E = S.E; return [rd('شحنة الكشاف الكلية', Q31E.sgn(E.Q)), rd('شحنة القرص', Q31E.sgn(E.disc)), rd('شحنة الورقتين', Q31E.sgn(E.leaf)), rd('الانفراج', Math.round(E.ang * 2 * 57.3) + '°'), rd('متصل بالأرض', E.gnd ? 'نعم' : 'لا')]; },
     explain(S) { const E = S.E, p = E.p || 0; let t = PR[S.p.pr][3]; if (Math.abs(p) > .3) t += '<br>الساق القريبة ' + (E.rq > 0 ? 'الموجبة تجذب الإلكترونات إلى القرص' : 'السالبة تدفع الإلكترونات من القرص إلى الورقتين') + (E.gnd ? '، والأرض تعطي/تأخذ إلكترونات فتبقى الورقتان منطبقتين.' : '.'); return t; }
   };
@@ -1083,29 +1254,32 @@ const Q31E = { // electroscope physics + rod handling shared by all electroscope
 /* ---- E4 part 5: «تذكّر» — مقارنة الكشاف المشحون بالتماس والمشحون بالحث (ص 18) ---- */
 (() => {
   const D = { id: 'g9_es_compare', page: 18, fig: 'تذكّر (ص 18)',
-    desc: 'تذكّر: الكشاف المشحون بطريقة التماس تنفرج ورقتاه لاكتسابهما شحنة مماثلة لشحنة الجسم الملامس، والكشاف المشحون بالحث تنفرج ورقتاه لاكتسابهما شحنة مخالفة لشحنة الجسم المقرب. نشاهد الحالتين جنباً إلى جنب بالمشط السالب نفسه.',
+    desc: 'تذكّر: الكشاف المشحون بطريقة التماس تنفرج ورقتاه لاكتسابهما شحنة مماثلة لشحنة الجسم الملامس، والكشاف المشحون بالحث تنفرج ورقتاه لاكتسابهما شحنة مخالفة لشحنة الجسم المقرب. نشحن كشافين جنباً إلى جنب بمشطين سالبين: الأول بالتماس والثاني بالحث، وكل ذلك بيدك.',
     tags: 'تذكر مقارنة تماس حث كشاف مماثلة مخالفة',
     tools: ['كشافان', 'مشطان مشحونان بالسالبة'],
-    steps: ['اضغط «▶ شغّل» لتنفيذ الطريقتين معاً خطوة بخطوة.', 'لاحظ نوع الشحنة النهائية على كل كشاف.'],
+    steps: ['الكشاف الأيمن (التماس): اسحب المشط حتى يلمس القرص ثم أبعده.', 'الكشاف الأيسر (الحث): قرّب المشط من القرص دون لمس، المس القرص بإصبعك، ارفع الإصبع، ثم أبعد المشط.', 'قارن نوع الشحنة النهائية على الكشافين. (أو اضغط «▶ شغّل» لمشاهدة الطريقتين تلقائياً.)'],
     concl: ['التماس ⟸ شحنة مماثلة للجسم الملامس (المشط سالب ⟸ الكشاف سالب).', 'الحث ⟸ شحنة مخالفة للجسم المقرب (المشط سالب ⟸ الكشاف موجب).'],
-    controls: [BT('', [{ t: '▶ شغّل', on: S => D.reset(S, 1) }, { t: '↺ أعد', on: S => D.reset(S, 0) }]), SEL('show', 'عرض الشحنات', [['diff', 'الفائض فقط'], ['none', 'لا شيء']], 'diff')],
-    setup(S) { D.reset(S, 1); },
-    reset(S, pl) { S.A = Q31E.mk({ rod: 'comb', rq: -6 }); S.B = Q31E.mk({ rod: 'comb', rq: -6 }); S.A.tip = null; S.B.tip = null; S.tt = 0; S.play = pl; },
+    controls: [BT('', [{ t: '▶ شغّل تلقائياً', on: S => D.reset(S, 1) }, { t: '↺ أعد', on: S => D.reset(S, 0) }]), SEL('show', 'عرض الشحنات', [['diff', 'الفائض فقط'], ['none', 'لا شيء']], 'diff')],
+    setup(S) { D.reset(S, 0); },
+    reset(S, pl) { S.A = Q31E.mk({ rod: 'comb', rq: -6 }); S.B = Q31E.mk({ rod: 'comb', rq: -6 }); S.A.tip = null; S.B.tip = null; S.tt = 0; S.play = pl; S.gt = Q31G.mk({ wire: false }); },
+    gT(S) { const G = D.G(S, 1), T = Q31E.gT(G); return Object.assign(T, { fin0: [G.x - 34 * G.s, G.discY - 80 * G.s] }); },
     G(S, i) { const w = S.W, h = S.H, ph = w < 600, x0 = ph ? 0 : 64, cw = (w - x0) / 2, s = Q31.sc(w, h) * (ph ? .62 : 1); return Q31E.geo(S, x0 + cw * (1 - i) + cw * .38, h * .82, s); },
-    update(S, dt) { if (!S.W) return; const A = S.A, B = S.B, GA = D.G(S, 0), GB = D.G(S, 1); const far = G => [G.x + 140 * G.s, G.discY - 110 * G.s], near = G => [G.x + 34 * G.s, G.discY - 30 * G.s], touch = G => [G.x + 6 * G.s, G.discY - 6 * G.s];
+    update(S, dt) { if (!S.W) return; const A = S.A, B = S.B, GA = D.G(S, 0), GB = D.G(S, 1); const far = G => [G.x + 80 * G.s, G.discY - 200 * G.s], near = G => [G.x + 34 * G.s, G.discY - 30 * G.s], touch = G => [G.x + 6 * G.s, G.discY - 6 * G.s];
       if (!A.tip) { A.tip = far(GA); B.tip = far(GB); } if (S.play) S.tt += dt; const t = S.tt; const mv = (E, P) => { E.tip = [E.tip[0] + (P[0] - E.tip[0]) * Math.min(1, dt * 4), E.tip[1] + (P[1] - E.tip[1]) * Math.min(1, dt * 4)]; };
-      mv(A, t < 1 ? far(GA) : t < 3 ? touch(GA) : far(GA));
-      mv(B, t < 1 ? far(GB) : t < 5.5 ? near(GB) : far(GB)); B.gnd = t > 2.5 && t < 4.5;
+      if (S.play) { mv(A, t < 1 ? far(GA) : t < 3 ? touch(GA) : far(GA)); mv(B, t < 1 ? far(GB) : t < 5.5 ? near(GB) : far(GB)); B.gnd = t > 2.5 && t < 4.5; B.noHand = false; B._gp = null; }
+      else { const T = D.gT(S); Q31G.init(S.gt, T); B.gnd = Q31G.state(S.gt, T).on; B._gp = Q31G.path(S.gt, T); B.noHand = true; }
       Q31E.step(A, GA, dt, S); Q31E.step(B, GB, dt, S); },
     draw(ctx, w, h, S) {
       K.bg(ctx, w, h, { benchY: h * .82 }); const t = S.tt;
       [[S.A, 0, 'بالتماس'], [S.B, 1, 'بالحث']].forEach(([E, i, n]) => { const G = D.G(S, i); if (!E.tip) return; E.rodShow = false; Q31E.draw(ctx, E, G, { mode: S.p.show }); Q31.rod(ctx, E.tip[0], E.tip[1], E.tip[0] + 110 * G.s, E.tip[1] - 30 * G.s, 20 * G.s, 'comb', S.p.show !== 'none' ? { n: Math.min(6, Math.round(Math.abs(E.rq))), s: -1, from: .05, to: .5 } : null);
         Q31.T(ctx, 'الشحن ' + n, G.x, 78, { s: 15, w: 900, c: '#fff', bg: i ? '#7c3aed' : '#0891b2' });
-        const fin = t > 6.2; if (fin) Q31.T(ctx, 'النتيجة: الكشاف ' + (E.Q < 0 ? 'سالب — مماثلة للمشط' : 'موجب — مخالفة للمشط'), G.x, G.yb + 18, { s: 12.5, w: 900, c: '#fff', bg: E.Q < 0 ? '#1d4ed8' : '#b91c1c' }); });
-      const msg = t < 1 ? 'المشطان مشحونان بالسالبة' : t < 2.5 ? 'التماس: المشط يلمس القرص — الحث: المشط قريب فقط' : t < 4.5 ? 'الحث: نؤرّض القرص بالإصبع مع بقاء المشط قريباً' : t < 5.5 ? 'الحث: نرفع الإصبع أولاً' : 'نبعد المشطين';
+        const fin = S.play ? t > 6.2 : Math.abs(E.Q) > .3 && !E.gnd && Q31E.f(E, G) < .1; if (fin) Q31.T(ctx, 'النتيجة: الكشاف ' + (E.Q < 0 ? 'سالب — مماثلة للمشط' : 'موجب — مخالفة للمشط'), G.x, G.yb + 18, { s: 12.5, w: 900, c: '#fff', bg: E.Q < 0 ? '#1d4ed8' : '#b91c1c' }); });
+      if (!S.play) { Q31G.draw(ctx, S.gt, D.gT(S), { to: 'القرص', flx: 95 }); const GB = D.G(S, 1), B = S.B, f = Q31E.f(B, GB); const ga = D.G(S, 0), A = S.A; Q31.T(ctx, Math.abs(A.Q) > .3 ? (Q31E.f(A, ga) < .1 ? '✓ شُحن بالتماس' : 'أبعد المشط الآن') : 'المس القرص بالمشط', ga.x, 104, { s: 11.5, w: 900, c: '#fff', bg: '#0e7490' }); Q31.T(ctx, B.gnd ? 'ارفع الإصبع الآن (والمشط قريب)' : Math.abs(B.Q) > .3 ? (f < .1 ? '✓ شُحن بالحث' : 'أبعد المشط الآن') : f > .15 ? 'المس القرص بإصبعك ☝' : 'قرّب المشط دون لمس', GB.x, 104, { s: 11.5, w: 900, c: '#fff', bg: '#6d28d9' }); }
+      const msg = !S.play ? 'نفّذ الطريقتين بيدك، ثم قارن النتيجة' : t < 1 ? 'المشطان مشحونان بالسالبة' : t < 2.5 ? 'التماس: المشط يلمس القرص — الحث: المشط قريب فقط' : t < 4.5 ? 'الحث: نؤرّض القرص بالإصبع مع بقاء المشط قريباً' : t < 5.5 ? 'الحث: نرفع الإصبع أولاً' : 'نبعد المشطين';
       Q31.T(ctx, msg, Q31.cx(w), h * .9 + 10, { s: 12.5, w: 900, c: '#fff', bg: '#0f766e' });
       Q31.banner(ctx, w, 'تذكّر: التماس ⟸ شحنة مماثلة ، الحث ⟸ شحنة مخالفة', '#ca8a04');
     },
+    drags(S) { if (!S.W || !S.A.tip || S.play) return []; const L = []; [[S.A, 0], [S.B, 1]].forEach(([E, i]) => { const G = D.G(S, i); L.push({ id: 'comb' + i, x: E.tip[0] + 55 * G.s, y: E.tip[1] - 15 * G.s, w: 110 * G.s, h: 40 * G.s, axis: 'xy', keep: true, tip: i ? 'قرّب المشط من القرص دون لمس' : 'المس القرص بالمشط', drag: (S2, d) => { S.play = 0; E.tip = [clamp(d.ox - 55 * G.s + d.x - d.sx, G.x - 30 * G.s, (i ? D.G(S, 0).x - 150 * G.s : S.W - 120 * G.s)), clamp(d.oy + 15 * G.s + d.y - d.sy, 80, G.yb - 40)]; if (i && Q31E.touching(E, G)) E.tip = [E.tip[0] + 14 * G.s, E.tip[1] - 14 * G.s]; } }); }); return L.concat(Q31G.drags(S.gt, D.gT(S), S)); },
     readings(S) { return [rd('كشاف التماس', Q31E.sgn(S.A.Q)), rd('كشاف الحث', Q31E.sgn(S.B.Q))]; },
     explain(S) { return 'المشط نفسه (سالب) شحن الكشاف الأول <b>بالتماس</b> فصار <b>سالباً (مماثلاً)</b>، وشحن الكشاف الثاني <b>بالحث</b> فصار <b>موجباً (مخالفاً)</b>. في الحالتين تنفرج الورقتان لأنهما تحملان النوع نفسه من الشحنة.'; }
   };
@@ -1162,20 +1336,62 @@ const Q31E = { // electroscope physics + rod handling shared by all electroscope
 /* ---- E5 part 2: تطبيقات أخرى: أجهزة الترسيب في معامل الإسمنت والاستنساخ (ص 19) ---- */
 (() => {
   const CP = ['1) شحن الأسطوانة بالموجبة', '2) الضوء يفرّغ المناطق البيضاء', '3) الحبر (−) يلتصق بالصورة (+)', '4) الورقة (+ أقوى) تسحب الحبر', '5) الحرارة تثبّت الحبر'];
+  /* ---- interactive photocopier: rotate the drum by hand; every station acts on the surface that passes under it ---- */
+  const NC = 64, MASK = (() => { const m = new Array(NC).fill(0); const pat = '1101110111010110111011'; for (let k = 0; k < pat.length; k++) m[20 + k] = +pat[k]; return m; })();
+  const ST = { ch: -Math.PI / 2, ex: -Math.PI / 5, dv: Math.PI / 6, tr: Math.PI / 2, cl: Math.PI * .85 };
+  const CPY = {
+    init(S) { S.c = { phi: 0, q: new Array(NC).fill(0), tn: new Array(NC).fill(0), pt: [], cor: 0, lamp: 0, ton: 0, mot: 0, paper: 0, last: {} }; },
+    geo(S) { const w = S.W, h = S.H, u = Q31.sc(w, h) * (w < 600 ? .9 : 1.1), cx = Q31.cx(w); return { w, h, u, dx: cx - 90 * u, dy: h * .47, R: 88 * u, py: h * .47 + 88 * u + 8 * u, fx: cx - 90 * u + 200 * u }; },
+    ang(c, i) { return i / NC * TAU + c.phi; },
+    near(a, b) { let d = (a - b) % TAU; if (d < -Math.PI) d += TAU; if (d > Math.PI) d -= TAU; return Math.abs(d) < TAU / NC * .6; },
+    rot(S, dphi) { const c = S.c; const n = Math.max(1, Math.ceil(Math.abs(dphi) / (TAU / NC / 2))); for (let k = 0; k < n; k++) { c.phi += dphi / n; for (let i = 0; i < NC; i++) { const a = CPY.ang(c, i);
+        if (c.cor && CPY.near(a, ST.ch)) c.q[i] = 1;
+        if (c.lamp && CPY.near(a, ST.ex) && !MASK[i]) c.q[i] = 0;
+        if (c.ton && CPY.near(a, ST.dv) && c.q[i]) c.tn[i] = 1;
+        if (c.paper && CPY.near(a, ST.tr) && c.tn[i]) { c.tn[i] = 0; c.pt.push({ i, phi: c.phi }); }
+        if (CPY.near(a, ST.cl)) { c.q[i] = 0; c.tn[i] = 0; } } } },
+    update(S, dt) { const c = S.c; if (c.mot) CPY.rot(S, dt * 1.1); const g = CPY.geo(S); c.pt = c.pt.filter(p => (c.phi - p.phi) * g.R < g.w); },
+    btns(g) { const y = g.h - 64, bw = g.w < 600 ? 92 : 128, x0 = g.dx + 20 * g.u; return [['cor', '⚡ سلك الشحن', '#b91c1c'], ['lamp', '💡 مصباح النسخ', '#ca8a04'], ['ton', '⚫ الحبر (−)', '#111827'], ['paper', '📄 الورقة (+)', '#0369a1'], ['mot', '▶ المحرك', '#16a34a']].map(([k, t, col], i) => ({ k, t, col, x: x0 + (2 - i) * (bw + 8), y, w: bw, h: 34 })); },
+    draw(ctx, S) { const g = CPY.geo(S), u = g.u, c = S.c, R = g.R;
+      // paper path & fuser
+      Q31.raw(ctx, () => { ctx.fillStyle = '#cbd5e1'; ctx.fillRect(g.dx - 230 * u, g.py + 10 * u, 480 * u, 4); ['#ef4444', '#f97316'].forEach((col, k) => { const gg = ctx.createRadialGradient(g.fx, g.py + (k ? 22 : -14) * u, 2, g.fx, g.py + (k ? 22 : -14) * u, 16 * u); gg.addColorStop(0, '#fff7ed'); gg.addColorStop(1, col); ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(g.fx, g.py + (k ? 26 : -12) * u, 16 * u, 0, TAU); ctx.fill(); }); });
+      Q31.T(ctx, '🔥 مثبّت حراري', g.fx, g.py + 56 * u, { s: 10.5, w: 800, c: '#fff', bg: '#c2410c' });
+      if (c.paper) { const len = Math.min(380 * u, 60 * u + (c.pt.length ? (c.phi - c.pt[0].phi) * R : 0)); Q31.raw(ctx, () => { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#94a3b8'; ctx.fillRect(g.dx - 60 * u, g.py, len + 60 * u, 9 * u); ctx.strokeRect(g.dx - 60 * u, g.py, len + 60 * u, 9 * u); }); for (let k = 0; k < 7; k++) Q31.sg(ctx, g.dx - 40 * u + k * 14 * u, g.py + 18 * u, 1, 4); }
+      { const fz = c.pt.filter(p => g.dx + (c.phi - p.phi) * R > g.fx + 20 * u).length, tot = MASK.reduce((a, b) => a + b, 0); if (fz) { const x = g.fx + 110 * u; Q31.raw(ctx, () => { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5; rr(ctx, x - 62 * u, g.py - 70 * u, 124 * u, 56 * u, 4); ctx.fill(); ctx.stroke(); ctx.globalAlpha = Math.min(1, fz / tot); ctx.fillStyle = '#000'; ctx.font = '900 ' + (19 * u | 0) + 'px Tajawal'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('فيزياء', x, g.py - 42 * u); ctx.globalAlpha = 1; }); Q31.T(ctx, fz >= tot ? 'النسخة جاهزة ✓' : 'النسخة تخرج…', x, g.py - 84 * u, { s: 11, w: 900, c: '#fff', bg: '#15803d' }); } }
+      c.pt.forEach(p => { const x = g.dx + (c.phi - p.phi) * R, fused = x > g.fx; Q31.raw(ctx, () => { ctx.fillStyle = fused ? '#000' : '#374151'; ctx.beginPath(); ctx.arc(x, g.py + 1, fused ? 4.5 * u : 4 * u, 0, TAU); ctx.fill(); }); });
+      // drum
+      Q31.raw(ctx, () => { ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.3)'; ctx.shadowBlur = 12; const gg = ctx.createRadialGradient(g.dx - 30 * u, g.dy - 35 * u, 6, g.dx, g.dy, R); gg.addColorStop(0, '#f1f5f9'); gg.addColorStop(.6, '#64748b'); gg.addColorStop(1, '#334155'); ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(g.dx, g.dy, R, 0, TAU); ctx.fill(); ctx.restore();
+        ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(g.dx, g.dy); ctx.lineTo(g.dx + Math.cos(c.phi) * R * .6, g.dy + Math.sin(c.phi) * R * .6); ctx.stroke(); ctx.fillStyle = '#e2e8f0'; ctx.beginPath(); ctx.arc(g.dx + Math.cos(c.phi) * R * .6, g.dy + Math.sin(c.phi) * R * .6, 9 * u, 0, TAU); ctx.fill(); });
+      for (let i = 0; i < NC; i++) { const a = CPY.ang(c, i); if (c.q[i]) Q31.sg(ctx, g.dx + Math.cos(a) * R * .88, g.dy + Math.sin(a) * R * .88, 1, 4.2 * Math.max(.8, u)); if (c.tn[i]) Q31.raw(ctx, () => { ctx.fillStyle = '#111827'; ctx.beginPath(); ctx.arc(g.dx + Math.cos(a) * R * 1.05, g.dy + Math.sin(a) * R * 1.05, 4.6 * u, 0, TAU); ctx.fill(); }); }
+      // stations
+      const P = (a, r) => [g.dx + Math.cos(a) * R * r, g.dy + Math.sin(a) * R * r];
+      { const p = P(ST.ch, 1.22); Q31.raw(ctx, () => { ctx.fillStyle = c.cor ? '#fca5a5' : '#cbd5e1'; rr(ctx, p[0] - 26 * u, p[1] - 10 * u, 52 * u, 16 * u, 4); ctx.fill(); ctx.strokeStyle = c.cor ? '#dc2626' : '#64748b'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(p[0] - 22 * u, p[1]); ctx.lineTo(p[0] + 22 * u, p[1]); ctx.stroke(); }); Q31.T(ctx, 'سلك الشحن', p[0], p[1] - 22 * u, { s: 10.5, w: 800, c: '#fff', bg: '#b91c1c' }); }
+      { const p = P(ST.ex, 1.1), o = [p[0] + 130 * u, p[1] - 70 * u]; Q31.raw(ctx, () => { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#94a3b8'; rr(ctx, o[0] - 50 * u, o[1] - 22 * u, 100 * u, 44 * u, 4); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#111827'; ctx.font = '900 ' + (17 * u | 0) + 'px Tajawal'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('فيزياء', o[0], o[1]); if (c.lamp) { ctx.fillStyle = 'rgba(253,224,71,.45)'; ctx.beginPath(); ctx.moveTo(o[0] - 40 * u, o[1] + 22 * u); ctx.lineTo(o[0] + 40 * u, o[1] + 22 * u); ctx.lineTo(p[0] + 8 * u, p[1] + 4 * u); ctx.lineTo(p[0] - 8 * u, p[1] - 4 * u); ctx.fill(); } }); Q31.T(ctx, 'الورقة الأصلية' + (c.lamp ? ' 💡' : ''), o[0], o[1] - 34 * u, { s: 10.5, w: 800, c: '#fff', bg: '#ca8a04' }); }
+      { const p = P(ST.dv, 1.32); Q31.raw(ctx, () => { ctx.fillStyle = '#1f2937'; rr(ctx, p[0] - 4 * u, p[1] - 30 * u, 56 * u, 60 * u, 8); ctx.fill(); if (c.ton) { ctx.fillStyle = '#4b5563'; for (let k = 0; k < 12; k++) { ctx.beginPath(); ctx.arc(p[0] + 4 * u + (k * 13 % 44) * u, p[1] - 22 * u + (k * 7 % 46) * u, 3 * u, 0, TAU); ctx.fill(); } } }); Q31.T(ctx, 'مسحوق الحبر (−)', p[0] + 24 * u, p[1] + 42 * u, { s: 10.5, w: 800, c: '#fff', bg: '#111827' }); }
+      { const p = P(ST.cl, 1.18); Q31.T(ctx, 'تنظيف', p[0] - 8 * u, p[1], { s: 10, w: 800, c: '#fff', bg: '#475569' }); }
+      CPY.btns(g).forEach(b => Q31.drawBtn(ctx, b, b.t, b.col, !!c[b.k]));
+      Q31.T(ctx, '↻ اسحب الأسطوانة لتدور', g.dx, g.dy, { s: 11, w: 900, c: '#fff', bg: 'rgba(15,23,42,.7)' });
+      const st = CPY.stage(S); Q31.strip(ctx, g.w, g.w < 600 ? g.h - 120 : 50, CP, st, '#9333ea');
+    },
+    stage(S) { const c = S.c; if (c.pt.some(p => (c.phi - p.phi) * CPY.geo(S).R > CPY.geo(S).fx - CPY.geo(S).dx)) return 4; if (c.pt.length) return 3; if (c.tn.some(x => x)) return 2; if (c.lamp && c.q.some(x => x) && c.q.some(x => !x)) return 1; return 0; },
+    drags(S) { const g = CPY.geo(S), c = S.c; const L = CPY.btns(g).map(b => Q31.btn('cp_' + b.k, b, S2 => { c[b.k] = c[b.k] ? 0 : 1; if (b.k === 'paper' && !c.paper) c.pt = []; }, { tip: b.t }));
+      L.push({ id: 'drum', x: g.dx + Math.cos(c.phi) * g.R * .6, y: g.dy + Math.sin(c.phi) * g.R * .6, r: g.R * .6, axis: 'xy', keep: true, tip: 'اسحب الأسطوانة لتدور', idle: 'أدر الأسطوانة ↻', down: S2 => { c._a = null; }, drag: (S2, d) => { const a = Math.atan2(d.y - g.dy, d.x - g.dx); if (c._a != null) { let da = a - c._a; if (da > Math.PI) da -= TAU; if (da < -Math.PI) da += TAU; if (da > 0) CPY.rot(S, da); } c._a = a; } });
+      return L; }
+  };
   const D = { id: 'g9_app_more', page: 19, fig: 'ص 19',
     desc: 'تستثمر الكهربائية الساكنة أيضاً في أجهزة الاستنساخ، وفي أجهزة الترسيب التي تستعمل في معامل صناعة الإسمنت للتقليل من التلوث البيئي، وفي تثبيت مواد التجميل والعدسات اللاصقة.',
     tags: 'ترسيب معمل إسمنت تلوث استنساخ طابعة تطبيقات',
     tools: ['مرسّب كهربائي', 'جهاز استنساخ'],
-    steps: ['اختر «جهاز الترسيب» وشغّل/أطفئ الجهاز: قارن الدخان الخارج من المدخنة.', 'اضغط «انفض الألواح» لجمع الغبار المترسب.', 'اختر «جهاز الاستنساخ» وحرّك «مرحلة الاستنساخ» لترى كيف تُنسخ الصورة بالكهربائية الساكنة.'],
+    steps: ['اختر «جهاز الترسيب» وشغّل/أطفئ الجهاز: قارن الدخان الخارج من المدخنة.', 'اضغط «انفض الألواح» لجمع الغبار المترسب.', 'اختر «جهاز الاستنساخ» (الزر أعلى المشهد): شغّل سلك الشحن وأدر الأسطوانة بيدك، ثم شغّل المصباح، ثم الحبر، ثم الورقة، وتابع الأسطوانة وهي تدور.'],
     concl: ['في جهاز الترسيب تُشحن دقائق الغبار فتنجذب إلى ألواح مشحونة بشحنة مخالفة (أو مؤرضة) فيخرج هواء نظيف.', 'في الاستنساخ يلتصق مسحوق الحبر المشحون بالمناطق المشحونة من الأسطوانة التي تمثل الصورة.'],
-    controls: [SEL('sc', 'التطبيق', [['prec', 'جهاز الترسيب (معمل الإسمنت)'], ['copy', 'جهاز الاستنساخ']], 'prec'), TG('pw', 'تشغيل جهاز الترسيب', true, null, 'charges'), R('st', 'مرحلة الاستنساخ', 0, 4, 0, 1, ''), BT('', [{ t: '🔨 انفض الألواح', on: S => { S.stuck = []; S.hop = (S.hop || 0) + 1; } }, { t: '▶ استنسخ تلقائياً', on: S => { S.auto = 1; S.at = 0; } }])],
-    setup(S) { S.pt = []; S.stuck = []; S.hop = 0; S.out = 0; S.auto = 0; },
-    update(S, dt) { if (!S.W) return; const w = S.W, h = S.H, u = Q31.sc(w, h), cx = Q31.cx(w); if (S.auto) { S.at += dt; const k = Math.min(4, Math.floor(S.at / 1.4)); if (k !== S.p.st) setParam(S, 'st', k); if (S.at > 7) S.auto = 0; }
-      if (S.p.sc !== 'prec') return; const L = cx - 70 * u, R = cx + 70 * u, top = h * .14, bot = h * .78;
+    controls: [SEL('sc', 'التطبيق', [['prec', 'جهاز الترسيب (معمل الإسمنت)'], ['copy', 'جهاز الاستنساخ']], 'prec'), TG('pw', 'تشغيل جهاز الترسيب', true, null, 'charges'), BT('', [{ t: '🔨 انفض الألواح', on: S => { S.stuck = []; S.hop = (S.hop || 0) + 1; } }, { t: '▶ استنسخ تلقائياً', on: S => { setParam(S, 'sc', 'copy'); Object.assign(S.c, { cor: 1, lamp: 1, ton: 1, paper: 1, mot: 1 }); } }, { t: '↺ أعد الاستنساخ', on: S => CPY.init(S) }])],
+    setup(S) { S.pt = []; S.stuck = []; S.hop = 0; S.out = 0; S.auto = 0; CPY.init(S); },
+    update(S, dt) { if (!S.W) return; const w = S.W, h = S.H, u = Q31.sc(w, h), cx = Q31.cx(w); if (S.p.sc !== 'prec') { CPY.update(S, dt); return; } const L = cx - 70 * u, R = cx + 70 * u, top = h * .14, bot = h * .78;
       if (S.pt.length < 120) S.pt.push({ x: cx + (Math.random() - .5) * 100 * u, y: bot, vx: 0, ch: 0 });
       S.pt.forEach(p => { p.y -= 70 * u * dt; if (S.p.pw !== false && p.y < bot - 60 * u && p.y > top + 40 * u) { p.ch = 1; const side = p.x < cx ? -1 : 1; p.vx += side * 180 * u * dt; } p.x += p.vx * dt; if (p.x < L + 8 || p.x > R - 8) { p.dead = 1; if (S.stuck.length < 400) S.stuck.push([clamp(p.x, L + 8, R - 8), p.y]); } if (p.y < top) { p.dead = 1; S.out++; } });
       S.pt = S.pt.filter(p => !p.dead); },
-    draw(ctx, w, h, S) {
+    draw(ctx, w, h, S) { D.draw0(ctx, w, h, S); D.tabs(S).forEach(b => Q31.drawBtn(ctx, b, b.t, '#9333ea', S.p.sc === b.k)); if (S.p.sc === 'prec') Q31.drawBtn(ctx, { x: Q31.cx(w) - 170 * Q31.sc(w, h), y: h * .82, w: 130, h: 32 }, S.p.pw !== false ? '⏻ أطفئ الجهاز' : '⏻ شغّل الجهاز', S.p.pw !== false ? '#16a34a' : '#64748b', S.p.pw !== false); },
+    draw0(ctx, w, h, S) {
       const u = Q31.sc(w, h), cx = Q31.cx(w), ph = w < 600; K.bg(ctx, w, h, { benchY: h * .86 });
       if (S.p.sc === 'prec') { const L = cx - 70 * u, R = cx + 70 * u, top = h * .14, bot = h * .78, on = S.p.pw !== false;
         Q31.raw(ctx, () => { ctx.fillStyle = '#d6d3d1'; ctx.fillRect(L - 14, top, 14, bot - top); ctx.fillRect(R, top, 14, bot - top); ctx.fillStyle = '#a8a29e'; ctx.fillRect(L - 40 * u, bot, R - L + 80 * u, h * .86 - bot); ctx.fillStyle = 'rgba(120,113,108,.8)'; for (let i = 0; i < Math.min(20, S.hop * 4); i++) { ctx.beginPath(); ctx.arc(cx + (i % 5 - 2) * 14, h * .84 - (i / 5 | 0) * 8, 6, 0, TAU); ctx.fill(); }
@@ -1186,6 +1402,7 @@ const Q31E = { // electroscope physics + rod handling shared by all electroscope
         Q31.T(ctx, 'غازات ودقائق غبار من الفرن', cx, bot + 22 * u, { s: 11, w: 800, c: '#fff', bg: '#57534e' }); Q31.T(ctx, on ? 'هواء نظيف ✓' : 'دخان ملوث ✗', cx, top - 60, { s: 13, w: 900, c: '#fff', bg: on ? '#15803d' : '#dc2626' });
         if (!ph) { Q31.T(ctx, 'سلك مشحون (−) يشحن الغبار', cx + 170 * u, top + 80, { s: 11, w: 800, c: '#fff', bg: '#1d4ed8' }); Q31.T(ctx, 'ألواح (+) تجذب الغبار', cx - 170 * u, top + 140, { s: 11, w: 800, c: '#fff', bg: '#b91c1c' }); }
         Q31.banner(ctx, w, 'جهاز الترسيب: تقليل التلوث في معامل الإسمنت', '#9333ea'); }
+      else if (1) { CPY.draw(ctx, S); Q31.banner(ctx, w, 'جهاز الاستنساخ: الحبر يلتصق بالمناطق المشحونة', '#9333ea'); }
       else { const k = S.p.st, dx = cx - 40 * u, dy = h * .4, R = 90 * u;
         Q31.raw(ctx, () => { const gg = ctx.createRadialGradient(dx - 20, dy - 30, 5, dx, dy, R); gg.addColorStop(0, '#e2e8f0'); gg.addColorStop(1, '#475569'); ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(dx, dy, R, 0, TAU); ctx.fill(); });
         const img = a => { const x = Math.cos(a), y = Math.sin(a); return (a > -.6 && a < .9); };
@@ -1197,8 +1414,10 @@ const Q31E = { // electroscope physics + rod handling shared by all electroscope
         Q31.T(ctx, 'أسطوانة حساسة للضوء', dx, dy - R - 18, { s: 11.5, w: 800, c: '#fff', bg: '#334155' });
         Q31.banner(ctx, w, 'جهاز الاستنساخ: الحبر يلتصق بالمناطق المشحونة', '#9333ea'); }
     },
-    readings(S) { return S.p.sc === 'prec' ? [rd('الجهاز', S.p.pw !== false ? 'يعمل' : 'متوقف'), rd('دقائق خرجت من المدخنة', String(S.out)), rd('دقائق ترسبت', String(S.stuck.length))] : [rd('المرحلة', CP[S.p.st], 1)]; },
-    explain(S) { return S.p.sc === 'prec' ? 'السلك المركزي المشحون يشحن دقائق الغبار بالسالبة، فتنجذب إلى الألواح الموجبة (أو المؤرضة) وتلتصق بها، فيخرج من المدخنة هواء نظيف. ننفض الألواح لجمع الغبار. هكذا تقلل معامل الإسمنت التلوث البيئي.' : ['تُشحن أسطوانة حساسة للضوء بشحنة موجبة.', 'ينعكس الضوء عن المناطق البيضاء من الورقة الأصلية فيفرّغ الشحنة فيها، وتبقى الشحنة في مكان الكتابة فقط (صورة مشحونة غير مرئية).', 'مسحوق الحبر مشحون بالسالبة فيلتصق بالمناطق الموجبة فقط.', 'الورقة تُشحن بشحنة موجبة أقوى فتسحب الحبر إليها.', 'الحرارة تذيب الحبر وتثبته على الورقة: نسخة جاهزة!'][S.p.st]; }
+    tabs(S) { const bw = 140, y = S.W < 600 ? 92 : 86, x0 = S.W < 600 ? 10 : 76; return [['prec', '🏭 جهاز الترسيب'], ['copy', '🖨 جهاز الاستنساخ']].map(([k, t], i) => ({ k, t, x: x0 + bw / 2 + (1 - i) * (bw + 8), y, w: bw, h: 30 })); },
+    drags(S) { if (!S.W) return []; const L = D.tabs(S).map(b => Q31.btn('tab_' + b.k, b, S2 => setParam(S, 'sc', b.k), { tip: b.t })); if (S.p.sc === 'copy') return L.concat(CPY.drags(S)); L.push(Q31.btn('pw', { x: Q31.cx(S.W) - 170 * Q31.sc(S.W, S.H), y: S.H * .82, w: 130, h: 32 }, S2 => setParam(S, 'pw', S.p.pw === false), { tip: 'شغّل/أطفئ جهاز الترسيب' })); return L; },
+    readings(S) { return S.p.sc === 'prec' ? [rd('الجهاز', S.p.pw !== false ? 'يعمل' : 'متوقف'), rd('دقائق خرجت من المدخنة', String(S.out)), rd('دقائق ترسبت', String(S.stuck.length))] : [rd('المرحلة', CP[CPY.stage(S)], 1), rd('سلك الشحن', S.c.cor ? 'يعمل' : 'متوقف'), rd('نقاط حبر على الورقة', String(S.c.pt.length))]; },
+    explain(S) { return S.p.sc === 'prec' ? 'السلك المركزي المشحون يشحن دقائق الغبار بالسالبة، فتنجذب إلى الألواح الموجبة (أو المؤرضة) وتلتصق بها، فيخرج من المدخنة هواء نظيف. ننفض الألواح لجمع الغبار. هكذا تقلل معامل الإسمنت التلوث البيئي.' : ['تُشحن أسطوانة حساسة للضوء بشحنة موجبة.', 'ينعكس الضوء عن المناطق البيضاء من الورقة الأصلية فيفرّغ الشحنة فيها، وتبقى الشحنة في مكان الكتابة فقط (صورة مشحونة غير مرئية).', 'مسحوق الحبر مشحون بالسالبة فيلتصق بالمناطق الموجبة فقط.', 'الورقة تُشحن بشحنة موجبة أقوى فتسحب الحبر إليها.', 'الحرارة تذيب الحبر وتثبته على الورقة: نسخة جاهزة!'][CPY.stage(S)] + (S.p.sc === 'copy' && !S.c.cor && !S.c.q.some(x => x) ? '<br>ابدأ: شغّل «سلك الشحن» ثم أدر الأسطوانة بيدك.' : ''); }
   };
   M8.P[D.id] = D;
 })();
