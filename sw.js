@@ -1,5 +1,5 @@
 /* مختبر الفيزياء التفاعلي — العمل دون إنترنت. VER changes with every build, so a new upload replaces the old copy. */
-const VER = '354ec777de', CACHE = 'lab-' + VER, FONTS = 'lab-fonts';
+const VER = 'a47aa57912', CACHE = 'lab-' + VER, FONTS = 'lab-fonts';
 const CORE = ['./', 'rd.js', 'pro.bin', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
