@@ -1,6 +1,6 @@
 /* مختبر الفيزياء التفاعلي — العمل دون إنترنت. VER changes with every build, so a new upload replaces the old copy. */
-const VER = '09e75601c3', CACHE = 'lab-' + VER, FONTS = 'lab-fonts', KEEP = 'lab-keep-1';
-const CORE = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
+const VER = '478bfb7eda', CACHE = 'lab-' + VER, FONTS = 'lab-fonts', KEEP = 'lab-keep-1';
+const CORE = ['./', 'pro.bin?b=f03d50b56d', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
@@ -20,11 +20,11 @@ self.addEventListener('fetch', e => {
   const page = r.mode === 'navigate' || u.pathname.endsWith('/') || u.pathname.endsWith('index.html');
   // versioned books, the paid code and the 3D models never change under the same name: keep them for good, so only the first opening downloads them
   if (u.pathname.includes('/assets3d/') || (u.search && /(pro\.bin|\/rd(_\w+)?\.js)$/.test(u.pathname))) {
-    e.respondWith(caches.open(KEEP).then(c => c.match(r).then(hit => hit || fetch(r).then(res => { if (res.ok) c.put(r, res.clone()); return res; }))));
+    e.respondWith(caches.match(r).then(hit => hit || fetch(r).then(res => { if (res.ok) caches.open(KEEP).then(c => c.put(r, res.clone())); return res; })));
     return;
   }
-  // page: the stored copy opens at once, a new upload arrives through a new sw.js (the 'update' button)
-  if (page) { e.respondWith(caches.open(CACHE).then(c => c.match('./').then(hit => { const net = fresh(r, 8000).then(res => { c.put('./', res.clone()); return res; }); if (hit) { net.catch(() => {}); return hit; } return net; }))); return; }
+  // page: the stored copy opens at once; a new upload installs itself in the background through a new sw.js and is used at the next opening
+  if (page) { e.respondWith(caches.match('./').then(hit => hit || fetch(r).then(res => { if (res.ok) { const cp = res.clone(); caches.open(CACHE).then(c => c.put('./', cp)); } return res; }))); return; }
   e.respondWith(fresh(r, 8000).then(res => { const cp = res.clone(); caches.open(CACHE).then(c => c.put(r, cp)); return res; })
     .catch(() => caches.open(CACHE).then(c => c.match(r, { ignoreSearch: true })).then(hit => hit || fetch(r))));
 });
