@@ -1,11 +1,11 @@
 /* مختبر الفيزياء التفاعلي — العمل دون إنترنت. VER changes with every build, so a new upload replaces the old copy. */
-const VER = 'b43faa633b', CACHE = 'lab-' + VER, FONTS = 'lab-fonts';
-const CORE = ['./', 'rd.js', 'pro.bin', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
+const VER = '09e75601c3', CACHE = 'lab-' + VER, FONTS = 'lab-fonts', KEEP = 'lab-keep-1';
+const CORE = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== FONTS).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== FONTS && k !== KEEP).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 // page: network first (always the newest upload when online; ETag makes an unchanged page cheap), cached copy when offline or the network hangs
 const fresh = (req, ms) => new Promise((ok, no) => { const t = setTimeout(no, ms); fetch(req, { cache: 'no-cache' }).then(r => { clearTimeout(t); r.ok ? ok(r) : no(); }, () => { clearTimeout(t); no(); }); });
@@ -18,7 +18,13 @@ self.addEventListener('fetch', e => {
   }
   if (u.origin !== location.origin) return;
   const page = r.mode === 'navigate' || u.pathname.endsWith('/') || u.pathname.endsWith('index.html');
-  const key = page ? './' : r;
-  e.respondWith(fresh(r, page ? 8000 : 5000).then(res => { const cp = res.clone(); caches.open(CACHE).then(c => c.put(key, cp)); return res; })
-    .catch(() => caches.open(CACHE).then(c => c.match(key, { ignoreSearch: true })).then(hit => hit || fetch(r))));
+  // versioned books, the paid code and the 3D models never change under the same name: keep them for good, so only the first opening downloads them
+  if (u.pathname.includes('/assets3d/') || (u.search && /(pro\.bin|\/rd(_\w+)?\.js)$/.test(u.pathname))) {
+    e.respondWith(caches.open(KEEP).then(c => c.match(r).then(hit => hit || fetch(r).then(res => { if (res.ok) c.put(r, res.clone()); return res; }))));
+    return;
+  }
+  // page: the stored copy opens at once, a new upload arrives through a new sw.js (the 'update' button)
+  if (page) { e.respondWith(caches.open(CACHE).then(c => c.match('./').then(hit => { const net = fresh(r, 8000).then(res => { c.put('./', res.clone()); return res; }); if (hit) { net.catch(() => {}); return hit; } return net; }))); return; }
+  e.respondWith(fresh(r, 8000).then(res => { const cp = res.clone(); caches.open(CACHE).then(c => c.put(r, cp)); return res; })
+    .catch(() => caches.open(CACHE).then(c => c.match(r, { ignoreSearch: true })).then(hit => hit || fetch(r))));
 });
