@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إدارة المختبر</title><meta name="robots" content="noindex,nofollow">
+<!-- release.py writes this page with the server address to ../private/admin.html and to the site as lab-admin.html; every action is checked by is_admin() on the server. -->
+<style>
+:root{--bg:#eef2f8;--card:#fff;--ink:#0f1b33;--ink2:#5b6884;--line:#dde3ee;--acc:#1f5eff;--good:#0e9f6e;--bad:#dc2626}
+@media(prefers-color-scheme:dark){:root{--bg:#0a0f1c;--card:#121a2c;--ink:#e8eefc;--ink2:#a9b6d3;--line:#243150;--acc:#5b8cff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,"Segoe UI",sans-serif;line-height:1.6}
+.wrap{max-width:980px;margin:auto;padding:16px}h1{font-size:1.4em;margin:8px 0 14px}h2{font-size:1.1em;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+input,select,button{font:inherit;border-radius:10px;border:1px solid var(--line);padding:9px 12px;background:var(--bg);color:var(--ink)}
+button{background:var(--acc);color:#fff;border:0;cursor:pointer;font-weight:700}button.sec{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.row>*{flex:0 1 auto}.grow{flex:1 1 200px}
+table{width:100%;border-collapse:collapse;font-size:.92em}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right}th{color:var(--ink2);font-weight:600}
+.ok{color:var(--good);font-weight:700}.bad{color:var(--bad)}.muted{color:var(--ink2)}.mono{font-family:Consolas,monospace;direction:ltr;unicode-bidi:embed}
+#newCodes{white-space:pre;font-family:Consolas,monospace;direction:ltr;text-align:left;background:var(--bg);border-radius:10px;padding:10px;margin-top:10px;display:none}
+.tabs{display:flex;gap:6px;margin-bottom:10px}.tabs button{flex:1}#msg{min-height:1.4em}
+.gr{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px;align-items:center}.gr b{font-weight:600;color:var(--ink2);margin-inline-end:4px}
+.gr label{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:99px;padding:4px 11px;cursor:pointer;background:var(--bg);user-select:none;font-size:.92em}
+.gr label:has(input:checked){background:var(--acc);color:#fff;border-color:var(--acc)}.gr input{margin:0}
+.gr small{color:var(--ink2);flex-basis:100%}.chip{display:inline-block;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:0 8px;margin:1px;font-size:.85em}
+.chip.all{color:var(--good);font-weight:700}td button.sm{padding:3px 9px;font-size:.85em}
+.hero{background:linear-gradient(135deg,#1f5eff,#7c3aed);color:#fff;border-radius:20px;padding:18px 20px;margin-bottom:14px;box-shadow:0 10px 30px rgba(31,94,255,.25)}.hero h1{margin:0}.hero p{margin:2px 0 0;opacity:.9;font-size:.92em}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stats div{background:var(--bg);border-radius:14px;padding:10px;text-align:center}.stats b{display:block;font-size:1.5em;color:var(--acc)}.stats span{font-size:.82em;color:var(--ink2)}
+.ucard{border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px;background:var(--card)}.uhead{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;justify-content:space-between}.uhead .mono{font-weight:700;word-break:break-all}
+.badge{border-radius:99px;padding:1px 10px;font-size:.82em;font-weight:700}.badge.on{background:#d1fae5;color:#047857}.badge.off{background:#fee2e2;color:#b91c1c}
+.gchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.gchip{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:.86em;font-weight:600;min-height:36px}.gchip.on{background:var(--acc);border-color:var(--acc);color:#fff}.gchip.all.on{background:var(--good);border-color:var(--good)}
+#q{width:100%;margin-bottom:10px}.scroll{overflow-x:auto}
+@media(max-width:640px){.wrap{padding:10px}.row input,.row select,.row button{flex:1 1 100%;width:100%!important;min-height:44px}.tabs button{min-height:44px}input,select,button{font-size:16px}.gchip{flex:1 1 45%}}
+</style>
+</head>
+<body><div class="wrap">
+<div class="hero"><h1>🔑 إدارة المختبر</h1><p>الحسابات والرموز وصلاحية كل صف لكل إيميل</p></div>
+<div class="card" id="login"><h2>دخول المدير</h2>
+  <p class="muted">ادخل ببريد وكلمة سر حسابك في المختبر (البريد المكتوب في جدول المدراء).</p>
+  <div class="row"><input id="em" class="grow" type="email" placeholder="البريد" dir="ltr"><input id="pw" class="grow" type="password" placeholder="كلمة السر" dir="ltr"><button id="go">دخول</button></div>
+</div>
+<div id="app" style="display:none">
+  <div class="card"><h2>توليد رموز تفعيل</h2>
+    <div class="row"><label>العدد <input id="n" type="number" value="1" min="1" max="200" style="width:80px"></label>
+      <select id="plan"><option value="month">شهري (30 يوماً)</option><option value="semester" selected>فصلي (150 يوماً)</option><option value="year">سنوي (365 يوماً)</option></select>
+      <input id="note" class="grow" placeholder="ملاحظة (اسم الطالب، طريقة الدفع…)"><button id="mk">توليد</button></div>
+    <div class="gr" id="cg"></div>
+    <div id="newCodes"></div>
+  </div>
+  <div class="card"><h2>طالب محدد</h2>
+    <div class="row"><input id="ue" class="grow" type="email" placeholder="بريد الطالب" dir="ltr">
+      <button class="sec" id="rst" title="يمسح أجهزته المسجلة فيعمل على الجهاز الذي يدخل منه أولاً">نقل إلى جهاز جديد</button>
+      <input id="days" type="number" value="30" style="width:80px"><button class="sec" id="add">إضافة أيام</button><button class="sec" id="end" style="color:#dc2626">إنهاء الاشتراك</button>
+      <input id="nd" type="number" value="2" min="1" style="width:70px" title="عدد الأجهزة"><button class="sec" id="setdev">عدد الأجهزة</button>
+      <input id="np" type="text" placeholder="كلمة سر جديدة" style="width:150px" dir="ltr"><button class="sec" id="setpw">تغيير كلمة السر</button></div>
+    <div class="gr" id="ug"></div>
+    <div class="row"><button id="setgr">💾 حفظ صفوف هذا الحساب</button><button class="sec" id="allgr">فتح كل الصفوف</button></div>
+  </div>
+  <p id="msg"></p>
+  <div class="card"><div class="tabs"><button id="tU">الحسابات</button><button class="sec" id="tC">الرموز</button></div><div id="list"></div></div>
+</div>
+</div>
+<script>
+const URL0 = 'https://qtgujnpztpqeodfzacch.supabase.co', ANON = 'sb_publishable_0kxlSnkq7ZCwzSnpMK6_RQ_BE1BCuCG';
+const $ = s => document.querySelector(s); let tok = null, tab = 'u';
+const msg = (t, bad) => { $('#msg').textContent = t; $('#msg').className = bad ? 'bad' : 'ok'; };
+async function api(path, body) {
+  const r = await fetch(URL0 + path, { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json', apikey: ANON }, tok ? { Authorization: 'Bearer ' + tok } : {}), body: JSON.stringify(body || {}) });
+  const j = await r.json().catch(() => null); if (!r.ok) throw new Error((j && (j.message || j.msg || j.error_description)) || r.status); return j;
+}
+const rpc = (f, b) => api('/rest/v1/rpc/' + f, b);
+const PL = { month: 'شهري', semester: 'فصلي', year: 'سنوي' };
+/* الصفوف: لا اختيار = كل الصفوف */
+const GR = [['g5', 'الخامس الابتدائي'], ['g6', 'السادس الابتدائي'], ['g7', 'الأول المتوسط'], ['g8', 'الثاني المتوسط'], ['g9', 'الثالث المتوسط'], ['g10', 'الرابع العلمي'], ['g11', 'الخامس العلمي'], ['g12', 'السادس العلمي']];
+const grName = g => (GR.find(x => x[0] === g) || [g, g])[1];
+const grBox = (id, title, hint) => { $('#' + id).innerHTML = `<b>${title}</b>` + GR.map(([g, n]) => `<label><input type="checkbox" value="${g}">${n}</label>`).join('') + `<small>${hint}</small>`; };
+const grGet = id => [...document.querySelectorAll('#' + id + ' input:checked')].map(i => i.value);
+const grSet = (id, L) => document.querySelectorAll('#' + id + ' input').forEach(i => i.checked = !!(L && L.includes(i.value)));
+const grShow = L => L && L.length ? L.map(g => `<span class="chip">${grName(g)}</span>`).join('') : '<span class="chip all">كل الصفوف</span>';
+grBox('cg', 'صفوف الرمز:', 'لا تختر شيئاً ليفتح الرمز كل الصفوف. إن اخترت صفوفاً فالرمز يفتحها فقط (وتُضاف إلى صفوف الطالب إن كان اشتراكه فعّالاً).');
+grBox('ug', 'الصفوف المفتوحة لهذا الحساب:', 'اختر الصفوف ثم اضغط «حفظ». لا اختيار = كل الصفوف. أو اضغط «تعديل» بجانب أي حساب في الجدول.');
+let USERS = [];
+const dt = s => s ? new Date(s).toLocaleDateString('ar-IQ') : '—';
+const active = u => u.expires_at && Date.parse(u.expires_at) > Date.now();
+function drawU() { const q = (window.__q || '').toLowerCase(), U = USERS, L = U.map((u, i) => [u, i]).filter(x => x[0].email.toLowerCase().includes(q)), n = U.filter(active).length;
+  $('#list').innerHTML = `<div class="stats"><div><b>${U.length}</b><span>حساب</span></div><div><b>${n}</b><span>مشترك الآن</span></div><div><b>${U.length - n}</b><span>غير مشترك</span></div></div><input id="q" type="search" placeholder="🔍 ابحث عن إيميل" dir="ltr" value="${q}" oninput="window.__q=this.value;drawU();const e=document.querySelector('#q');e.focus();e.setSelectionRange(e.value.length,e.value.length)">` + L.map(([u, i]) => { const G = u.grades || [], all = !G.length; return `<div class="ucard"><div class="uhead"><span class="mono">${u.email}</span><span class="badge ${active(u) ? 'on' : 'off'}">${active(u) ? 'مشترك حتى ' + dt(u.expires_at) : 'غير مشترك'}</span><span class="muted">📱 ${u.used} من ${u.max_dev}</span><button class="sec sm" onclick="pick(${i})">إدارة</button></div><div class="gchips"><button class="gchip all ${all ? 'on' : ''}" onclick="togG(${i},'')">كل الصفوف</button>${GR.map(([g, nm]) => `<button class="gchip ${G.includes(g) ? 'on' : ''}" onclick="togG(${i},'${g}')">${nm}</button>`).join('')}</div></div>`; }).join(''); }
+window.drawU = drawU;
+window.togG = async (i, g) => { const u = USERS[i]; let L = (u.grades || []).slice(); if (!g) L = []; else if (L.includes(g)) L = L.filter(x => x !== g); else L.push(g); try { await rpc('admin_set_grades', { p_email: u.email, p_grades: L }); u.grades = L; drawU(); msg('تم حفظ صفوف ' + u.email + ': ' + (L.length ? L.map(grName).join('، ') : 'كل الصفوف')); } catch (e) { msg('تعذر الحفظ: ' + e.message, 1); } };
+async function list() {
+  try {
+    if (tab === 'u') { const U = USERS = await rpc('admin_users'); const now = Date.now();
+      drawU(); }
+    else { const C = await rpc('admin_codes');
+      $('#list').innerHTML = `<p class="muted">${C.length} رمزاً، غير المستعمل ${C.filter(c => !c.used_by).length}</p><div class="scroll"><table><tr><th>الرمز</th><th>النوع</th><th>الصفوف</th><th>ملاحظة</th><th>استعمله</th><th>التاريخ</th></tr>${C.map(c => `<tr><td class="mono">${c.code}</td><td>${PL[c.plan] || c.plan}</td><td>${grShow(c.grades)}</td><td>${c.note || ''}</td><td class="mono">${c.used_email || '<span class="ok">متاح</span>'}</td><td class="muted">${dt(c.used_at || c.created_at)}</td></tr>`).join('')}</table></div>`; }
+  } catch (e) { msg('تعذر التحميل: ' + e.message, 1); }
+}
+$('#go').onclick = async () => {
+  try { const s = await api('/auth/v1/token?grant_type=password', { email: $('#em').value.trim(), password: $('#pw').value }); tok = s.access_token;
+    if (!(await rpc('is_admin'))) { tok = null; return alert('هذا الحساب ليس مديراً. أضف بريده إلى جدول admins.'); }
+    $('#login').style.display = 'none'; $('#app').style.display = ''; list(); setTimeout(() => location.reload(), 50 * 60e3);   // the token lasts one hour
+  } catch (e) { alert('فشل الدخول: ' + e.message); }
+};
+$('#mk').onclick = async () => {
+  try { const C = await rpc('admin_make_codes', { p_n: +$('#n').value, p_plan: $('#plan').value, p_note: $('#note').value.trim(), p_grades: grGet('cg') });
+    const b = $('#newCodes'); b.style.display = 'block'; b.textContent = C.join('\n'); navigator.clipboard && navigator.clipboard.writeText(C.join('\n')).catch(() => {});
+    const G = grGet('cg'); msg('تم توليد ' + C.length + ' رمز (' + PL[$('#plan').value] + '، ' + (G.length ? G.map(grName).join('، ') : 'كل الصفوف') + ') ونُسخت إلى الحافظة.'); tab === 'c' && list();
+  } catch (e) { msg('خطأ: ' + e.message, 1); }
+};
+const ue = () => { const e = $('#ue').value.trim(); if (!e) msg('اكتب بريد الطالب أولاً.', 1); return e; };
+$('#rst').onclick = async () => { const e = ue(); if (!e) return; try { await rpc('admin_reset_device', { p_email: e }); msg('يمكن الآن لـ ' + e + ' تفعيل حسابه على جهازه الجديد (أول جهاز يدخل به).'); list(); } catch (x) { msg('خطأ: ' + x.message, 1); } };
+$('#add').onclick = async () => { const e = ue(); if (!e) return; try { const x = await rpc('admin_add_days', { p_email: e, p_days: +$('#days').value }); msg('اشتراك ' + e + ' صار حتى ' + dt(x)); list(); } catch (x) { msg(x.message === 'user' ? 'لا يوجد حساب بهذا البريد.' : 'خطأ: ' + x.message, 1); } };
+$('#setpw').onclick = async () => { const e = ue(); if (!e) return; try { await rpc('admin_set_password', { p_email: e, p_pass: $('#np').value }); msg('تم تغيير كلمة سر ' + e + '. أرسلها له.'); } catch (x) { msg(x.message === 'short' ? 'كلمة السر 6 أحرف على الأقل.' : x.message === 'user' ? 'لا يوجد حساب بهذا البريد.' : 'خطأ: ' + x.message, 1); } };
+$('#end').onclick = async () => { const e = ue(); if (!e || !confirm('إنهاء اشتراك ' + e + ' الآن؟')) return; try { await rpc('admin_end_sub', { p_email: e }); msg('انتهى اشتراك ' + e + '. يُقفل عنده عند أول اتصال بالإنترنت.'); list(); } catch (x) { msg(x.message === 'user' ? 'لا يوجد اشتراك بهذا البريد.' : 'خطأ: ' + x.message, 1); } };
+$('#setdev').onclick = async () => { const e = ue(); if (!e) return; try { await rpc('admin_set_devices', { p_email: e, p_n: +$('#nd').value }); msg('صار بإمكان ' + e + ' استعمال ' + $('#nd').value + ' جهاز/أجهزة.'); list(); } catch (x) { msg(x.message === 'user' ? 'لا يوجد حساب بهذا البريد.' : 'خطأ: ' + x.message, 1); } };
+window.pick = i => { const u = USERS[i]; if (!u) return; $('#ue').value = u.email; grSet('ug', u.grades); $('#ue').scrollIntoView({ behavior: 'smooth', block: 'center' }); msg('عدّل صفوف ' + u.email + ' ثم اضغط «حفظ صفوف هذا الحساب».'); };
+const saveGr = async L => { const e = ue(); if (!e) return; try { await rpc('admin_set_grades', { p_email: e, p_grades: L }); msg('صفوف ' + e + ': ' + (L.length ? L.map(grName).join('، ') : 'كل الصفوف') + '. تتحدث عنده عند أول اتصال بالإنترنت.'); list(); } catch (x) { msg(x.message === 'user' ? 'لا يوجد حساب بهذا البريد.' : /admin_set_grades/.test(x.message) ? 'شغّل ملف إعداد الخادم (SQL) الجديد أولاً.' : 'خطأ: ' + x.message, 1); } };
+$('#setgr').onclick = () => saveGr(grGet('ug'));
+$('#allgr').onclick = () => { grSet('ug', []); saveGr([]); };
+$('#tU').onclick = () => { tab = 'u'; $('#tU').className = ''; $('#tC').className = 'sec'; list(); };
+$('#tC').onclick = () => { tab = 'c'; $('#tC').className = ''; $('#tU').className = 'sec'; list(); };
+$('#pw').onkeydown = e => { if (e.key === 'Enter') $('#go').click(); };
+</script>
+</body>
+</html>
